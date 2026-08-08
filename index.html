@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ras4ek | Portfolio Hub</title>
+    <title>Rastek | Dev & Hardware Hub</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,14 +14,35 @@
         }
 
         body {
-            background-color: #000;
+            background-color: #050508;
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 20px 15px 40px 15px;
-            background: radial-gradient(circle at 50% 0%, #1c1c1e, #000000 80%);
+            padding: 20px 15px 50px 15px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Orbs */
+        .bg-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(90px);
+            z-index: -1;
+            opacity: 0.45;
+            animation: float 8s ease-in-out infinite alternate;
+        }
+
+        .orb-1 { background: #0071e3; top: -50px; left: -50px; }
+        .orb-2 { background: #bf5af2; bottom: -50px; right: -50px; animation-delay: -4s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px) scale(1.1); }
         }
 
         .container {
@@ -29,92 +50,90 @@
             max-width: 440px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        /* Profile Header Card */
+        /* Profile Header */
         .profile-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 0.5px solid rgba(255, 255, 255, 0.15);
-            border-radius: 28px;
-            padding: 30px 20px;
-            text-align: center;
+            border-radius: 24px;
+            padding: 20px;
             display: flex;
-            flex-direction: column;
             align-items: center;
+            gap: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .avatar {
-            width: 88px;
-            height: 88px;
-            background: linear-gradient(135deg, #0071e3, #42a5f5);
-            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #0071e3, #bf5af2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 10px 25px rgba(0, 113, 227, 0.4);
-            margin-bottom: 16px;
+            font-size: 28px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.4);
         }
 
-        .name {
-            font-size: 26px;
-            font-weight: 700;
+        .profile-info h1 {
+            font-size: 20px;
+            font-weight: 800;
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
         }
 
-        .bio {
-            font-size: 14px;
-            color: #86868b;
-            line-height: 1.4;
-            max-width: 300px;
-            margin-bottom: 16px;
+        .profile-info p {
+            font-size: 13px;
+            color: #a1a1a6;
+            margin-top: 2px;
         }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(52, 199, 89, 0.1);
-            border: 0.5px solid rgba(52, 199, 89, 0.3);
-            color: #34c759;
-            padding: 6px 14px;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 4px 10px;
+            background: rgba(48, 209, 88, 0.15);
+            border: 0.5px solid rgba(48, 209, 88, 0.3);
             border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 11px;
+            color: #30d158;
+            font-weight: 600;
         }
 
         .status-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #34c759;
+            width: 6px;
+            height: 6px;
+            background: #30d158;
             border-radius: 50%;
-            box-shadow: 0 0 8px #34c759;
+            box-shadow: 0 0 8px #30d158;
         }
 
-        /* Navigation Segmented Control */
-        .nav-tabs {
-            background: rgba(118, 118, 128, 0.24);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 16px;
-            padding: 3px;
+        /* Segmented Control Tabs */
+        .tabs {
             display: flex;
-            gap: 2px;
+            background: rgba(120, 120, 128, 0.16);
+            backdrop-filter: blur(20px);
+            padding: 3px;
+            border-radius: 14px;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
         }
 
         .tab-btn {
             flex: 1;
-            background: transparent;
-            border: none;
-            color: #86868b;
-            padding: 10px 0;
-            font-size: 14px;
+            padding: 8px 0;
+            text-align: center;
+            font-size: 12px;
             font-weight: 600;
-            border-radius: 13px;
+            color: #a1a1a6;
+            background: none;
+            border: none;
+            border-radius: 11px;
             cursor: pointer;
             transition: all 0.25s ease;
         }
@@ -122,34 +141,45 @@
         .tab-btn.active {
             background: rgba(255, 255, 255, 0.18);
             color: #fff;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
-        /* Content Section & Cards */
+        /* Content Sections */
         .tab-content {
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 12px;
+            animation: fadeIn 0.3s ease;
         }
 
+        .tab-content.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards & Buttons */
         .card {
-            background: rgba(28, 28, 30, 0.6);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
-            color: inherit;
-            transition: transform 0.2s ease, background 0.2s ease;
+            color: #fff;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
         }
 
         .card:active {
             transform: scale(0.98);
-            background: rgba(44, 44, 46, 0.8);
         }
 
         .card-left {
@@ -161,189 +191,380 @@
         .card-icon {
             width: 44px;
             height: 44px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 12px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 22px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
         }
 
         .card-title {
             font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 2px;
+            font-weight: 700;
         }
 
         .card-desc {
             font-size: 12px;
             color: #86868b;
+            margin-top: 2px;
         }
 
         .badge {
+            font-size: 11px;
             padding: 4px 10px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Tech Stack Grid */
-        .stack-card {
-            background: rgba(28, 28, 30, 0.6);
-            backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 18px;
-            text-align: center;
-        }
-
-        .stack-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #86868b;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .stack-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-
-        .chip {
-            background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            padding: 6px 12px;
             border-radius: 12px;
-            font-size: 13px;
-            color: #f5f5f7;
+            font-weight: 600;
         }
+
+        /* Modal Popups for Games/Apps */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1c1c1e;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 20px;
+            width: 100%;
+            max-width: 360px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        canvas {
+            background: #000;
+            border-radius: 12px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
+            margin-top: 10px;
+        }
+
+        /* Controls for Snake/Tetris */
+        .dpad {
+            display: grid;
+            grid-template-columns: repeat(3, 45px);
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .dbtn {
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            color: #fff;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Calculator UI */
+        .calc-display {
+            width: 100%;
+            height: 50px;
+            background: #000;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px 14px;
+            margin: 10px 0;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            width: 100%;
+        }
+
+        .cbtn {
+            padding: 14px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cbtn.op { background: #ff9f0a; }
     </style>
 </head>
 <body>
 
+    <div class="bg-glow orb-1"></div>
+    <div class="bg-glow orb-2"></div>
+
     <div class="container">
-        <!-- Header -->
+        <!-- Profile Header -->
         <div class="profile-card">
-            <div class="avatar">⚡</div>
-            <h1 class="name">ras4ek</h1>
-            <p class="bio">Frontend Developer & Tech Explorer<br>Creating modern iOS-inspired web interfaces</p>
-            <div class="status-badge">
-                <span class="status-dot"></span>
-                <span>Open to Collaboration</span>
-            </div>
-        </div>
-
-        <!-- Tab Controls -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('services', this)">Услуги</button>
-            <button class="tab-btn" onclick="switchTab('projects', this)">Проекты</button>
-            <button class="tab-btn" onclick="switchTab('contacts', this)">Контакты</button>
-        </div>
-
-        <!-- TAB 1: SERVICES -->
-        <div id="tab-services" class="tab-content">
-            <div class="card">
-                <div class="card-left">
-                    <div class="card-icon">🎨</div>
-                    <div>
-                        <div class="card-title">Веб-верстка (UI/UX)</div>
-                        <div class="card-desc">Адаптивные сайты в стиле Glassmorphism</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(10, 132, 255, 0.15); color: #0a84ff; border: 0.5px solid rgba(10, 132, 255, 0.3);">HTML / CSS</span>
-            </div>
-
-            <div class="card">
-                <div class="card-left">
-                    <div class="card-icon">🤖</div>
-                    <div>
-                        <div class="card-title">Автоматизация</div>
-                        <div class="card-desc">Скрипты и логика интерфейса</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(48, 209, 88, 0.15); color: #30d158; border: 0.5px solid rgba(48, 209, 88, 0.3);">JS / Python</span>
-            </div>
-
-            <div class="card">
-                <div class="card-left">
-                    <div class="card-icon">🌐</div>
-                    <div>
-                        <div class="card-title">Деплой и веб-хостинг</div>
-                        <div class="card-desc">Публикация сайтов через GitHub Pages</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(94, 92, 230, 0.15); color: #5e5ce6; border: 0.5px solid rgba(94, 92, 230, 0.3);">GitHub</span>
-            </div>
-
-            <div class="stack-card">
-                <div class="stack-title">Стек и технологии</div>
-                <div class="stack-chips">
-                    <span class="chip">HTML5</span>
-                    <span class="chip">CSS3 Glassmorphism</span>
-                    <span class="chip">JavaScript ES6</span>
-                    <span class="chip">Termux</span>
-                    <span class="chip">Git / GitHub</span>
+            <div class="avatar">R</div>
+            <div class="profile-info">
+                <h1>Rastek Hub</h1>
+                <p>Mobile Dev & System Enthusiast</p>
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>TechSpecs Pro Live</span>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 2: PROJECTS -->
-<a href="nanospecs.html" class="card">
-    <div class="card-left">
-        <div class="card-icon">🚀</div>
-        <div>
-            <div class="card-title">NanoSpecs Pro</div>
-            <div class="card-desc">Сравнение флагманов, AnTuTu и FPS</div>
+        <!-- Navigation Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('projects')">🚀 Проекты</button>
+            <button class="tab-btn" onclick="switchTab('arcade')">🎮 Аркада</button>
+            <button class="tab-btn" onclick="switchTab('tools')">🛠 Утилиты</button>
+        </div>
+
+        <!-- TAB 1: PROJECTS -->
+        <div id="projects" class="tab-content active">
+            <a href="techspecs.html" class="card" style="border-color: rgba(0, 113, 227, 0.4);">
+                <div class="card-left">
+                    <div class="card-icon" style="background: rgba(0, 113, 227, 0.2);">⚡</div>
+                    <div>
+                        <div class="card-title">TechSpecs Pro</div>
+                        <div class="card-desc">Бенчмарки, AnTuTu v10 и FPS в играх</div>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(0, 113, 227, 0.2); color: #2997ff;">Pro ↗</span>
+            </a>
+
+            <a href="todo.html" class="card">
+                <div class="card-left">
+                    <div class="card-icon">✅</div>
+                    <div>
+                        <div class="card-title">iOS Task Manager</div>
+                        <div class="card-desc">Планер задач в стиле Glassmorphism</div>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: #aaa;">App ↗</span>
+            </a>
+        </div>
+
+        <!-- TAB 2: ARCADE (GAMES) -->
+        <div id="arcade" class="tab-content">
+            <div class="card" onclick="openGame('snake')">
+                <div class="card-left">
+                    <div class="card-icon">🐍</div>
+                    <div>
+                        <div class="card-title">Retro Snake</div>
+                        <div class="card-desc">Классическая змейка с D-Pad</div>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(48, 209, 88, 0.2); color: #30d158;">Играть</span>
+            </div>
+
+            <div class="card" onclick="openGame('tetris')">
+                <div class="card-left">
+                    <div class="card-icon">🧩</div>
+                    <div>
+                        <div class="card-title">Glass Tetris</div>
+                        <div class="card-desc">Собирай блоки на скорость</div>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(191, 90, 242, 0.2); color: #bf5af2;">Играть</span>
+            </div>
+        </div>
+
+        <!-- TAB 3: TOOLS -->
+        <div id="tools" class="tab-content">
+            <div class="card" onclick="openGame('calc')">
+                <div class="card-left">
+                    <div class="card-icon">🧮</div>
+                    <div>
+                        <div class="card-title">Pro Calculator</div>
+                        <div class="card-desc">Быстрый калькулятор параметров</div>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(255, 159, 10, 0.2); color: #ff9f0a;">Открыть</span>
+            </div>
         </div>
     </div>
-    <span class="badge" style="background: rgba(10, 132, 255, 0.15); color: #0a84ff; border: 0.5px solid rgba(10, 132, 255, 0.3);">Pro ↗</span>
-</a>
-        
 
-        <!-- TAB 3: CONTACTS -->
-        <div id="tab-contacts" class="tab-content" style="display: none;">
-            <a href="https://t.me/RASTEKQ" target="_blank" class="card">
-                <div class="card-left">
-                    <div class="card-icon">✈️</div>
-                    <div>
-                        <div class="card-title">Telegram</div>
-                        <div class="card-desc">@RASTEKQ</div>
-                    </div>
-                </div>
-                <span style="color: #0a84ff; font-weight: 600; font-size: 13px;">Написать ↗</span>
-            </a>
+    <!-- MODAL POPUP -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✕</button>
+            <h3 id="modalTitle" style="font-size: 18px; margin-bottom: 8px;">Игра</h3>
+            
+            <!-- Canvas Container -->
+            <div id="canvasBox">
+                <canvas id="gameCanvas" width="240" height="240"></canvas>
+            </div>
 
-            <a href="https://github.com/ras4ek" target="_blank" class="card">
-                <div class="card-left">
-                    <div class="card-icon">🐙</div>
-                    <div>
-                        <div class="card-title">GitHub</div>
-                        <div class="card-desc">github.com/ras4ek</div>
-                    </div>
+            <!-- Snake D-Pad -->
+            <div id="snakeControls" class="dpad" style="display: none;">
+                <div></div><button class="dbtn" onclick="setDir('UP')">▲</button><div></div>
+                <button class="dbtn" onclick="setDir('LEFT')">◄</button>
+                <button class="dbtn" onclick="setDir('DOWN')">▼</button>
+                <button class="dbtn" onclick="setDir('RIGHT')">►</button>
+            </div>
+
+            <!-- Calculator UI -->
+            <div id="calcUI" style="display: none; width: 100%;">
+                <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
+                <div class="calc-grid">
+                    <button class="cbtn" onclick="cClear()">C</button>
+                    <button class="cbtn" onclick="cInput('(')">(</button>
+                    <button class="cbtn" onclick="cInput(')')">)</button>
+                    <button class="cbtn op" onclick="cInput('/')">÷</button>
+                    <button class="cbtn" onclick="cInput('7')">7</button>
+                    <button class="cbtn" onclick="cInput('8')">8</button>
+                    <button class="cbtn" onclick="cInput('9')">9</button>
+                    <button class="cbtn op" onclick="cInput('*')">×</button>
+                    <button class="cbtn" onclick="cInput('4')">4</button>
+                    <button class="cbtn" onclick="cInput('5')">5</button>
+                    <button class="cbtn" onclick="cInput('6')">6</button>
+                    <button class="cbtn op" onclick="cInput('-')">-</button>
+                    <button class="cbtn" onclick="cInput('1')">1</button>
+                    <button class="cbtn" onclick="cInput('2')">2</button>
+                    <button class="cbtn" onclick="cInput('3')">3</button>
+                    <button class="cbtn op" onclick="cInput('+')">+</button>
+                    <button class="cbtn" onclick="cInput('0')" style="grid-column: span 2;">0</button>
+                    <button class="cbtn" onclick="cInput('.')">.</button>
+                    <button class="cbtn op" onclick="cCalc()">=</button>
                 </div>
-                <span style="color: #0a84ff; font-weight: 600; font-size: 13px;">Открыть ↗</span>
-            </a>
+            </div>
         </div>
     </div>
 
     <script>
-        function switchTab(tabName, btnElement) {
-            // Hide all tab content
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(content => content.style.display = 'none');
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
 
-            // Remove active class from buttons
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
+        // Modal Controls
+        let gameInterval = null;
+        function closeModal() {
+            document.getElementById('gameModal').style.display = 'none';
+            if (gameInterval) clearInterval(gameInterval);
+        }
 
-            // Show current tab & activate button
-            document.getElementById('tab-' + tabName).style.display = 'flex';
-            btnElement.classList.add('active');
+        function openGame(type) {
+            document.getElementById('gameModal').style.display = 'flex';
+            document.getElementById('canvasBox').style.display = 'none';
+            document.getElementById('snakeControls').style.display = 'none';
+            document.getElementById('calcUI').style.display = 'none';
+
+            if (type === 'snake') {
+                document.getElementById('modalTitle').innerText = "Retro Snake";
+                document.getElementById('canvasBox').style.display = 'block';
+                document.getElementById('snakeControls').style.display = 'grid';
+                startSnake();
+            } else if (type === 'tetris') {
+                document.getElementById('modalTitle').innerText = "Glass Tetris";
+                document.getElementById('canvasBox').style.display = 'block';
+                startTetris();
+            } else if (type === 'calc') {
+                document.getElementById('modalTitle').innerText = "Calculator";
+                document.getElementById('calcUI').style.display = 'block';
+            }
+        }
+
+        // --- SNAKE GAME LOGIC ---
+        let snake, dir, food, canvas, ctx;
+        function startSnake() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            snake = [{x: 5, y: 5}];
+            dir = 'RIGHT';
+            food = {x: 8, y: 8};
+            if (gameInterval) clearInterval(gameInterval);
+            gameInterval = setInterval(gameLoop, 150);
+        }
+
+        function setDir(d) { dir = d; }
+
+        function gameLoop() {
+            let head = {...snake[0]};
+            if (dir === 'UP') head.y--;
+            if (dir === 'DOWN') head.y++;
+            if (dir === 'LEFT') head.x--;
+            if (dir === 'RIGHT') head.x++;
+
+            if (head.x < 0 || head.x >= 12 || head.y < 0 || head.y >= 12) {
+                alert("Game Over!");
+                startSnake();
+                return;
+            }
+
+            snake.unshift(head);
+            if (head.x === food.x && head.y === food.y) {
+                food = {Math: Math.floor(Math.random()*12), y: Math.floor(Math.random()*12)};
+            } else {
+                snake.pop();
+            }
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 240, 240);
+
+            ctx.fillStyle = '#30d158';
+            snake.forEach(s => ctx.fillRect(s.x*20, s.y*20, 18, 18));
+
+            ctx.fillStyle = '#ff453a';
+            ctx.fillRect(food.x*20, food.y*20, 18, 18);
+        }
+
+        // --- TETRIS MINI LOGIC ---
+        function startTetris() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, 240, 240);
+            ctx.fillStyle = '#bf5af2';
+            ctx.font = "14px sans-serif";
+            ctx.fillText("Tetris Ready!", 75, 120);
+        }
+
+        // --- CALCULATOR LOGIC ---
+        function cInput(val) {
+            let d = document.getElementById('calcDisplay');
+            if (d.value === '0') d.value = val;
+            else d.value += val;
+        }
+        function cClear() { document.getElementById('calcDisplay').value = '0'; }
+        function cCalc() {
+            try {
+                document.getElementById('calcDisplay').value = eval(document.getElementById('calcDisplay').value);
+            } catch(e) {
+                document.getElementById('calcDisplay').value = 'Error';
+            }
         }
     </script>
 </body>
-</html>
+                                                </html>
+                        
