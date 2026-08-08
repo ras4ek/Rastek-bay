@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rastek | Dev & Hardware Hub</title>
+    <title>Rastek | Portfolio & Tech Lab</title>
     <style>
         * {
             box-sizing: border-box;
@@ -14,35 +14,33 @@
         }
 
         body {
-            background-color: #050508;
+            background-color: #030308;
             color: #fff;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             min-height: 100vh;
-            padding: 20px 15px 50px 15px;
+            padding: 20px 15px 60px 15px;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* Animated Background Orbs */
-        .bg-glow {
+        /* Liquid Background Elements */
+        .liquid-orb {
             position: fixed;
-            width: 300px;
-            height: 300px;
             border-radius: 50%;
-            filter: blur(90px);
+            filter: blur(100px);
             z-index: -1;
-            opacity: 0.45;
-            animation: float 8s ease-in-out infinite alternate;
+            opacity: 0.5;
+            animation: float 10s ease-in-out infinite alternate;
         }
 
-        .orb-1 { background: #0071e3; top: -50px; left: -50px; }
-        .orb-2 { background: #bf5af2; bottom: -50px; right: -50px; animation-delay: -4s; }
+        .orb-1 { width: 320px; height: 320px; background: radial-gradient(circle, #0071e3, #00f2fe); top: -80px; left: -80px; }
+        .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #7d2ae8, #ff2a85); bottom: -100px; right: -80px; animation-delay: -5s; }
 
         @keyframes float {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 40px) scale(1.1); }
+            100% { transform: translate(40px, 50px) scale(1.15); }
         }
 
         .container {
@@ -53,52 +51,48 @@
             gap: 16px;
         }
 
-        /* Profile Header */
-        .profile-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 0.5px solid rgba(255, 255, 255, 0.15);
+        /* Liquid Glass Card Base */
+        .liquid-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 24px;
             padding: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        /* Profile Section */
+        .profile-header {
             display: flex;
             align-items: center;
             gap: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #0071e3, #bf5af2);
+            width: 68px;
+            height: 68px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #0071e3, #7d2ae8);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 113, 227, 0.4);
-        }
-
-        .profile-info h1 {
-            font-size: 20px;
+            font-size: 30px;
             font-weight: 800;
-            letter-spacing: -0.5px;
+            box-shadow: 0 8px 25px rgba(0, 113, 227, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .profile-info p {
-            font-size: 13px;
-            color: #a1a1a6;
-            margin-top: 2px;
-        }
+        .bio h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .bio p { font-size: 13px; color: #a1a1a6; margin-top: 3px; line-height: 1.3; }
 
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            margin-top: 6px;
-            padding: 4px 10px;
-            background: rgba(48, 209, 88, 0.15);
+            margin-top: 8px;
+            padding: 4px 12px;
+            background: rgba(48, 209, 88, 0.12);
             border: 0.5px solid rgba(48, 209, 88, 0.3);
             border-radius: 20px;
             font-size: 11px;
@@ -107,33 +101,54 @@
         }
 
         .status-dot {
-            width: 6px;
-            height: 6px;
-            background: #30d158;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #30d158;
+            width: 6px; height: 6px; background: #30d158; border-radius: 50%; box-shadow: 0 0 8px #30d158;
         }
 
-        /* Segmented Control Tabs */
+        /* Social Links Grid */
+        .social-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .social-btn:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.1); }
+
+        /* Segmented Tabs */
         .tabs {
             display: flex;
             background: rgba(120, 120, 128, 0.16);
             backdrop-filter: blur(20px);
-            padding: 3px;
-            border-radius: 14px;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 16px;
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
         }
 
         .tab-btn {
             flex: 1;
-            padding: 8px 0;
+            padding: 10px 0;
             text-align: center;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             color: #a1a1a6;
             background: none;
             border: none;
-            border-radius: 11px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.25s ease;
         }
@@ -141,268 +156,221 @@
         .tab-btn.active {
             background: rgba(255, 255, 255, 0.18);
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         /* Content Sections */
-        .tab-content {
-            display: none;
-            flex-direction: column;
-            gap: 12px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: flex;
-        }
+        .tab-content { display: none; flex-direction: column; gap: 12px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: flex; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Cards & Buttons */
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
-            padding: 16px;
+        /* List Item Cards */
+        .item-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
             text-decoration: none;
             color: #fff;
-            transition: transform 0.2s ease, border-color 0.2s ease;
+            padding: 16px;
             cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
-        .card:active {
-            transform: scale(0.98);
-        }
+        .item-card:active { transform: scale(0.98); }
 
-        .card-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .item-left { display: flex; align-items: center; gap: 14px; }
 
-        .card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .item-icon {
+            width: 46px; height: 46px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
             font-size: 22px;
             background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
         }
 
-        .card-title {
-            font-size: 15px;
-            font-weight: 700;
-        }
-
-        .card-desc {
-            font-size: 12px;
-            color: #86868b;
-            margin-top: 2px;
-        }
+        .item-title { font-size: 15px; font-weight: 700; }
+        .item-desc { font-size: 12px; color: #86868b; margin-top: 2px; }
 
         .badge {
-            font-size: 11px;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-weight: 600;
+            font-size: 11px; padding: 5px 12px; border-radius: 14px; font-weight: 600;
         }
 
-        /* Modal Popups for Games/Apps */
+        /* Modal Overlay */
         .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px);
+            z-index: 100; justify-content: center; align-items: center; padding: 20px;
         }
 
-        .modal-content {
-            background: #1c1c1e;
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            padding: 20px;
-            width: 100%;
-            max-width: 360px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
+        .modal-body {
+            background: rgba(28, 28, 30, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 28px; padding: 20px; width: 100%; max-width: 360px;
+            display: flex; flex-direction: column; align-items: center; position: relative;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
         }
 
         .close-btn {
-            position: absolute;
-            top: 14px;
-            right: 16px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #fff;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            font-size: 16px;
-            cursor: pointer;
+            position: absolute; top: 16px; right: 18px;
+            background: rgba(255,255,255,0.1); border: none; color: #fff;
+            width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer;
         }
 
         canvas {
-            background: #000;
-            border-radius: 12px;
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            margin-top: 10px;
+            background: #000; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15); margin-top: 10px;
         }
 
-        /* Controls for Snake/Tetris */
+        .score-board { font-size: 14px; color: #a1a1a6; font-weight: 600; margin-top: 6px; }
+
+        /* Game Controls */
         .dpad {
-            display: grid;
-            grid-template-columns: repeat(3, 45px);
-            gap: 6px;
-            margin-top: 12px;
+            display: grid; grid-template-columns: repeat(3, 50px); gap: 8px; margin-top: 14px;
         }
 
         .dbtn {
-            background: rgba(255, 255, 255, 0.15);
-            border: none;
-            color: #fff;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.1);
+            color: #fff; padding: 12px; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer;
         }
+
+        .dbtn:active { background: rgba(255, 255, 255, 0.25); }
 
         /* Calculator UI */
         .calc-display {
-            width: 100%;
-            height: 50px;
-            background: #000;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 24px;
-            text-align: right;
-            padding: 10px 14px;
-            margin: 10px 0;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            width: 100%; height: 55px; background: #000; border-radius: 16px;
+            color: #fff; font-size: 26px; text-align: right; padding: 12px 16px; margin: 12px 0;
+            border: 0.5px solid rgba(255, 255, 255, 0.15); outline: none;
         }
 
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            width: 100%;
-        }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
 
         .cbtn {
-            padding: 14px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 14px; background: rgba(255,255,255,0.1); border: none;
+            color: #fff; font-size: 18px; border-radius: 14px; font-weight: 600; cursor: pointer;
         }
 
-        .cbtn.op { background: #ff9f0a; }
+        .cbtn:active { background: rgba(255,255,255,0.2); }
+        .cbtn.op { background: #ff9f0a; color: #fff; }
+        .cbtn.fn { background: rgba(255,255,255,0.2); color: #fff; }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow orb-1"></div>
-    <div class="bg-glow orb-2"></div>
+    <div class="liquid-orb orb-1"></div>
+    <div class="liquid-orb orb-2"></div>
 
     <div class="container">
-        <!-- Profile Header -->
-        <div class="profile-card">
+        <!-- Profile Section -->
+        <div class="liquid-card profile-header">
             <div class="avatar">R</div>
-            <div class="profile-info">
-                <h1>Rastek Hub</h1>
-                <p>Mobile Dev & System Enthusiast</p>
+            <div class="bio">
+                <h1>Rastek</h1>
+                <p>Android Customization, System Optimization & Web Dev</p>
                 <div class="status-badge">
                     <span class="status-dot"></span>
-                    <span>TechSpecs Pro Live</span>
+                    <span>Открыт к новым проектам</span>
                 </div>
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
+        <!-- Social Contacts Grid -->
+        <div class="social-grid">
+            <a href="https://t.me/" target="_blank" class="social-btn">
+                <span>✈️ Telegram</span>
+            </a>
+            <a href="https://github.com/ras4ek" target="_blank" class="social-btn">
+                <span>🐙 GitHub</span>
+            </a>
+        </div>
+
+        <!-- Segmented Navigation -->
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('projects')">🚀 Проекты</button>
+            <button class="tab-btn" onclick="switchTab('services')">💼 Услуги</button>
             <button class="tab-btn" onclick="switchTab('arcade')">🎮 Аркада</button>
-            <button class="tab-btn" onclick="switchTab('tools')">🛠 Утилиты</button>
         </div>
 
         <!-- TAB 1: PROJECTS -->
         <div id="projects" class="tab-content active">
-            <a href="techspecs.html" class="card" style="border-color: rgba(0, 113, 227, 0.4);">
-                <div class="card-left">
-                    <div class="card-icon" style="background: rgba(0, 113, 227, 0.2);">⚡</div>
+            <a href="techspecs.html" class="liquid-card item-card" style="border-color: rgba(0, 113, 227, 0.4);">
+                <div class="item-left">
+                    <div class="item-icon" style="background: rgba(0, 113, 227, 0.2);">⚡</div>
                     <div>
-                        <div class="card-title">TechSpecs Pro</div>
-                        <div class="card-desc">Бенчмарки, AnTuTu v10 и FPS в играх</div>
+                        <div class="item-title">TechSpecs Pro</div>
+                        <div class="item-desc">Сравнение смартфонов, AnTuTu v10 & FPS</div>
                     </div>
                 </div>
                 <span class="badge" style="background: rgba(0, 113, 227, 0.2); color: #2997ff;">Pro ↗</span>
             </a>
 
-            <a href="todo.html" class="card">
-                <div class="card-left">
-                    <div class="card-icon">✅</div>
+            <a href="todo.html" class="liquid-card item-card">
+                <div class="item-left">
+                    <div class="item-icon">✅</div>
                     <div>
-                        <div class="card-title">iOS Task Manager</div>
-                        <div class="card-desc">Планер задач в стиле Glassmorphism</div>
+                        <div class="item-title">iOS Task Manager</div>
+                        <div class="item-desc">Планер задач в стиле Glassmorphism</div>
                     </div>
                 </div>
                 <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: #aaa;">App ↗</span>
             </a>
         </div>
 
-        <!-- TAB 2: ARCADE (GAMES) -->
-        <div id="arcade" class="tab-content">
-            <div class="card" onclick="openGame('snake')">
-                <div class="card-left">
-                    <div class="card-icon">🐍</div>
+        <!-- TAB 2: SERVICES -->
+        <div id="services" class="tab-content">
+            <div class="liquid-card item-card">
+                <div class="item-left">
+                    <div class="item-icon">📱</div>
                     <div>
-                        <div class="card-title">Retro Snake</div>
-                        <div class="card-desc">Классическая змейка с D-Pad</div>
+                        <div class="item-title">Android Оптимизация</div>
+                        <div class="item-desc">Настройка Shizuku, Brevent, LSPatch</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="liquid-card item-card">
+                <div class="item-left">
+                    <div class="item-icon">💻</div>
+                    <div>
+                        <div class="item-title">Веб-Разработка</div>
+                        <div class="item-desc">Создание адаптивных Glassmorphism сайтов</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: ARCADE & TOOLS -->
+        <div id="arcade" class="tab-content">
+            <div class="liquid-card item-card" onclick="openGame('snake')">
+                <div class="item-left">
+                    <div class="item-icon">🐍</div>
+                    <div>
+                        <div class="item-title">Retro Snake Pro</div>
+                        <div class="item-desc">Классика с точной механикой и D-Pad</div>
                     </div>
                 </div>
                 <span class="badge" style="background: rgba(48, 209, 88, 0.2); color: #30d158;">Играть</span>
             </div>
 
-            <div class="card" onclick="openGame('tetris')">
-                <div class="card-left">
-                    <div class="card-icon">🧩</div>
+            <div class="liquid-card item-card" onclick="openGame('tetris')">
+                <div class="item-left">
+                    <div class="item-icon">🧩</div>
                     <div>
-                        <div class="card-title">Glass Tetris</div>
-                        <div class="card-desc">Собирай блоки на скорость</div>
+                        <div class="item-title">Liquid Tetris</div>
+                        <div class="item-desc">Полноценный Тетрис с вращением фигур</div>
                     </div>
                 </div>
                 <span class="badge" style="background: rgba(191, 90, 242, 0.2); color: #bf5af2;">Играть</span>
             </div>
-        </div>
 
-        <!-- TAB 3: TOOLS -->
-        <div id="tools" class="tab-content">
-            <div class="card" onclick="openGame('calc')">
-                <div class="card-left">
-                    <div class="card-icon">🧮</div>
+            <div class="liquid-card item-card" onclick="openGame('calc')">
+                <div class="item-left">
+                    <div class="item-icon">🧮</div>
                     <div>
-                        <div class="card-title">Pro Calculator</div>
-                        <div class="card-desc">Быстрый калькулятор параметров</div>
+                        <div class="item-title">iOS Calculator</div>
+                        <div class="item-desc">Удобный и быстрый калькулятор</div>
                     </div>
                 </div>
                 <span class="badge" style="background: rgba(255, 159, 10, 0.2); color: #ff9f0a;">Открыть</span>
@@ -410,32 +378,34 @@
         </div>
     </div>
 
-    <!-- MODAL POPUP -->
+    <!-- MODAL POPUP FOR GAMES -->
     <div id="gameModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-body">
             <button class="close-btn" onclick="closeModal()">✕</button>
-            <h3 id="modalTitle" style="font-size: 18px; margin-bottom: 8px;">Игра</h3>
+            <h3 id="modalTitle" style="font-size: 18px; font-weight: 700;">Игра</h3>
+            <div id="scoreText" class="score-board">Счёт: 0</div>
             
-            <!-- Canvas Container -->
-            <div id="canvasBox">
+            <div id="canvasContainer">
                 <canvas id="gameCanvas" width="240" height="240"></canvas>
             </div>
 
-            <!-- Snake D-Pad -->
-            <div id="snakeControls" class="dpad" style="display: none;">
-                <div></div><button class="dbtn" onclick="setDir('UP')">▲</button><div></div>
-                <button class="dbtn" onclick="setDir('LEFT')">◄</button>
-                <button class="dbtn" onclick="setDir('DOWN')">▼</button>
-                <button class="dbtn" onclick="setDir('RIGHT')">►</button>
+            <!-- Snake & Tetris Controls -->
+            <div id="gameControls" class="dpad" style="display: none;">
+                <button class="dbtn" onclick="triggerControl('ROTATE')">🔄</button>
+                <button class="dbtn" onclick="triggerControl('UP')">▲</button>
+                <div></div>
+                <button class="dbtn" onclick="triggerControl('LEFT')">◄</button>
+                <button class="dbtn" onclick="triggerControl('DOWN')">▼</button>
+                <button class="dbtn" onclick="triggerControl('RIGHT')">►</button>
             </div>
 
-            <!-- Calculator UI -->
+            <!-- Calculator -->
             <div id="calcUI" style="display: none; width: 100%;">
                 <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
                 <div class="calc-grid">
-                    <button class="cbtn" onclick="cClear()">C</button>
-                    <button class="cbtn" onclick="cInput('(')">(</button>
-                    <button class="cbtn" onclick="cInput(')')">)</button>
+                    <button class="cbtn fn" onclick="cClear()">C</button>
+                    <button class="cbtn fn" onclick="cDel()">⌫</button>
+                    <button class="cbtn fn" onclick="cInput('%')">%</button>
                     <button class="cbtn op" onclick="cInput('/')">÷</button>
                     <button class="cbtn" onclick="cInput('7')">7</button>
                     <button class="cbtn" onclick="cInput('8')">8</button>
@@ -458,7 +428,7 @@
     </div>
 
     <script>
-        // Tab Switcher
+        // Tab Navigation
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -467,104 +437,67 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // Modal Controls
-        let gameInterval = null;
+        // Modal Management
+        let currentGame = null;
+        let gameLoopTimer = null;
+
         function closeModal() {
             document.getElementById('gameModal').style.display = 'none';
-            if (gameInterval) clearInterval(gameInterval);
+            if (gameLoopTimer) clearInterval(gameLoopTimer);
+            currentGame = null;
         }
 
         function openGame(type) {
             document.getElementById('gameModal').style.display = 'flex';
-            document.getElementById('canvasBox').style.display = 'none';
-            document.getElementById('snakeControls').style.display = 'none';
+            document.getElementById('canvasContainer').style.display = 'none';
+            document.getElementById('gameControls').style.display = 'none';
             document.getElementById('calcUI').style.display = 'none';
+            document.getElementById('scoreText').style.display = 'none';
 
             if (type === 'snake') {
-                document.getElementById('modalTitle').innerText = "Retro Snake";
-                document.getElementById('canvasBox').style.display = 'block';
-                document.getElementById('snakeControls').style.display = 'grid';
-                startSnake();
+                document.getElementById('modalTitle').innerText = "Retro Snake Pro";
+                document.getElementById('canvasContainer').style.display = 'block';
+                document.getElementById('gameControls').style.display = 'grid';
+                document.getElementById('scoreText').style.display = 'block';
+                initSnake();
             } else if (type === 'tetris') {
-                document.getElementById('modalTitle').innerText = "Glass Tetris";
-                document.getElementById('canvasBox').style.display = 'block';
-                startTetris();
+                document.getElementById('modalTitle').innerText = "Liquid Tetris";
+                document.getElementById('canvasContainer').style.display = 'block';
+                document.getElementById('gameControls').style.display = 'grid';
+                document.getElementById('scoreText').style.display = 'block';
+                initTetris();
             } else if (type === 'calc') {
                 document.getElementById('modalTitle').innerText = "Calculator";
                 document.getElementById('calcUI').style.display = 'block';
             }
         }
 
-        // --- SNAKE GAME LOGIC ---
-        let snake, dir, food, canvas, ctx;
-        function startSnake() {
-            canvas = document.getElementById('gameCanvas');
-            ctx = canvas.getContext('2d');
-            snake = [{x: 5, y: 5}];
-            dir = 'RIGHT';
-            food = {x: 8, y: 8};
-            if (gameInterval) clearInterval(gameInterval);
-            gameInterval = setInterval(gameLoop, 150);
+        function triggerControl(action) {
+            if (currentGame === 'snake') handleSnakeInput(action);
+            if (currentGame === 'tetris') handleTetrisInput(action);
         }
 
-        function setDir(d) { dir = d; }
-
-        function gameLoop() {
-            let head = {...snake[0]};
-            if (dir === 'UP') head.y--;
-            if (dir === 'DOWN') head.y++;
-            if (dir === 'LEFT') head.x--;
-            if (dir === 'RIGHT') head.x++;
-
-            if (head.x < 0 || head.x >= 12 || head.y < 0 || head.y >= 12) {
-                alert("Game Over!");
-                startSnake();
-                return;
-            }
-
-            snake.unshift(head);
-            if (head.x === food.x && head.y === food.y) {
-                food = {Math: Math.floor(Math.random()*12), y: Math.floor(Math.random()*12)};
-            } else {
-                snake.pop();
-            }
-
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, 240, 240);
-
-            ctx.fillStyle = '#30d158';
-            snake.forEach(s => ctx.fillRect(s.x*20, s.y*20, 18, 18));
-
-            ctx.fillStyle = '#ff453a';
-            ctx.fillRect(food.x*20, food.y*20, 18, 18);
+        // --- SNAKE ENGINE ---
+        let snake, snakeDir, nextDir, food, score;
+        function initSnake() {
+            currentGame = 'snake';
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            snake = [{x: 5, y: 5}, {x: 4, y: 5}];
+            snakeDir = 'RIGHT';
+            nextDir = 'RIGHT';
+            score = 0;
+            spawnFood();
+            
+            if (gameLoopTimer) clearInterval(gameLoopTimer);
+            gameLoopTimer = setInterval(() => updateSnake(ctx), 120);
         }
 
-        // --- TETRIS MINI LOGIC ---
-        function startTetris() {
-            canvas = document.getElementById('gameCanvas');
-            ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#000';
-            ctx.fillRect(0, 0, 240, 240);
-            ctx.fillStyle = '#bf5af2';
-            ctx.font = "14px sans-serif";
-            ctx.fillText("Tetris Ready!", 75, 120);
+        function spawnFood() {
+            food = { x: Math.floor(Math.random() * 12), y: Math.floor(Math.random() * 12) };
         }
 
-        // --- CALCULATOR LOGIC ---
-        function cInput(val) {
-            let d = document.getElementById('calcDisplay');
-            if (d.value === '0') d.value = val;
-            else d.value += val;
-        }
-        function cClear() { document.getElementById('calcDisplay').value = '0'; }
-        function cCalc() {
-            try {
-                document.getElementById('calcDisplay').value = eval(document.getElementById('calcDisplay').value);
-            } catch(e) {
-                document.getElementById('calcDisplay').value = 'Error';
-            }
-        }
-    </script>
-</body>
-                                                </html>
-                        
+        function handleSnakeInput(dir) {
+            if (dir === 'UP' && snakeDir !== 'DOWN') nextDir = 'UP';
+            if (dir === 'DOWN' && snakeDir !== 'UP') nextDir = 'DOWN';
+            if (dir === 'LEFT' 
