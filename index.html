@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rastek | Portfolio & Tech Lab</title>
+    <title>Rastek ® | Dev Hub</title>
     <style>
         * {
             box-sizing: border-box;
@@ -82,6 +82,7 @@
         }
 
         .bio h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .bio h1 .reg-mark { font-size: 12px; font-weight: 600; opacity: 0.55; vertical-align: super; margin-left: 2px; }
         .bio p { font-size: 13px; color: #a1a1a6; margin-top: 3px; line-height: 1.3; }
 
         .status-badge {
@@ -269,10 +270,11 @@
     <div class="liquid-orb orb-2"></div>
 
     <div class="container">
+        <!-- Profile Section -->
         <div class="liquid-card profile-header">
             <div class="avatar">R</div>
             <div class="bio">
-                <h1>Rastek</h1>
+                <h1>Rastek<span class="reg-mark">®</span></h1>
                 <p>Android Customization, System Optimization & Web Dev</p>
                 <div class="status-badge">
                     <span class="status-dot"></span>
@@ -281,6 +283,7 @@
             </div>
         </div>
 
+        <!-- Social Contacts Grid -->
         <div class="social-grid">
             <a href="https://t.me/" target="_blank" class="social-btn">
                 <span>✈️ Telegram</span>
@@ -290,12 +293,14 @@
             </a>
         </div>
 
+        <!-- Segmented Navigation -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="projects" onclick="switchTab('projects', this)">🚀 Проекты</button>
             <button class="tab-btn" data-tab="services" onclick="switchTab('services', this)">💼 Услуги</button>
             <button class="tab-btn" data-tab="arcade" onclick="switchTab('arcade', this)">🎮 Аркада</button>
         </div>
 
+        <!-- TAB 1: PROJECTS -->
         <div id="projects" class="tab-content active">
             <a href="techspecs.html" class="liquid-card item-card" style="border-color: rgba(0, 113, 227, 0.4);">
                 <div class="item-left">
@@ -320,6 +325,7 @@
             </a>
         </div>
 
+        <!-- TAB 2: SERVICES -->
         <div id="services" class="tab-content">
             <div class="liquid-card item-card">
                 <div class="item-left">
@@ -342,6 +348,7 @@
             </div>
         </div>
 
+        <!-- TAB 3: ARCADE & TOOLS -->
         <div id="arcade" class="tab-content">
             <div class="liquid-card item-card" onclick="openGame('snake')">
                 <div class="item-left">
@@ -378,6 +385,7 @@
         </div>
     </div>
 
+    <!-- MODAL POPUP FOR GAMES -->
     <div id="gameModal" class="modal">
         <div class="modal-body">
             <button class="close-btn" onclick="closeModal()">✕</button>
@@ -389,6 +397,7 @@
                 <div id="gameOverMsg" class="game-over-msg">Игра окончена — нажмите ▲ чтобы начать заново</div>
             </div>
 
+            <!-- Snake & Tetris Controls -->
             <div id="gameControls" class="dpad" style="display: none;">
                 <button class="dbtn" onclick="triggerControl('ROTATE')">🔄</button>
                 <button class="dbtn" onclick="triggerControl('UP')">▲</button>
@@ -398,6 +407,7 @@
                 <button class="dbtn" onclick="triggerControl('RIGHT')">►</button>
             </div>
 
+            <!-- Calculator -->
             <div id="calcUI" style="display: none; width: 100%;">
                 <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
                 <div class="calc-grid">
@@ -479,22 +489,7 @@
             if (currentGame === 'tetris') handleTetrisInput(action);
         }
 
+        // Keyboard support (desktop testing)
         document.addEventListener('keydown', (e) => {
             const map = {
-                'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT',
-                'ArrowRight': 'RIGHT', ' ': 'ROTATE'
-            };
-            if (map[e.key] && currentGame) {
-                e.preventDefault();
-                triggerControl(map[e.key]);
-            }
-        });
-
-        // ================= SNAKE ENGINE =================
-        const SNAKE_GRID = 12;
-        const SNAKE_CELL = 20;
-        let snake, snakeDir, nextDir, food, score, snakeOver;
-
-        function initSnake() {
-            currentGame = 'snake';
-     
+                'ArrowUp': 'UP', 'Arro
