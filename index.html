@@ -3,422 +3,461 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RastekStore Pro</title>
+    <title>ras4ek | Interactive Hub</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: #000000;
             color: #f5f5f7;
-            padding: 16px;
-            padding-bottom: 90px;
-        }
-
-        /* iOS Glassmorphism Header */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background: rgba(22, 22, 23, 0.85);
-            margin: -16px -16px 15px -16px;
-            padding: 16px 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.15);
+            min-height: 100vh;
+            padding: 20px 15px;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        .logo {
-            font-size: 22px;
+        /* Animated Background Orbs */
+        .bg-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.5;
+            animation: float 10s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 260px;
+            height: 260px;
+            background: #0071e3;
+            top: -50px;
+            left: -50px;
+        }
+
+        .orb-2 {
+            width: 220px;
+            height: 220px;
+            background: #af52de;
+            bottom: -40px;
+            right: -40px;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, 40px) scale(1.1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            z-index: 1;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 0.5px solid rgba(255, 255, 255, 0.18);
+            border-radius: 32px;
+            padding: 28px 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 14px auto;
+        }
+
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0071e3, #5ac8fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 113, 227, 0.5);
+            animation: pulse 3s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px rgba(0, 113, 227, 0.4); }
+            100% { box-shadow: 0 0 30px rgba(90, 200, 250, 0.8); }
+        }
+
+        .name {
+            font-size: 26px;
             font-weight: 700;
             letter-spacing: -0.5px;
-            background: linear-gradient(130deg, #ffffff, #a1a1a6);
+            background: linear-gradient(180deg, #ffffff, #b0b0b5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .cart-status {
-            background: rgba(255, 255, 255, 0.12);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-            border: 0.5px solid rgba(255, 255, 255, 0.2);
-            transition: transform 0.1s ease;
-            cursor: pointer;
-        }
-
-        .cart-status:active { transform: scale(0.95); }
-
-        /* Search & Categories */
-        .search-box {
-            margin-bottom: 15px;
-        }
-
-        .search-input {
-            width: 100%;
-            background: #1c1c1e;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: white;
-            font-size: 15px;
-            outline: none;
-        }
-
-        .categories {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-            scrollbar-width: none;
-        }
-
-        .category-btn {
-            background: #1c1c1e;
+        .bio {
             color: #86868b;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 16px;
+            font-size: 14px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(52, 199, 89, 0.12);
+            border: 0.5px solid rgba(52, 199, 89, 0.3);
+            color: #34c759;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 14px;
             border-radius: 20px;
+            margin-top: 14px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background: #34c759;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34c759;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Segmented Control / Tabs */
+        .segmented-control {
+            width: 100%;
+            background: rgba(118, 118, 128, 0.24);
+            padding: 3px;
+            border-radius: 14px;
+            display: flex;
+            gap: 2px;
+            backdrop-filter: blur(20px);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            background: transparent;
+            color: #86868b;
             font-size: 13px;
             font-weight: 600;
-            white-space: nowrap;
+            border-radius: 12px;
             cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .category-btn.active {
-            background: #f5f5f7;
-            color: #000;
-        }
-
-        /* Products Grid */
-        .products-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .card {
-            background: #1c1c1e;
-            border-radius: 20px;
-            padding: 20px;
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .card-tag {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #38bdf8;
-            margin-bottom: 6px;
-        }
-
-        .card h3 {
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.4px;
-            margin-bottom: 6px;
-        }
-
-        .card p {
-            color: #86868b;
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 16px;
-        }
-
-        .card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .price {
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-
-        .btn-buy {
-            background: #0071e3;
+        .tab-btn.active {
+            background: rgba(255, 255, 255, 0.15);
             color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 980px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
         }
 
-        .btn-buy:active {
-            background: #0077ed;
-            transform: scale(0.95);
-        }
-
-        /* Toast Notification */
-        .toast {
-            position: fixed;
-            top: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(52, 199, 89, 0.9);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 14px;
-            backdrop-filter: blur(10px);
-            transition: top 0.3s ease;
-            z-index: 300;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        .toast.show { top: 20px; }
-
-        /* iOS Bottom Sheet Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(15px);
-            z-index: 200;
-            justify-content: center;
-            align-items: flex-end;
-        }
-
-        .modal-content {
-            background: #1c1c1e;
+        /* Tab Content Views */
+        .tab-content {
             width: 100%;
-            max-width: 500px;
-            border-radius: 28px 28px 0 0;
-            padding: 24px;
-            border-top: 0.5px solid rgba(255, 255, 255, 0.2);
-            animation: slideUp 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 12px;
-            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease;
         }
 
-        .modal-input {
-            background: #2c2c2e;
-            border: none;
-            padding: 14px 16px;
-            border-radius: 12px;
-            color: #ffffff;
-            font-size: 16px;
-            outline: none;
+        .tab-content.active {
+            display: flex;
         }
 
-        .btn-submit {
-            background: #34c759;
-            color: #ffffff;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Cards */
+        .card {
             width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
+            background: rgba(28, 28, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: white;
+            transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(44, 44, 46, 0.8);
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .card-icon {
+            font-size: 20px;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+        }
+
+        .card-text h4 {
+            font-size: 15px;
             font-weight: 600;
-            border: none;
+            letter-spacing: -0.2px;
+        }
+
+        .card-text p {
+            font-size: 12px;
+            color: #86868b;
+            margin-top: 2px;
+        }
+
+        .badge {
+            font-size: 11px;
+            background: rgba(0, 113, 227, 0.2);
+            color: #2997ff;
+            border: 0.5px solid rgba(41, 151, 255, 0.4);
+            padding: 4px 9px;
+            border-radius: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Tech Stack Section */
+        .skills-card {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .skills-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #86868b;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
             margin-bottom: 10px;
         }
 
-        .btn-cancel {
-            background: #2c2c2e;
-            color: #ff453a;
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
+        .pills {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.12);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #d1d1d6;
+        }
+
+        footer {
+            font-size: 12px;
+            color: #48484a;
+            margin-top: 8px;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <div id="toast" class="toast">Товар добавлен в корзину!</div>
+    <!-- Background Orbs -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
 
-    <header>
-        <div class="logo">⚡ RastekStore</div>
-        <div class="cart-status" onclick="openCart()">
-            🛒 <span id="cart-count">0</span> | $<span id="cart-total">0</span>
+    <div class="container">
+        
+        <!-- Header Profile Card -->
+        <div class="profile-card">
+            <div class="avatar-wrapper">
+                <div class="avatar">⚡</div>
+            </div>
+            <h1 class="name">ras4ek</h1>
+            <p class="bio">Frontend Developer & Tech Explorer<br>Creating modern iOS-inspired web interfaces</p>
+            <div class="status-badge">
+                <span class="status-dot"></span> Open to Collaboration
+            </div>
         </div>
-    </header>
 
-    <div class="search-box">
-        <input type="text" class="search-input" id="search" placeholder="Поиск товаров..." oninput="filterProducts()">
+        <!-- Navigation Tabs -->
+        <div class="segmented-control">
+            <button class="tab-btn active" onclick="switchTab('services')">Услуги</button>
+            <button class="tab-btn" onclick="switchTab('projects')">Проекты</button>
+            <button class="tab-btn" onclick="switchTab('contacts')">Контакты</button>
+        </div>
+
+        <!-- TAB 1: SERVICES -->
+        <div id="tab-services" class="tab-content active">
+            <div class="card">
+                <div class="card-left">
+                    <div class="card-icon">🎨</div>
+                    <div class="card-text">
+                        <h4>Веб-верстка (UI/UX)</h4>
+                        <p>Адаптивные сайты в стиле Glassmorphism</p>
+                    </div>
+                </div>
+                <span class="badge">HTML / CSS</span>
+            </div>
+
+            <div class="card">
+                <div class="card-left">
+                    <div class="card-icon">🤖</div>
+                    <div class="card-text">
+                        <h4>Автоматизация</h4>
+                        <p>Скрипты и боты под Telegram</p>
+                    </div>
+                </div>
+                <span class="badge">JS / Python</span>
+            </div>
+
+            <div class="card">
+                <div class="card-left">
+                    <div class="card-icon">🌐</div>
+                    <div class="card-text">
+                        <h4>Деплой и веб-хостинг</h4>
+                        <p>Публикация сайтов через GitHub Pages</p>
+                    </div>
+                </div>
+                <span class="badge">GitHub</span>
+            </div>
+        </div>
+
+        <!-- TAB 2: PROJECTS -->
+        <div id="tab-projects" class="tab-content">
+            <a href="https://github.com/ras4ek/Rastek-bay" class="card" target="_blank">
+                <div class="card-left">
+                    <div class="card-icon">📦</div>
+                    <div class="card-text">
+                        <h4>Rastek-bay Hub</h4>
+                        <p>Текущий сайт-визитка с интерактивным UI</p>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(52, 199, 89, 0.2); color: #34c759; border-color: rgba(52, 199, 89, 0.4);">Live</span>
+            </a>
+
+            <div class="card">
+                <div class="card-left">
+                    <div class="card-icon">🧪</div>
+                    <div class="card-text">
+                        <h4>Lab Experiments</h4>
+                        <p>Тестовые JS-виджеты и анимации</p>
+                    </div>
+                </div>
+                <span class="badge" style="background: rgba(255, 149, 0, 0.2); color: #ff9500; border-color: rgba(255, 149, 0, 0.4);">In Dev</span>
+            </div>
+        </div>
+
+        <!-- TAB 3: CONTACTS -->
+        <div id="tab-contacts" class="tab-content">
+            <a href="https://t.me/RASTEKQ" class="card" target="_blank">
+                <div class="card-left">
+                    <div class="card-icon">✈️</div>
+                    <div class="card-text">
+                        <h4>Telegram</h4>
+                        <p>@RASTEKQ</p>
+                    </div>
+                </div>
+                <span class="badge">Direct</span>
+            </a>
+
+            <a href="https://github.com/ras4ek" class="card" target="_blank">
+                <div class="card-left">
+                    <div class="card-icon">🐙</div>
+                    <div class="card-text">
+                        <h4>GitHub Profile</h4>
+                        <p>github.com/ras4ek</p>
+                    </div>
+                </div>
+                <span class="badge">Profile</span>
+            </a>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="skills-card">
+            <div class="skills-title">Стек и технологии</div>
+            <div class="pills">
+                <div class="pill">HTML5</div>
+                <div class="pill">CSS3 Glassmorphism</div>
+                <div class="pill">JavaScript ES6</div>
+                <div class="pill">Termux</div>
+                <div class="pill">Git / GitHub</div>
+            </div>
+        </div>
+
+        <footer>© 2026 ras4ek. Built with pure HTML/CSS/JS.</footer>
+
     </div>
 
-    <div class="categories">
-        <button class="category-btn active" onclick="filterCategory('all', this)">Все товары</button>
-        <button class="category-btn" onclick="filterCategory('phones', this)">Смартфоны</button>
-        <button class="category-btn" onclick="filterCategory('gadgets', this)">Гаджеты</button>
-        <button class="category-btn" onclick="filterCategory('soft', this)">Софт</button>
-    </div>
-
-    <div class="products-grid" id="products-list">
-        <div class="card" data-category="phones" data-title="iqoo neo 9 pro">
-            <div>
-                <div class="card-tag">Флагман</div>
-                <h3>iQOO Neo 9 Pro</h3>
-                <p>Экран AMOLED 144 Гц, Snapdragon 8 Gen 2, быстрая зарядка 120 Вт.</p>
-            </div>
-            <div class="card-footer">
-                <div class="price">$380</div>
-                <button class="btn-buy" onclick="addToCart(380)">Купить</button>
-            </div>
-        </div>
-
-        <div class="card" data-category="gadgets" data-title="механика 60%">
-            <div>
-                <div class="card-tag">Аксессуар</div>
-                <h3>Механика 60%</h3>
-                <p>Кастомные переключатели, RGB подсветка и подключаемость по Bluetooth.</p>
-            </div>
-            <div class="card-footer">
-                <div class="price">$45</div>
-                <button class="btn-buy" onclick="addToCart(45)">Купить</button>
-            </div>
-        </div>
-
-        <div class="card" data-category="soft" data-title="python backend bot">
-            <div>
-                <div class="card-tag">Софт</div>
-                <h3>Python Backend Bot</h3>
-                <p>Готовый скрипт для интеграции интернет-магазинов с Telegram API.</p>
-            </div>
-            <div class="card-footer">
-                <div class="price">$15</div>
-                <button class="btn-buy" onclick="addToCart(15)">Купить</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- iOS Bottom Sheet Modal -->
-    <div class="modal" id="orderModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div style="font-size: 22px; font-weight: 700;">Ваш заказ</div>
-                <div style="color: #34c759; font-weight: 700; font-size: 20px;">$<span id="modal-total">0</span></div>
-            </div>
-            <div class="input-group">
-                <input type="text" class="modal-input" placeholder="Имя и фамилия" id="username">
-                <input type="tel" class="modal-input" placeholder="Номер телефона" id="userphone">
-            </div>
-            <button class="btn-submit" onclick="sendOrder()">Подтвердить заказ</button>
-            <button class="btn-cancel" onclick="closeCart()">Отмена</button>
-        </div>
-    </div>
-
+    <!-- Tab Switch Script -->
     <script>
-        let count = 0;
-        let total = 0;
+        function switchTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
 
-        function showToast() {
-            let toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 1500);
-        }
+            // Remove active status from all buttons
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-        function addToCart(price) {
-            count++;
-            total += price;
-            document.getElementById('cart-count').innerText = count;
-            document.getElementById('cart-total').innerText = total;
-            showToast();
-        }
-
-        function openCart() {
-            if (count === 0) {
-                alert('Корзина пуста!');
-                return;
-            }
-            document.getElementById('modal-total').innerText = total;
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-
-        function closeCart() {
-            document.getElementById('orderModal').style.display = 'none';
-        }
-
-        function sendOrder() {
-            let name = document.getElementById('username').value;
-            let phone = document.getElementById('userphone').value;
-            
-            if (!name || !phone) {
-                alert('Пожалуйста, укажите имя и телефон.');
-                return;
-            }
-
-            alert(`Спасибо за заказ, ${name}!\nСумма: $${total}`);
-            
-            count = 0;
-            total = 0;
-            document.getElementById('cart-count').innerText = 0;
-            document.getElementById('cart-total').innerText = 0;
-            closeCart();
-        }
-
-        function filterCategory(cat, btn) {
-            document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            let cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                if (cat === 'all' || card.dataset.category === cat) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        function filterProducts() {
-            let query = document.getElementById('search').value.toLowerCase();
-            let cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                let title = card.dataset.title;
-                if (title.includes(query)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            // Show current tab & activate button
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
     </script>
 
 </body>
-                </html>
-
+</html>
