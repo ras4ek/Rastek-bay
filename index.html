@@ -270,7 +270,6 @@
     <div class="liquid-orb orb-2"></div>
 
     <div class="container">
-        <!-- Profile Section -->
         <div class="liquid-card profile-header">
             <div class="avatar">R</div>
             <div class="bio">
@@ -283,7 +282,6 @@
             </div>
         </div>
 
-        <!-- Social Contacts Grid -->
         <div class="social-grid">
             <a href="https://t.me/" target="_blank" class="social-btn">
                 <span>✈️ Telegram</span>
@@ -293,14 +291,12 @@
             </a>
         </div>
 
-        <!-- Segmented Navigation -->
         <div class="tabs">
-            <button class="tab-btn active" data-tab="projects" onclick="switchTab('projects', this)">🚀 Проекты</button>
-            <button class="tab-btn" data-tab="services" onclick="switchTab('services', this)">💼 Услуги</button>
-            <button class="tab-btn" data-tab="arcade" onclick="switchTab('arcade', this)">🎮 Аркада</button>
+            <button class="tab-btn active" data-tab="projects">🚀 Проекты</button>
+            <button class="tab-btn" data-tab="services">💼 Услуги</button>
+            <button class="tab-btn" data-tab="arcade">🎮 Аркада</button>
         </div>
 
-        <!-- TAB 1: PROJECTS -->
         <div id="projects" class="tab-content active">
             <a href="techspecs.html" class="liquid-card item-card" style="border-color: rgba(0, 113, 227, 0.4);">
                 <div class="item-left">
@@ -325,7 +321,6 @@
             </a>
         </div>
 
-        <!-- TAB 2: SERVICES -->
         <div id="services" class="tab-content">
             <div class="liquid-card item-card">
                 <div class="item-left">
@@ -348,9 +343,8 @@
             </div>
         </div>
 
-        <!-- TAB 3: ARCADE & TOOLS -->
         <div id="arcade" class="tab-content">
-            <div class="liquid-card item-card" onclick="openGame('snake')">
+            <div class="liquid-card item-card" data-game="snake">
                 <div class="item-left">
                     <div class="item-icon">🐍</div>
                     <div>
@@ -361,7 +355,7 @@
                 <span class="badge" style="background: rgba(48, 209, 88, 0.2); color: #30d158;">Играть</span>
             </div>
 
-            <div class="liquid-card item-card" onclick="openGame('tetris')">
+            <div class="liquid-card item-card" data-game="tetris">
                 <div class="item-left">
                     <div class="item-icon">🧩</div>
                     <div>
@@ -372,7 +366,7 @@
                 <span class="badge" style="background: rgba(191, 90, 242, 0.2); color: #bf5af2;">Играть</span>
             </div>
 
-            <div class="liquid-card item-card" onclick="openGame('calc')">
+            <div class="liquid-card item-card" data-game="calc">
                 <div class="item-left">
                     <div class="item-icon">🧮</div>
                     <div>
@@ -385,10 +379,9 @@
         </div>
     </div>
 
-    <!-- MODAL POPUP FOR GAMES -->
     <div id="gameModal" class="modal">
         <div class="modal-body">
-            <button class="close-btn" onclick="closeModal()">✕</button>
+            <button class="close-btn" id="closeModalBtn">✕</button>
             <h3 id="modalTitle" style="font-size: 18px; font-weight: 700;">Игра</h3>
             <div id="scoreText" class="score-board">Счёт: 0</div>
 
@@ -397,46 +390,43 @@
                 <div id="gameOverMsg" class="game-over-msg">Игра окончена — нажмите ▲ чтобы начать заново</div>
             </div>
 
-            <!-- Snake & Tetris Controls -->
             <div id="gameControls" class="dpad" style="display: none;">
-                <button class="dbtn" onclick="triggerControl('ROTATE')">🔄</button>
-                <button class="dbtn" onclick="triggerControl('UP')">▲</button>
+                <button class="dbtn" data-action="ROTATE">🔄</button>
+                <button class="dbtn" data-action="UP">▲</button>
                 <div></div>
-                <button class="dbtn" onclick="triggerControl('LEFT')">◄</button>
-                <button class="dbtn" onclick="triggerControl('DOWN')">▼</button>
-                <button class="dbtn" onclick="triggerControl('RIGHT')">►</button>
+                <button class="dbtn" data-action="LEFT">◄</button>
+                <button class="dbtn" data-action="DOWN">▼</button>
+                <button class="dbtn" data-action="RIGHT">►</button>
             </div>
 
-            <!-- Calculator -->
             <div id="calcUI" style="display: none; width: 100%;">
                 <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
                 <div class="calc-grid">
-                    <button class="cbtn fn" onclick="cClear()">C</button>
-                    <button class="cbtn fn" onclick="cDel()">⌫</button>
-                    <button class="cbtn fn" onclick="cInput('%')">%</button>
-                    <button class="cbtn op" onclick="cInput('/')">÷</button>
-                    <button class="cbtn" onclick="cInput('7')">7</button>
-                    <button class="cbtn" onclick="cInput('8')">8</button>
-                    <button class="cbtn" onclick="cInput('9')">9</button>
-                    <button class="cbtn op" onclick="cInput('*')">×</button>
-                    <button class="cbtn" onclick="cInput('4')">4</button>
-                    <button class="cbtn" onclick="cInput('5')">5</button>
-                    <button class="cbtn" onclick="cInput('6')">6</button>
-                    <button class="cbtn op" onclick="cInput('-')">-</button>
-                    <button class="cbtn" onclick="cInput('1')">1</button>
-                    <button class="cbtn" onclick="cInput('2')">2</button>
-                    <button class="cbtn" onclick="cInput('3')">3</button>
-                    <button class="cbtn op" onclick="cInput('+')">+</button>
-                    <button class="cbtn" onclick="cInput('0')" style="grid-column: span 2;">0</button>
-                    <button class="cbtn" onclick="cInput('.')">.</button>
-                    <button class="cbtn op" onclick="cCalc()">=</button>
+                    <button class="cbtn fn" data-calc-clear="1">C</button>
+                    <button class="cbtn fn" data-calc-del="1">⌫</button>
+                    <button class="cbtn fn" data-calc-val="%">%</button>
+                    <button class="cbtn op" data-calc-val="/">÷</button>
+                    <button class="cbtn" data-calc-val="7">7</button>
+                    <button class="cbtn" data-calc-val="8">8</button>
+                    <button class="cbtn" data-calc-val="9">9</button>
+                    <button class="cbtn op" data-calc-val="*">×</button>
+                    <button class="cbtn" data-calc-val="4">4</button>
+                    <button class="cbtn" data-calc-val="5">5</button>
+                    <button class="cbtn" data-calc-val="6">6</button>
+                    <button class="cbtn op" data-calc-val="-">-</button>
+                    <button class="cbtn" data-calc-val="1">1</button>
+                    <button class="cbtn" data-calc-val="2">2</button>
+                    <button class="cbtn" data-calc-val="3">3</button>
+                    <button class="cbtn op" data-calc-val="+">+</button>
+                    <button class="cbtn" data-calc-val="0" style="grid-column: span 2;">0</button>
+                    <button class="cbtn" data-calc-val=".">.</button>
+                    <button class="cbtn op" data-calc-eq="1">=</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // ---------- Tab Navigation ----------
         function switchTab(tabId, btn) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -444,7 +434,10 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        // ---------- Modal Management ----------
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab, btn));
+        });
+
         let currentGame = null;
         let gameLoopTimer = null;
         const canvas = document.getElementById('gameCanvas');
@@ -455,6 +448,7 @@
             if (gameLoopTimer) clearInterval(gameLoopTimer);
             currentGame = null;
         }
+        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
 
         function openGame(type) {
             document.getElementById('gameModal').style.display = 'flex';
@@ -484,12 +478,23 @@
             }
         }
 
+        document.querySelectorAll('[data-game]').forEach(el => {
+            el.addEventListener('click', () => openGame(el.dataset.game));
+        });
+
         function triggerControl(action) {
             if (currentGame === 'snake') handleSnakeInput(action);
             if (currentGame === 'tetris') handleTetrisInput(action);
         }
 
-        // Keyboard support (desktop testing)
+        document.querySelectorAll('[data-action]').forEach(btn => {
+            btn.addEventListener('click', () => triggerControl(btn.dataset.action));
+        });
+
         document.addEventListener('keydown', (e) => {
             const map = {
-                'ArrowUp': 'UP', 'Arro
+                'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT',
+                'ArrowRight': 'RIGHT', ' ': 'ROTATE'
+            };
+            if (map[e.key] && currentGame) {
+                e.preventDefault()
