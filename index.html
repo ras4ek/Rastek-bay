@@ -3,15 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rastek ® | Dev Hub</title>
+    <title>Rastek ® · Future Hub</title>
     <style>
-        /* ===== ROOT ===== */
-        :root {
-            --accent: #0071e3;
-            --bg: #050505;
+        /* ============================================================
+                   ROOT VARIABLES & ADVANCED PROPERTIES
+                   ============================================================ */
+        @property --grad-angle {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
         }
 
-        /* ===== RESET & BASE ===== */
+        :root {
+            --bg: #040406;
+            --surface: rgba(255, 255, 255, 0.04);
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #f5f5f7;
+            --accent: #007aff;
+            --accent-glow: rgba(0, 122, 255, 0.4);
+            --radius: 24px;
+            --transition: 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* ============================================================
+                   RESET & BASE
+                   ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -21,656 +37,594 @@
 
         body {
             background: var(--bg);
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, sans-serif;
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
+            padding: 24px 16px;
             margin: 0;
-            padding: 40px 20px;
             overflow-x: hidden;
             position: relative;
         }
 
-        /* ===== LIQUID ORBS (фон) ===== */
+        /* ============================================================
+                   ЖИДКИЕ ОРБЫ (передовые частицы с градиентным движением)
+                   ============================================================ */
         .orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.4;
+            filter: blur(90px) saturate(1.8);
             pointer-events: none;
             z-index: 0;
-            animation: floatOrb 20s ease-in-out infinite alternate;
+            will-change: transform, opacity;
+            animation: orbFloat 24s ease-in-out infinite alternate;
         }
 
         .orb1 {
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle at 30% 30%, #7b2ffc, #b06aff);
-            top: -80px;
-            left: -80px;
+            width: 380px;
+            height: 380px;
+            background: conic-gradient(from var(--grad-angle), #7b2ffc, #b06aff, #007aff, #7b2ffc);
+            top: -120px;
+            left: -100px;
             animation-delay: 0s;
+            opacity: 0.5;
         }
 
         .orb2 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle at 70% 70%, #ff3d7f, #ff8a5c);
-            bottom: -120px;
+            width: 450px;
+            height: 450px;
+            background: conic-gradient(from var(--grad-angle), #ff3d7f, #ff8a5c, #ffd700, #ff3d7f);
+            bottom: -150px;
             right: -120px;
-            animation-delay: -6s;
+            animation-delay: -8s;
+            opacity: 0.35;
         }
 
         .orb3 {
-            width: 260px;
-            height: 260px;
-            background: radial-gradient(circle at 50% 50%, #00d4ff, #0088cc);
+            width: 300px;
+            height: 300px;
+            background: conic-gradient(from var(--grad-angle), #00d4ff, #0088cc, #00d4ff);
             top: 40%;
-            left: 60%;
-            animation-delay: -12s;
+            left: 50%;
+            animation-delay: -16s;
             opacity: 0.25;
         }
 
-        @keyframes floatOrb {
+        @keyframes orbFloat {
             0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            33% { transform: translate(40px, -60px) scale(1.1) rotate(8deg); }
-            66% { transform: translate(-30px, 40px) scale(0.9) rotate(-5deg); }
-            100% { transform: translate(20px, -20px) scale(1.05) rotate(3deg); }
+            25% { transform: translate(60px, -80px) scale(1.15) rotate(12deg); }
+            50% { transform: translate(-40px, 60px) scale(0.85) rotate(-8deg); }
+            75% { transform: translate(30px, -30px) scale(1.05) rotate(4deg); }
+            100% { transform: translate(-20px, 20px) scale(1.0) rotate(-2deg); }
         }
 
-        /* ===== CONTAINER ===== */
-        .container {
+        .orb1, .orb2, .orb3 {
+            animation: orbFloat 24s ease-in-out infinite alternate, orbGradient 12s linear infinite;
+        }
+
+        @keyframes orbGradient {
+            to { --grad-angle: 360deg; }
+        }
+
+        /* ============================================================
+                   ОСНОВНОЙ КОНТЕЙНЕР
+                   ============================================================ */
+        .wrapper {
             position: relative;
             z-index: 1;
             width: 100%;
             max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        /* ===== BRAND ===== */
-        .brand {
+        /* ============================================================
+                   ПРЕМИУМ-ХЕДЕР
+                   ============================================================ */
+        .header {
             text-align: center;
-            margin-bottom: 32px;
+            padding: 20px 0 10px;
+            animation: fadeUp 0.8s ease both;
         }
 
         .logo {
-            font-size: 38px;
-            font-weight: 800;
-            letter-spacing: -1px;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            background: linear-gradient(135deg, #fff 60%, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
         }
 
         .logo span {
-            font-size: 14px;
-            vertical-align: super;
-            opacity: 0.5;
-        }
-
-        .brand-sub {
-            color: #86868b;
-            margin-top: 6px;
-            font-size: 14px;
-        }
-
-        /* ===== СТЕКЛЯННЫЕ КАРТОЧКИ ===== */
-        .glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(24px) saturate(1.4);
-            -webkit-backdrop-filter: blur(24px) saturate(1.4);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: all 0.25s ease;
-        }
-
-        /* ===== ПРОФИЛЬ (добавлен) ===== */
-        .profile-card {
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 16px;
-        }
-
-        .avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            background: linear-gradient(135deg, #7b2ffc, #ff3d7f);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            font-weight: 700;
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(123, 47, 252, 0.3);
-            flex-shrink: 0;
-        }
-
-        .profile-info {
-            flex: 1;
-        }
-
-        .profile-info h2 {
-            font-size: 20px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            font-size: 11px;
-            font-weight: 500;
-            background: rgba(52, 199, 89, 0.2);
-            color: #34c759;
-            padding: 2px 12px;
-            border-radius: 30px;
-            border: 0.5px solid rgba(52, 199, 89, 0.3);
-        }
-
-        .profile-info p {
-            font-size: 14px;
-            color: #a1a1a6;
-            margin-top: 4px;
-        }
-
-        /* ===== СОЦ. КНОПКИ ===== */
-        .social-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        .social-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 40px;
-            padding: 5px 14px 5px 10px;
             font-size: 13px;
-            font-weight: 500;
-            color: #fff;
-            text-decoration: none;
-            transition: 0.2s;
-            backdrop-filter: blur(4px);
+            vertical-align: super;
+            opacity: 0.4;
+            -webkit-text-fill-color: #888;
         }
 
-        .social-btn:active {
-            transform: scale(0.94);
-            background: rgba(255, 255, 255, 0.14);
+        .subhead {
+            color: #666;
+            font-size: 13px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            margin-top: 6px;
+            opacity: 0.7;
         }
 
-        /* ===== ВКЛАДКИ ===== */
-        .tabs-wrapper {
-            padding: 8px 10px 14px;
-            margin-bottom: 16px;
-        }
-
-        .tabs-header {
+        /* ============================================================
+                   ВКЛАДКИ
+                   ============================================================ */
+        .tabs {
             display: flex;
-            gap: 6px;
+            gap: 8px;
             padding: 4px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 60px;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            margin-bottom: 12px;
+            border: 0.5px solid var(--border);
+            animation: fadeUp 0.8s ease 0.1s both;
         }
 
-        .tab-btn {
+        .tab {
             flex: 1;
+            padding: 12px 0;
+            border-radius: 40px;
             background: transparent;
             border: none;
-            color: #8e8e93;
-            font-size: 14px;
+            color: #888;
+            font-size: 13px;
             font-weight: 600;
-            padding: 10px 0;
-            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: var(--transition);
             font-family: inherit;
+            letter-spacing: 0.3px;
         }
 
-        .tab-btn.active {
-            background: rgba(255, 255, 255, 0.10);
+        .tab.active {
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .tab-btn:active {
-            transform: scale(0.94);
-        }
+        .tab:active { transform: scale(0.94); }
 
-        .tab-content {
-            display: none;
+        /* ============================================================
+                   КАРТОЧКИ (GLASSMORPHISM 2.0)
+                   ============================================================ */
+        .card-list {
+            display: flex;
             flex-direction: column;
             gap: 12px;
+            animation: fadeUp 0.8s ease 0.2s both;
         }
 
-        .tab-content.active {
-            display: flex;
-        }
-
-        /* ===== КАРТОЧКИ МЕНЮ ===== */
-        .menu-card {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            padding: 14px 16px;
+        .card {
+            background: var(--surface);
+            backdrop-filter: blur(24px) saturate(1.6);
+            -webkit-backdrop-filter: blur(24px) saturate(1.6);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px 22px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s;
             cursor: pointer;
-            text-decoration: none;
-            color: #fff;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
         }
 
-        .menu-card:active {
-            transform: scale(0.97);
-            background: rgba(255, 255, 255, 0.08);
-            border-color: rgba(255, 255, 255, 0.15);
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 0.5px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
 
-        .menu-card-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
+        .card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--accent);
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.15);
         }
 
-        .menu-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
+        .card:hover::before { opacity: 1; }
+        .card:active { transform: scale(0.97); transition-duration: 0.1s; }
 
-        .menu-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
+        .card-left { display: flex; flex-direction: column; gap: 2px; }
+        .card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+        .card-desc { font-size: 13px; color: #888; font-weight: 400; }
+        .card-arrow { color: #555; font-size: 18px; transition: var(--transition); }
+        .card:hover .card-arrow { color: var(--accent); transform: translateX(4px); }
 
-        .menu-desc {
-            font-size: 12px;
-            color: #8e8e93;
-            margin-top: 2px;
-        }
+        .card-accent { border-color: rgba(0, 122, 255, 0.3); background: rgba(0, 122, 255, 0.05); }
+        .card-accent .card-title { color: var(--accent); }
 
-        .menu-arrow {
-            color: #8e8e93;
-            font-size: 18px;
-        }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; }
 
-        .accent-card {
-            border-color: rgba(0, 113, 227, 0.4);
-            background: rgba(0, 113, 227, 0.06);
-        }
-
-        .accent-card .menu-icon {
-            background: rgba(0, 113, 227, 0.15);
-            color: #0071e3;
-        }
-
-        /* ===== СПИСОК ИГР ===== */
-        .game-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .game-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            border-radius: 18px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: 0.2s;
-            cursor: pointer;
-            color: #fff;
-            font-family: inherit;
-            font-size: 15px;
-            width: 100%;
-            text-align: left;
-        }
-
-        .game-btn:active {
-            transform: scale(0.97);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .game-btn .emoji {
-            font-size: 28px;
-        }
-
-        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        /* ============================================================
+                   МОДАЛЬНОЕ ОКНО
+                   ============================================================ */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(28px) saturate(1.2);
+            -webkit-backdrop-filter: blur(28px) saturate(1.2);
             z-index: 999;
             justify-content: center;
             align-items: center;
-            padding: 16px;
-            animation: fadeIn 0.3s ease;
+            padding: 20px;
         }
 
-        .modal-overlay.open {
-            display: flex;
-        }
+        .modal-overlay.open { display: flex; animation: fadeIn 0.35s ease; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.96); }
+            from { opacity: 0; transform: scale(0.94); }
             to { opacity: 1; transform: scale(1); }
         }
 
         .modal {
-            background: rgba(20, 20, 28, 0.92);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
-            border-radius: 36px;
-            max-width: 400px;
+            background: rgba(18, 18, 24, 0.92);
+            backdrop-filter: blur(48px);
+            -webkit-backdrop-filter: blur(48px);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            max-width: 420px;
             width: 100%;
             max-height: 90vh;
-            padding: 20px 16px 16px;
-            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+            padding: 24px 20px 20px;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
             overflow-y: auto;
-            position: relative;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
             border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
         }
 
-        .modal-header h2 {
-            font-size: 20px;
-            font-weight: 700;
-        }
+        .modal-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
 
         .modal-close {
-            background: rgba(255, 255, 255, 0.06);
-            border: none;
-            color: #fff;
-            width: 36px;
-            height: 36px;
-            border-radius: 30px;
-            font-size: 22px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-close:active {
-            transform: scale(0.90);
-            background: rgba(255, 255, 255, 0.14);
-        }
-
-        .modal-body {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        /* ===== ИГРОВЫЕ КОНТЕЙНЕРЫ ===== */
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-        }
-
-        canvas {
-            background: #0f0f14;
-            border-radius: 16px;
+            width: 40px; height: 40px;
+            border-radius: 40px;
+            background: rgba(255, 255, 255, 0.05);
             border: 0.5px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 320px;
-            height: auto;
-            aspect-ratio: 1 / 1;
-            touch-action: none;
+            color: #fff; font-size: 20px;
+            cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* ===== D-PAD для змейки ===== */
+        .modal-close:active { transform: scale(0.88); background: rgba(255, 255, 255, 0.12); }
+
+        .game-container { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+        canvas {
+            background: #0a0a0f; border-radius: 20px;
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 6px 32px rgba(0, 0, 0, 0.6);
+            width: 100%; max-width: 280px; height: auto;
+            aspect-ratio: 1 / 1; touch-action: none;
+        }
+
         .dpad {
             display: grid;
-            grid-template-columns: 56px 56px 56px;
-            grid-template-rows: 56px 56px 56px;
-            gap: 6px;
-            justify-content: center;
-            margin-top: 4px;
+            grid-template-columns: 50px 50px 50px;
+            grid-template-rows: 50px 50px 50px;
+            gap: 6px; justify-content: center;
         }
 
         .dpad-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            color: #fff;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.1s;
-            touch-action: none;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .dpad-btn:active {
-            background: rgba(255, 255, 255, 0.16);
-            transform: scale(0.92);
-        }
-
-        .dpad-empty {
-            visibility: hidden;
-        }
-
-        /* ===== КАЛЬКУЛЯТОР ===== */
-        .calc-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-width: 320px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
-        .calc-display {
-            grid-column: span 4;
             background: rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 16px 20px;
-            text-align: right;
-            font-size: 32px;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            min-height: 68px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            overflow: hidden;
-            white-space: nowrap;
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px; color: #fff; font-size: 22px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; touch-action: none; user-select: none;
         }
 
+        .dpad-btn:active { background: rgba(255, 255, 255, 0.12); transform: scale(0.90); }
+        .dpad-empty { visibility: hidden; }
+
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+        .calc-display {
+            grid-column: span 4; background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px; padding: 18px 22px; text-align: right;
+            font-size: 32px; font-weight: 300; border: 0.5px solid rgba(255, 255, 255, 0.04);
+            min-height: 64px; display: flex; align-items: center; justify-content: flex-end;
+            overflow: hidden; color: #fff;
+        }
         .calc-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 0.5px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            padding: 16px 0;
-            font-size: 22px;
-            font-weight: 500;
-            color: #fff;
-            cursor: pointer;
-            transition: 0.15s;
-            text-align: center;
-            font-family: inherit;
+            background: rgba(255, 255, 255, 0.04); border: 0.5px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px; padding: 16px 0; font-size: 20px; color: #fff; cursor: pointer; text-align: center;
         }
+        .calc-btn:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.10); }
+        .calc-btn.operator { background: rgba(0, 122, 255, 0.12); color: var(--accent); }
+        .calc-btn.equal { background: var(--accent); color: #fff; }
 
-        .calc-btn:active {
-            transform: scale(0.94);
-            background: rgba(255, 255, 255, 0.14);
-        }
-
-        .calc-btn.operator {
-            background: rgba(0, 113, 227, 0.15);
-            color: #0071e3;
-        }
-
-        .calc-btn.equal {
-            background: var(--accent);
-            color: #fff;
-        }
-
-        .calc-btn.zero {
-            grid-column: span 2;
-        }
-
-        /* ===== АДАПТИВ ===== */
-        @media (max-width: 420px) {
-            body { padding: 20px 12px; }
-            .profile-card { padding: 14px 16px; }
-            .avatar { width: 52px; height: 52px; font-size: 22px; }
-            .logo { font-size: 32px; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== ЖИДКИЕ СФЕРЫ ===== -->
     <div class="orb orb1"></div>
     <div class="orb orb2"></div>
     <div class="orb orb3"></div>
 
-    <div class="container">
-
-        <!-- Бренд -->
-        <div class="brand">
+    <div class="wrapper">
+        <header class="header">
             <div class="logo">Rastek <span>®</span></div>
-            <div class="brand-sub">Pro Systems & Web Hub</div>
+            <div class="subhead">Next‑Gen Systems</div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" data-tab="pro">PRO</button>
+            <button class="tab" data-tab="arcade">ARCADE</button>
         </div>
 
-        <!-- Профиль -->
-        <div class="profile-card glass">
-            <div class="avatar">R</div>
-            <div class="profile-info">
-                <h2>
-                    Rastek
-                    <span class="status-badge">● Онлайн</span>
-                </h2>
-                <p>Mobile Dev · System Optimizations</p>
-                <div class="social-row">
-                    <a href="#" class="social-btn" id="tgLink">📱 Telegram</a>
-                    <a href="#" class="social-btn" id="ghLink">🐙 GitHub</a>
+        <div id="tab-pro" class="tab-pane active">
+            <div class="card-list">
+                <div class="card card-accent" onclick="window.location='techspecs.html'">
+                    <div class="card-left">
+                        <span class="card-title">TechSpecs Pro</span>
+                        <span class="card-desc">Аналитика & бенчмарки</span>
+                    </div>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="card" onclick="alert('Модуль в разработке')">
+                    <div class="card-left">
+                        <span class="card-title">System Tools</span>
+                        <span class="card-desc">Оптимизация и конфиг</span>
+                    </div>
+                    <span class="card-arrow">↗</span>
+                </div>
+                <div class="card" onclick="alert('Скоро')">
+                    <div class="card-left">
+                        <span class="card-title">AI Assistant</span>
+                        <span class="card-desc">Нейросетевой помощник</span>
+                    </div>
+                    <span class="card-arrow">↗</span>
                 </div>
             </div>
         </div>
 
-        <!-- Вкладки -->
-        <div class="glass tabs-wrapper">
-            <div class="tabs-header">
-                <button class="tab-btn active" data-tab="tab-projects">📁 Проекты</button>
-                <button class="tab-btn" data-tab="tab-services">⚙️ Услуги</button>
-                <button class="tab-btn" data-tab="tab-games">🎮 Аркада</button>
-            </div>
-
-            <!-- Проекты -->
-            <div id="tab-projects" class="tab-content active">
-                <a href="techspecs.html" class="menu-card accent-card">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">⚡</div>
-                        <div>
-                            <div class="menu-title">TechSpecs Pro</div>
-                            <div class="menu-desc">AnTuTu v10 · FPS Benchmark</div>
-                        </div>
+        <div id="tab-arcade" class="tab-pane">
+            <div class="card-list">
+                <div class="card" data-game="snake">
+                    <div class="card-left">
+                        <span class="card-title">🐍 Retro Snake</span>
+                        <span class="card-desc">Классика с D‑Pad</span>
                     </div>
-                    <span class="menu-arrow">↗</span>
-                </a>
-                <a href="todo.html" class="menu-card">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">✅</div>
-                        <div>
-                            <div class="menu-title">iOS Task Manager</div>
-                            <div class="menu-desc">Минималистичный планировщик</div>
-                        </div>
+                    <span class="card-arrow">▶</span>
+                </div>
+                <div class="card" data-game="tetris">
+                    <div class="card-left">
+                        <span class="card-title">🧱 Tetris</span>
+                        <span class="card-desc">Головоломка на время</span>
                     </div>
-                    <span class="menu-arrow">↗</span>
-                </a>
-                <div class="menu-card" style="opacity:0.6; cursor:default;">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">📊</div>
-                        <div>
-                            <div class="menu-title">System Monitor</div>
-                            <div class="menu-desc">В разработке</div>
-                        </div>
+                    <span class="card-arrow">▶</span>
+                </div>
+                <div class="card" data-game="calc">
+                    <div class="card-left">
+                        <span class="card-title">🧮 Калькулятор</span>
+                        <span class="card-desc">iOS‑стиль</span>
                     </div>
+                    <span class="card-arrow">▶</span>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Услуги -->
-            <div id="tab-services" class="tab-content">
-                <div class="menu-card" style="cursor:default;">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">📱</div>
-                        <div>
-                            <div class="menu-title">Android Custom ROM</div>
-                            <div class="menu-desc">Оптимизация, деблоатинг, tweaks</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card" style="cursor:default;">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">🌐</div>
-                        <div>
-                            <div class="menu-title">Web-разработка</div>
-                            <div class="menu-desc">PWA, интерактивные интерфейсы</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="menu-card" style="cursor:default;">
-                    <div class="menu-card-left">
-                        <div class="menu-icon">🧠</div>
-                        <div>
-                            <div class="menu-title">AI-интеграции</div>
-                            <div class="menu-desc">Чат-боты, генерация контента</div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Модальное окно -->
+    <div id="modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <span id="modal-title" class="modal-title">Игра</span>
+                <button class="modal-close" onclick="closeModal()">✕</button>
             </div>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+    <!-- ===== JS LOGIC ===== -->
+    <script>
+        // Вкладки
+        document.querySelectorAll('.tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
 
-            <!-- Аркада -->
-            <div id="tab-games" class="tab-content">
-                <div class="game-grid">
-                    <button class="game-btn" data-game="snake">
-                        <span class="emoji">🐍</span>
-                        <span>Retro Snake</span>
-                        <span style="margin-left:auto;color:#8e8e93;">▶</span>
-                    </button>
-                    <button class="game-btn" data-game="tetris">
-                        <span class="emoji">🧱</span>
-                        <span>Tetris</span>
-                        <span style="margin-left:auto;color:#8e8e93;">▶</span>
-                 
+        // Модалка
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        let gameLoop = null;
+
+        function closeModal() {
+            modal.classList.remove('open');
+            if (gameLoop) clearInterval(gameLoop);
+        }
+
+        document.querySelectorAll('[data-game]').forEach(card => {
+            card.addEventListener('click', () => {
+                const game = card.dataset.game;
+                modal.classList.add('open');
+                if (game === 'snake') initSnake();
+                if (game === 'tetris') initTetris();
+                if (game === 'calc') initCalc();
+            });
+        });
+
+        // 1. ЗМЕЙКА
+        function initSnake() {
+            modalTitle.innerText = "Retro Snake";
+            modalBody.innerHTML = `
+                <div class="game-container">
+                    <canvas id="canvas" width="200" height="200"></canvas>
+                    <div class="dpad">
+                        <div class="dpad-empty"></div>
+                        <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
+                        <div class="dpad-empty"></div>
+                        <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
+                        <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
+                        <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
+                    </div>
+                </div>
+            `;
+
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            let snake = [{x: 5, y: 5}];
+            let dir = 'RIGHT';
+            let nextDir = 'RIGHT';
+            let food = {x: 8, y: 8};
+            const gridSize = 20;
+            const tileCount = 10;
+
+            window.setSnakeDir = (d) => {
+                if (d === 'UP' && dir !== 'DOWN') nextDir = 'UP';
+                if (d === 'DOWN' && dir !== 'UP') nextDir = 'DOWN';
+                if (d === 'LEFT' && dir !== 'RIGHT') nextDir = 'LEFT';
+                if (d === 'RIGHT' && dir !== 'LEFT') nextDir = 'RIGHT';
+            };
+
+            function placeFood() {
+                food = {
+                    x: Math.floor(Math.random() * tileCount),
+                    y: Math.floor(Math.random() * tileCount)
+                };
+                snake.forEach(part => {
+                    if (part.x === food.x && part.y === food.y) placeFood();
+                });
+            }
+
+            if (gameLoop) clearInterval(gameLoop);
+
+            gameLoop = setInterval(() => {
+                dir = nextDir;
+                let head = { ...snake[0] };
+
+                if (dir === 'UP') head.y--;
+                if (dir === 'DOWN') head.y++;
+                if (dir === 'LEFT') head.x--;
+                if (dir === 'RIGHT') head.x++;
+
+                if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || snake.some(part => part.x === head.x && part.y === head.y)) {
+                    clearInterval(gameLoop);
+                    ctx.fillStyle = 'rgba(255, 59, 48, 0.3)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = '#fff';
+                    ctx.font = '20px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
+                    setTimeout(initSnake, 1800);
+                    return;
+                }
+
+                snake.unshift(head);
+
+                if (head.x === food.x && head.y === food.y) {
+                    placeFood();
+                } else {
+                    snake.pop();
+                }
+
+                ctx.fillStyle = '#0a0a0f';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#007aff';
+                snake.forEach(part => {
+                    ctx.fillRect(part.x * gridSize + 1, part.y * gridSize + 1, gridSize - 2, gridSize - 2);
+                });
+
+                ctx.fillStyle = '#ff3b30';
+                ctx.fillRect(food.x * gridSize + 1, food.y * gridSize + 1, gridSize - 2, gridSize - 2);
+
+            }, 170);
+        }
+
+        // 2. ТЕТРИС
+        function initTetris() {
+            modalTitle.innerText = "Tetris";
+            modalBody.innerHTML = `<div style="text-align:center; padding: 20px; color: #888; font-size: 14px;">Модуль Tetris в разработке...</div>`;
+        }
+
+        // 3. КАЛЬКУЛЯТОР
+        function initCalc() {
+            modalTitle.innerText = "Калькулятор";
+            modalBody.innerHTML = `
+                <div class="calc-grid">
+                    <div id="calc-display" class="calc-display">0</div>
+                    <button class="calc-btn" onclick="calcInput('C')">C</button>
+                    <button class="calc-btn" onclick="calcInput('(')">(</button>
+                    <button class="calc-btn" onclick="calcInput(')')">)</button>
+                    <button class="calc-btn operator" onclick="calcInput('/')">÷</button>
+                    <button class="calc-btn" onclick="calcInput('7')">7</button>
+                    <button class="calc-btn" onclick="calcInput('8')">8</button>
+                    <button class="calc-btn" onclick="calcInput('9')">9</button>
+                    <button class="calc-btn operator" onclick="calcInput('*')">×</button>
+                    <button class="calc-btn" onclick="calcInput('4')">4</button>
+                    <button class="calc-btn" onclick="calcInput('5')">5</button>
+                    <button class="calc-btn" onclick="calcInput('6')">6</button>
+                    <button class="calc-btn operator" onclick="calcInput('-')">-</button>
+                    <button class="calc-btn" onclick="calcInput('1')">1</button>
+                    <button class="calc-btn" onclick="calcInput('2')">2</button>
+                    <button class="calc-btn" onclick="calcInput('3')">3</button>
+                    <button class="calc-btn operator" onclick="calcInput('+')">+</button>
+                    <button class="calc-btn" style="grid-column: span 2" onclick="calcInput('0')">0</button>
+                    <button class="calc-btn" onclick="calcInput('.')">.</button>
+                    <button class="calc-btn equal" onclick="calcInput('=')">=</button>
+                </div>
+            `;
+            let currentExpression = '';
+            const disp = document.getElementById('calc-display');
+
+            window.calcInput = (value) => {
+                if (value === 'C') {
+                    currentExpression = '';
+                    disp.innerText = '0';
+                } else if (value === '=') {
+                    try {
+                        currentExpression = eval(currentExpression).toString();
+                        disp.innerText = currentExpression;
+                    } catch (e) {
+                        disp.innerText = 'Ошибка';
+                        currentExpression = '';
+                    }
+                } else {
+                    if (currentExpression === '0' || disp.innerText === 'Ошибка') {
+                        currentExpression = '';
+                    }
+                    currentExpression += value;
+                    disp.innerText = currentExpression;
+                }
+            };
+        }
+    </script>
+</body>
+</html>
