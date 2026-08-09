@@ -3,362 +3,763 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Rastek ® — Craft Systems</title>
+<title>Rastek ® — CS2 Tactical Hub</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;800;900&family=Rajdhani:wght@600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
 <style>
-  :root{
-    --sky-top:#0b1622;
-    --sky-mid:#132b2a;
-    --sky-bottom:#1c3a2c;
-    --grass:#5b8731;
-    --grass-dark:#3e5f22;
-    --grass-edge:#79ab46;
-    --dirt:#7a4a26;
-    --dirt-dark:#5a3419;
-    --stone:#8a8a8a;
-    --stone-dark:#57575a;
-    --wood:#8b5a2b;
-    --panel:#1b1c17;
-    --panel-2:#242519;
-    --bevel-light:#5b5c4c;
-    --bevel-dark:#0d0e09;
-    --diamond:#4aedd9;
-    --redstone:#ff4d4d;
-    --gold:#ffd23c;
-    --emerald:#2ee06b;
-    --lapis:#4d78ff;
-    --amethyst:#b06bff;
-    --copper:#e08a4f;
-    --text-main:#f2efe1;
-    --text-sub:#a7a692;
-    --text-faint:#6d6c5d;
-    --safe-top:env(safe-area-inset-top,0px);
-    --safe-bottom:env(safe-area-inset-bottom,0px);
-    --perf-mult:1;
-    --contrast:1;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;image-rendering:pixelated;}
-  html,body{background:var(--sky-top);overscroll-behavior:none;}
-  body{
-    color:var(--text-main);
-    font-family:'VT323',monospace;
-    min-height:100vh;
-    display:flex;justify-content:center;
-    position:relative;overflow-x:hidden;
-    filter:contrast(var(--contrast));
-    transition:filter .4s ease;
-  }
-  .font-display{font-family:'Press Start 2P',monospace;}
-
-  #bg-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;image-rendering:pixelated;}
-  #secret-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0;transition:opacity .3s ease;}
-  #secret-canvas.on{opacity:1;}
-
-  .app{width:100%;max-width:480px;padding:calc(14px + var(--safe-top)) 12px calc(90px + var(--safe-bottom));position:relative;z-index:1;}
-
-  /* pixel bevel panel mixin via classes */
-  .pixel-panel{
-    background:var(--panel);
-    border-style:solid;border-width:3px;
-    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
-    border-radius:0;
-    box-shadow:0 4px 0 rgba(0,0,0,0.45);
-  }
-  .pixel-panel-in{
-    background:#111208;
-    border-style:solid;border-width:3px;
-    border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  :root {
+    /* CS2 Modern Source 2 Color Palette */
+    --cs2-bg-dark: #08090c;
+    --cs2-bg-panel: rgba(14, 17, 23, 0.78);
+    --cs2-bg-card: rgba(22, 27, 38, 0.65);
+    --cs2-border: rgba(245, 166, 35, 0.25);
+    --cs2-border-glow: rgba(245, 166, 35, 0.5);
+    
+    --cs2-orange: #f5a623;
+    --cs2-orange-glow: rgba(245, 166, 35, 0.35);
+    --cs2-cyan: #26c6da;
+    --cs2-purple: #ab47bc;
+    --cs2-red: #ef5350;
+    
+    --text-primary: #f0f3f8;
+    --text-secondary: #8c96a5;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* ---------- HEADER / PROFILE ---------- */
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 16px;gap:10px;}
-  .brand-wrap{display:flex;flex-direction:column;line-height:1.3;}
-  .brand{
-    font-family:'Press Start 2P',monospace;font-size:17px;letter-spacing:0px;color:var(--emerald);
-    text-shadow:3px 3px 0 #0d2b12, 0 0 14px rgba(46,224,107,0.35);
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
+  html, body { background: var(--cs2-bg-dark); width: 100%; height: 100%; overflow-x: hidden; color: var(--text-primary); font-family: 'Barlow', sans-serif; }
+
+  /* Background 3D Render Canvases */
+  #three-bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  #weapon-canvas { position: fixed; right: -20px; bottom: 0; width: 340px; height: 400px; z-index: 50; pointer-events: none; filter: drop-shadow(0 0 20px rgba(245, 166, 35, 0.15)); }
+
+  /* Application Container */
+  .cs2-app { width: 100%; max-width: 460px; margin: 0 auto; padding: calc(12px + var(--safe-top)) 14px calc(80px + var(--safe-bottom)); position: relative; z-index: 1; }
+
+  /* Tactical Cut Out Glassmorphism Cards */
+  .cs2-card {
+    background: var(--cs2-bg-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--cs2-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .brand-sub{margin-top:6px;font-size:14px;letter-spacing:3px;color:var(--text-sub);text-transform:uppercase;font-family:'VT323',monospace;}
-
-  .profile-btn{display:flex;align-items:center;gap:9px;cursor:pointer;padding:4px 10px 4px 4px;background:rgba(0,0,0,0.28);border:2px solid var(--bevel-light);}
-  .profile-btn:active{border-color:var(--emerald);}
-  .avatar-head{
-    width:36px;height:36px;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
-    border:2px solid #000;flex-shrink:0;
+  .cs2-card:hover, .cs2-card:active {
+    border-color: var(--cs2-orange);
+    box-shadow: 0 0 25px var(--cs2-orange-glow), inset 0 0 12px rgba(245, 166, 35, 0.12);
+    transform: translateY(-2px);
   }
-  .profile-meta{display:flex;flex-direction:column;}
-  .profile-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:.5px;}
-  .profile-status{font-size:11px;letter-spacing:1px;color:var(--emerald);display:flex;align-items:center;gap:5px;text-transform:uppercase;}
-  .status-dot{width:7px;height:7px;background:var(--emerald);box-shadow:0 0 6px var(--emerald);animation:pulse 1.6s infinite steps(4);}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
 
-  /* ---------- SOCIAL ROW ---------- */
-  .social-row{display:flex;gap:8px;margin-bottom:18px;}
-  .social-chip{
-    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
-    background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);
-    padding:10px 6px;font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--text-sub);
-    text-decoration:none;
+  /* CS2 Top HUD Bar */
+  .topbar { display: flex; align-items: center; justify-content: space-between; padding: 6px 0 16px; }
+  .brand-group { display: flex; flex-direction: column; }
+  .brand-title { font-family: 'Barlow', sans-serif; font-weight: 900; font-size: 26px; letter-spacing: 2px; color: #fff; text-transform: uppercase; font-style: italic; }
+  .brand-title span { color: var(--cs2-orange); }
+  .brand-subtitle { font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 2.5px; color: var(--cs2-cyan); }
+
+  /* CS2 Premier Rating Badge Style */
+  .premier-badge {
+    display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 8px;
+    background: linear-gradient(135deg, rgba(245, 166, 35, 0.2), rgba(15, 18, 25, 0.9));
+    border: 1px solid var(--cs2-orange); cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   }
-  .social-chip svg{width:15px;height:15px;stroke:var(--gold);flex-shrink:0;}
-  .social-chip:active{transform:translateY(2px);border-color:var(--bevel-dark);color:#fff;}
+  .premier-rating { font-family: 'Barlow', sans-serif; font-weight: 900; font-size: 14px; color: var(--cs2-orange); line-height: 1; }
+  .premier-info { display: flex; flex-direction: column; }
+  .premier-nick { font-weight: 800; font-size: 12px; color: #fff; letter-spacing: 0.5px; }
+  .premier-rank { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--text-secondary); }
 
-  /* ---------- TABS ---------- */
-  .tabs{display:flex;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);padding:3px;margin-bottom:20px;position:relative;}
-  .tab{flex:1;padding:11px 0;text-align:center;font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:1px;color:var(--text-sub);cursor:pointer;position:relative;z-index:1;transition:color .2s ease;}
-  .tab.active{color:#0a0d06;}
-  .tab-glider{position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:calc(50% - 3px);background:linear-gradient(180deg,var(--emerald),#1f9e4d);box-shadow:0 0 0 2px #0d2b12 inset;transition:transform .3s steps(6);z-index:0;}
-  .tabs[data-active="arcade"] .tab-glider{transform:translateX(100%);}
-
-  /* ---------- PANES / CARDS ---------- */
-  .tab-pane{display:none;animation:fadeIn .3s ease forwards;}
-  .tab-pane.active{display:block;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-
-  .section-label{font-size:13px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin:2px 0 10px 2px;}
-  .card-list{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
-  .card{
-    background:var(--panel);border-style:solid;border-width:3px;
-    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
-    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
-    cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.4);
-    transition:transform .1s ease, box-shadow .1s ease;
+  /* Social Quick Grid */
+  .social-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .social-btn {
+    display: flex; align-items: center; justify-content: center; padding: 10px 0;
+    font-family: 'Barlow', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 1px;
+    color: var(--text-primary); text-decoration: none; text-transform: uppercase;
   }
-  .card:active{transform:translateY(4px);box-shadow:0 0 0 rgba(0,0,0,0.4);}
-  .card-left{display:flex;align-items:center;gap:13px;}
-  .card-icon{width:42px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,0.05);border:2px solid var(--bevel-dark);}
-  .card-text{display:flex;flex-direction:column;gap:2px;}
-  .card-title{font-family:'Press Start 2P',monospace;font-size:11.5px;color:#fff;letter-spacing:.5px;line-height:1.4;}
-  .card-desc{font-size:14px;color:var(--text-sub);}
-  .card-arrow{font-size:16px;color:var(--text-faint);}
 
-  .footer{text-align:center;font-size:12px;color:var(--text-faint);margin-top:20px;letter-spacing:1.5px;}
-
-  /* ---------- MODAL ---------- */
-  .modal-overlay{position:fixed;inset:0;background:rgba(4,6,3,0.75);z-index:100;display:flex;justify-content:center;align-items:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s ease;}
-  .modal-overlay.open{opacity:1;pointer-events:auto;}
-  .modal{
-    background:var(--panel);border-style:solid;border-width:4px;
-    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
-    width:100%;max-width:380px;max-height:88vh;overflow-y:auto;padding:18px;
-    box-shadow:0 20px 0 rgba(0,0,0,0.5);
-    transform:scale(.9) translateY(10px);transition:transform .25s ease;
+  /* CS2 Case Opening Banner */
+  .case-banner {
+    background: linear-gradient(135deg, rgba(245, 166, 35, 0.25), rgba(38, 198, 218, 0.15));
+    border: 1px solid var(--cs2-orange); padding: 16px; margin-bottom: 16px; cursor: pointer; position: relative; overflow: hidden;
   }
-  .modal-overlay.open .modal{transform:scale(1) translateY(0);}
-  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
-  .modal-title{font-family:'Press Start 2P',monospace;font-size:12.5px;color:var(--emerald);letter-spacing:.5px;}
-  .modal-close{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:#fff;width:30px;height:30px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .modal-close:active{transform:translateY(2px);}
+  .case-banner::before {
+    content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); animation: cs2Shimmer 3.5s infinite;
+  }
+  @keyframes cs2Shimmer { 0% { left: -100%; } 30%, 100% { left: 100%; } }
+  .case-title { font-weight: 900; font-size: 16px; color: #fff; font-style: italic; letter-spacing: 1px; }
+  .case-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--cs2-orange); margin-top: 2px; }
 
-  /* ---------- PROFILE PANEL ---------- */
-  .profile-panel-list{display:flex;flex-direction:column;gap:10px;}
-  .profile-link{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);text-decoration:none;}
-  .profile-link:active{transform:translateY(2px);}
-  .profile-link svg{width:19px;height:19px;stroke:var(--gold);flex-shrink:0;}
-  .profile-link-text{display:flex;flex-direction:column;gap:2px;}
-  .profile-link-title{font-size:16px;font-weight:700;color:#fff;}
-  .profile-link-sub{font-size:13px;color:var(--text-sub);}
-  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
-  .stat-box{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);padding:12px;text-align:center;}
-  .stat-val{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--diamond);}
-  .stat-lab{font-size:12px;color:var(--text-sub);letter-spacing:1px;margin-top:5px;text-transform:uppercase;}
+  /* CS2 HUD Tab Switcher */
+  .tabs-nav { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tab-btn {
+    flex: 1; padding: 10px; text-align: center; font-family: 'Barlow', sans-serif; font-weight: 800; font-size: 12px;
+    letter-spacing: 1.5px; color: var(--text-secondary); background: rgba(14, 17, 23, 0.8); border: 1px solid var(--cs2-border);
+    cursor: pointer; transition: all 0.2s ease; text-transform: uppercase;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .tab-btn.active { color: #08090c; background: var(--cs2-orange); border-color: var(--cs2-orange); box-shadow: 0 0 15px var(--cs2-orange-glow); }
 
-  /* ---------- BENCHMARK BARS ---------- */
-  .bench-row{margin-bottom:16px;}
-  .bench-top{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px;color:var(--text-sub);}
-  .bench-top b{color:#fff;font-weight:700;}
-  .bench-track{height:14px;background:#0e0f0a;border:2px solid var(--bevel-dark);overflow:hidden;position:relative;}
-  .bench-track::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.25) 6px 7px);pointer-events:none;}
-  .bench-fill{height:100%;width:0%;transition:width .6s steps(12);}
-  .bench-val{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--diamond);}
+  /* Tab Containers */
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; animation: cs2FadeIn 0.25s ease-out; }
+  @keyframes cs2FadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* ---------- SYSTEM TOOLS toggles ---------- */
-  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:2px dashed rgba(255,255,255,0.08);}
-  .toggle-row:last-child{border-bottom:none;}
-  .toggle-name{font-size:16px;font-weight:700;color:#fff;}
-  .toggle-desc{font-size:12.5px;color:var(--text-sub);margin-top:2px;}
-  .switch{width:52px;height:28px;background:#0e0f0a;border:2px solid var(--bevel-dark);position:relative;cursor:pointer;flex-shrink:0;}
-  .switch.on{background:var(--emerald);}
-  .switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#c9c9c9;border:2px solid #000;transition:transform .15s steps(3);}
-  .switch.on .switch-knob{transform:translateX(22px);background:#fff;}
+  /* System Action Items */
+  .card-list { display: flex; flex-direction: column; gap: 10px; }
+  .list-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
+  .item-left { display: flex; align-items: center; gap: 12px; }
+  .item-icon { width: 36px; height: 36px; background: rgba(0, 0, 0, 0.5); border: 1px solid var(--cs2-border); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .item-title { font-weight: 800; font-size: 14px; color: #fff; letter-spacing: 0.5px; }
+  .item-desc { font-size: 11px; color: var(--text-secondary); }
+  .item-arrow { color: var(--cs2-orange); font-family: 'Share Tech Mono', monospace; font-weight: 700; }
 
-  /* ---------- AI ASSISTANT CHAT ---------- */
-  .chat-window{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px 10px;}
-  .chat-bubble{max-width:82%;padding:9px 13px;font-size:15px;line-height:1.3;border:2px solid;}
-  .chat-bot{align-self:flex-start;background:rgba(46,224,107,0.1);border-color:var(--emerald);color:#dfffe9;}
-  .chat-user{align-self:flex-end;background:rgba(77,120,255,0.15);border-color:var(--lapis);color:#e3eaff;}
-  .chat-typing{display:flex;gap:4px;align-self:flex-start;padding:10px 13px;border:2px solid var(--emerald);background:rgba(46,224,107,0.1);}
-  .chat-typing span{width:6px;height:6px;background:var(--emerald);animation:blink 1s infinite steps(1);}
-  .chat-typing span:nth-child(2){animation-delay:.15s;}
-  .chat-typing span:nth-child(3){animation-delay:.3s;}
-  @keyframes blink{0%,60%,100%{opacity:.2;}30%{opacity:1;}}
-  .chat-input-row{display:flex;gap:8px;margin-top:6px;}
-  .chat-input{flex:1;background:#0e0f0a;border:2px solid var(--bevel-dark);padding:10px 12px;color:#fff;font-family:'VT323',monospace;font-size:16px;outline:none;}
-  .chat-input:focus{border-color:var(--emerald);}
-  .chat-send{width:44px;background:var(--emerald);border:2px solid var(--bevel-dark);color:#0a0d06;font-size:16px;cursor:pointer;font-weight:700;}
-  .chat-send:active{transform:translateY(2px);}
+  /* Modal System */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(5, 6, 9, 0.88); backdrop-filter: blur(12px);
+    z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal-box {
+    width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; background: rgba(14, 17, 23, 0.95); border: 1px solid var(--cs2-orange);
+    box-shadow: 0 0 40px rgba(0,0,0,0.9), 0 0 20px var(--cs2-orange-glow); padding: 20px; transform: scale(0.92); transition: transform 0.25s ease;
+    clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  }
+  .modal-overlay.open .modal-box { transform: scale(1); }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--cs2-border); padding-bottom: 8px; }
+  .modal-title { font-weight: 900; font-size: 15px; color: var(--cs2-orange); text-transform: uppercase; letter-spacing: 1px; font-style: italic; }
+  .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer; }
+  .modal-close:hover { color: #fff; }
 
-  /* ---------- GAMES ---------- */
-  .game-container{display:flex;flex-direction:column;align-items:center;gap:14px;}
-  .game-hud{display:flex;justify-content:space-between;width:100%;font-size:15px;color:var(--text-sub);}
-  .game-hud b{color:var(--diamond);font-size:16px;}
-  #snake-canvas, #tetris-canvas{background:#0a0b06;border:3px solid;border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);}
-  .dpad{display:grid;grid-template-columns:repeat(3,50px);grid-template-rows:repeat(3,50px);gap:6px;}
-  .dpad-btn{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:var(--emerald);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-  .dpad-btn:active{transform:translateY(2px);background:rgba(46,224,107,0.15);}
+  /* CS2 Roulette Engine Layout */
+  .roulette-container { position: relative; width: 100%; height: 110px; background: #050608; border: 2px solid var(--cs2-border); overflow: hidden; margin: 16px 0; }
+  .roulette-pointer { position: absolute; left: 50%; top: 0; bottom: 0; width: 3px; background: var(--cs2-orange); z-index: 10; box-shadow: 0 0 12px var(--cs2-orange); transform: translateX(-50%); }
+  .roulette-strip { display: flex; position: absolute; left: 0; top: 10px; height: 90px; }
+  .item-card {
+    width: 90px; height: 90px; margin: 0 4px; background: rgba(22, 27, 38, 0.85); border-bottom: 4px solid #fff;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; gap: 4px; padding: 4px;
+  }
+  .item-card-icon { font-size: 26px; }
+  .item-card-name { font-size: 9px; font-weight: 700; text-align: center; color: #fff; line-height: 1.1; }
 
-  .tetris-controls{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap;}
-  .t-btn{flex:1;min-width:58px;padding:14px 0;text-align:center;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:var(--diamond);font-size:17px;cursor:pointer;}
-  .t-btn:active{transform:translateY(2px);}
-  .t-btn.drop{color:var(--redstone);}
+  /* CS2 Weapon Rarities */
+  .rarity-covert { border-color: #eb4b4b !important; color: #eb4b4b; }
+  .rarity-classified { border-color: #d32ce6 !important; color: #d32ce6; }
+  .rarity-restricted { border-color: #8847ff !important; color: #8847ff; }
+  .rarity-mil-spec { border-color: #4b69ff !important; color: #4b69ff; }
+  .rarity-gold { border-color: #ffd700 !important; color: #ffd700; }
 
-  .game-overlay{position:absolute;inset:0;background:rgba(5,6,3,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:5;}
-  .game-overlay h3{font-family:'Press Start 2P',monospace;color:var(--redstone);font-size:13px;letter-spacing:1px;text-align:center;}
-  .game-overlay .restart-btn{padding:10px 20px;background:var(--emerald);color:#0a0d06;font-weight:700;font-size:12px;letter-spacing:1px;border:2px solid #0a0d06;cursor:pointer;font-family:'Press Start 2P',monospace;}
-  .canvas-wrap{position:relative;}
+  .open-case-btn {
+    width: 100%; padding: 14px; background: linear-gradient(90deg, var(--cs2-orange), #d97706);
+    border: none; font-family: 'Barlow', sans-serif; font-size: 14px; font-weight: 900; color: #000;
+    letter-spacing: 2px; cursor: pointer; text-transform: uppercase; font-style: italic; transition: all 0.2s ease;
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  }
+  .open-case-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-  /* ---------- CALCULATOR ---------- */
-  .calc-display{background:#0a0b06;border:2px solid;border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);padding:14px;text-align:right;margin-bottom:10px;}
-  .calc-sub{font-size:14px;color:var(--text-sub);min-height:18px;}
-  .calc-main{font-size:30px;color:#fff;word-break:break-all;min-height:36px;}
-  .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
-  .calc-btn{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:#fff;padding:15px 0;font-size:16px;font-weight:600;cursor:pointer;font-family:'VT323',monospace;}
-  .calc-btn:active{transform:translateY(2px);}
-  .calc-btn.fn{color:var(--diamond);font-size:13px;}
-  .calc-btn.op{color:var(--redstone);}
-  .calc-btn.eq{background:var(--emerald);color:#0a0d06;}
+  /* Utility & Game Widgets */
+  #game-canvas { background: #050608; border: 1px solid var(--cs2-border); display: block; margin: 0 auto 12px; }
+  .game-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; max-width: 220px; margin: 0 auto; }
+  .g-btn { padding: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--cs2-border); color: #fff; font-weight: 800; cursor: pointer; text-align: center; }
 
-  ::-webkit-scrollbar{width:0;height:0;}
+  .chat-box { height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 8px; background: #050608; border: 1px solid var(--cs2-border); margin-bottom: 10px; }
+  .chat-msg { padding: 8px 12px; font-size: 12px; max-width: 85%; border-left: 2px solid; }
+  .chat-bot { background: rgba(38, 198, 218, 0.1); border-color: var(--cs2-cyan); align-self: flex-start; color: #e0f2fe; }
+  .chat-user { background: rgba(245, 166, 35, 0.1); border-color: var(--cs2-orange); align-self: flex-end; color: #fef3c7; }
+  .chat-input-wrap { display: flex; gap: 6px; }
+  .chat-input { flex: 1; background: #050608; border: 1px solid var(--cs2-border); padding: 10px; color: #fff; font-family: 'Barlow', sans-serif; outline: none; }
+  .chat-send { padding: 0 16px; background: var(--cs2-orange); border: none; font-weight: 900; cursor: pointer; color: #000; }
+
+  .calc-disp { background: #050608; border: 1px solid var(--cs2-border); padding: 12px; text-align: right; font-family: 'Share Tech Mono', monospace; font-size: 22px; color: var(--cs2-orange); margin-bottom: 10px; }
+  .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .calc-b { padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--cs2-border); color: #fff; font-family: 'Barlow', sans-serif; font-weight: 800; font-size: 13px; cursor: pointer; }
+
+  .bench-bar { margin-bottom: 10px; }
+  .bench-label { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: var(--text-secondary); font-family: 'Share Tech Mono', monospace; }
+  .bench-track { height: 6px; background: #050608; border: 1px solid var(--cs2-border); overflow: hidden; }
+  .bench-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--cs2-cyan), var(--cs2-orange)); transition: width 0.4s ease; }
+
+  .footer { text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--text-secondary); margin-top: 24px; letter-spacing: 2px; }
 </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
-<canvas id="secret-canvas"></canvas>
+<canvas id="three-bg"></canvas>
+<canvas id="weapon-canvas"></canvas>
 
-<div class="app">
-
-  <!-- TOP BAR / PROFILE -->
+<div class="cs2-app">
+  <!-- HUD Header -->
   <div class="topbar">
-    <div class="brand-wrap">
-      <div class="brand font-display" id="brand-logo">RASTEK®</div>
-      <div class="brand-sub">CRAFT SYSTEMS</div>
+    <div class="brand-group">
+      <div class="brand-title">RASTEK<span> HUB</span></div>
+      <div class="brand-subtitle">SOURCE 2 ENGINE INTERFACE</div>
     </div>
-    <div class="profile-btn" id="profile-open">
-      <div class="profile-meta">
-        <span class="profile-name">ras4ek</span>
-        <span class="profile-status"><span class="status-dot"></span>ONLINE</span>
+    <div class="premier-badge" id="profile-trigger">
+      <div class="premier-rating">24,999</div>
+      <div class="premier-info">
+        <span class="premier-nick">ras4ek</span>
+        <span class="premier-rank">PREMIER WORLD #1</span>
       </div>
-      <div class="avatar-head" id="avatar-head"></div>
     </div>
   </div>
 
-  <!-- SOCIAL ROW -->
-  <div class="social-row">
-    <a class="social-chip" href="https://github.com/ras4ek" target="_blank" rel="noopener noreferrer" data-sound="click">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
-      GitHub
-    </a>
-    <a class="social-chip" href="https://t.me/ras4ek" target="_blank" rel="noopener noreferrer" data-sound="click">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3 2 10.5l6.5 2.3M22 3 15.8 21l-7.3-8.2M22 3 8.5 12.8"/></svg>
-      Telegram
-    </a>
-    <a class="social-chip" href="https://github.com/ras4ek/Rastek-bay" target="_blank" rel="noopener noreferrer" data-sound="click">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Rastek-bay
-    </a>
+  <!-- Social Chips -->
+  <div class="social-grid">
+    <a href="https://github.com/ras4ek" target="_blank" class="social-btn cs2-card">GitHub</a>
+    <a href="https://github.com/ras4ek/Rastek-bay" target="_blank" class="social-btn cs2-card">Repo</a>
+    <a href="https://t.me/ras4ek" target="_blank" class="social-btn cs2-card">Telegram</a>
   </div>
 
-  <!-- TABS -->
-  <div class="tabs" id="tabs" data-active="pro">
-    <div class="tab active" data-tab="pro">PRO</div>
-    <div class="tab" data-tab="arcade">ARCADE</div>
-    <div class="tab-glider"></div>
+  <!-- CS2 Weapon Case Banner -->
+  <div class="case-banner cs2-card" id="case-banner-trigger">
+    <div class="case-title">RASTEK WEAPON CASE 2026</div>
+    <div class="case-sub">► КЛИКНИ ДЛЯ ОТКРЫТИЯ 3D КЕЙСА (DROP KNIFE)</div>
   </div>
 
-  <!-- PRO TAB -->
-  <div id="tab-pro" class="tab-pane active">
-    <div class="section-label">// core modules</div>
+  <!-- CS2 Tabs Nav -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" data-tab="system">SYSTEM TACTICS</button>
+    <button class="tab-btn" data-tab="arcade">ARCADE LAB</button>
+  </div>
+
+  <!-- TAB 1: SYSTEM -->
+  <div class="tab-pane active" id="pane-system">
     <div class="card-list">
-      <div class="card" data-modal="techspecs">
-        <div class="card-left">
-          <div class="card-icon">⛏️</div>
-          <div class="card-text">
-            <span class="card-title">TECHSPECS PRO</span>
-            <span class="card-desc">Живая аналитика и бенчмарки</span>
+      <div class="list-item cs2-card" id="card-bench">
+        <div class="item-left">
+          <div class="item-icon">⚡</div>
+          <div>
+            <div class="item-title">TechSpecs Monitor</div>
+            <div class="item-desc">Мониторинг ресурсов и FPS-метрика</div>
           </div>
         </div>
-        <span class="card-arrow">➔</span>
+        <div class="item-arrow">►</div>
       </div>
-      <div class="card" data-modal="systemtools">
-        <div class="card-left">
-          <div class="card-icon">🧰</div>
-          <div class="card-text">
-            <span class="card-title">SYSTEM TOOLS</span>
-            <span class="card-desc">Оптимизация и конфигурация</span>
+
+      <div class="list-item cs2-card" id="card-ai">
+        <div class="item-left">
+          <div class="item-icon">🤖</div>
+          <div>
+            <div class="item-title">CS2 Tactical Assistant</div>
+            <div class="item-desc">Интерактивный ИИ-помощник</div>
           </div>
         </div>
-        <span class="card-arrow">➔</span>
-      </div>
-      <div class="card" data-modal="aiassistant">
-        <div class="card-left">
-          <div class="card-icon">🧙</div>
-          <div class="card-text">
-            <span class="card-title">AI ASSISTANT</span>
-            <span class="card-desc">Нейросетевой помощник Rastek</span>
-          </div>
-        </div>
-        <span class="card-arrow">➔</span>
+        <div class="item-arrow">►</div>
       </div>
     </div>
   </div>
 
-  <!-- ARCADE TAB -->
-  <div id="tab-arcade" class="tab-pane">
-    <div class="section-label">// arcade cabinet</div>
+  <!-- TAB 2: ARCADE -->
+  <div class="tab-pane" id="pane-arcade">
     <div class="card-list">
-      <div class="card" data-modal="snake">
-        <div class="card-left">
-          <div class="card-icon">🐍</div>
-          <div class="card-text">
-            <span class="card-title">RETRO SNAKE</span>
-            <span class="card-desc">Классическая змейка с D-Pad</span>
+      <div class="list-item cs2-card" id="card-tetris">
+        <div class="item-left">
+          <div class="item-icon">🕹️</div>
+          <div>
+            <div class="item-title">Tetris Cyber</div>
+            <div class="item-desc">Полноценный Тетрис в стиле CS2</div>
           </div>
         </div>
-        <span class="card-arrow">➔</span>
+        <div class="item-arrow">►</div>
       </div>
-      <div class="card" data-modal="tetris">
-        <div class="card-left">
-          <div class="card-icon">🧱</div>
-          <div class="card-text">
-            <span class="card-title">TETRIS</span>
-            <span class="card-desc">Падающие блоки на время</span>
+
+      <div class="list-item cs2-card" id="card-snake">
+        <div class="item-left">
+          <div class="item-icon">🐍</div>
+          <div>
+            <div class="item-title">Retro Snake</div>
+            <div class="item-desc">Классическая Змейка</div>
           </div>
         </div>
-        <span class="card-arrow">➔</span>
+        <div class="item-arrow">►</div>
       </div>
-      <div class="card" data-modal="calc">
-        <div class="card-left">
-          <div class="card-icon">🧮</div>
-          <div class="card-text">
-            <span class="card-title">CALCULATOR</span>
-            <span class="card-desc">Инженерный калькулятор</span>
+
+      <div class="list-item cs2-card" id="card-calc">
+        <div class="item-left">
+          <div class="item-icon">🧮</div>
+          <div>
+            <div class="item-title">Tactical Calc</div>
+            <div class="item-desc">Калькулятор расчётов экономики</div>
           </div>
         </div>
-        <span class="card-arrow">➔</span>
+        <div class="item-arrow">►</div>
       </div>
     </div>
   </div>
 
-  <div class="footer">® RASTEK SYSTEMS · CRAFTED BY ras4ek</div>
+  <div class="footer">® RASTEK SYSTEMS // CS2 EDITION 2026</div>
 </div>
 
-<!-- MODAL -->
-<div id="modal" class="modal-overlay">
-  <div class="modal">
+<!-- MODAL: PROFILE -->
+<div class="modal-overlay" id="modal-profile">
+  <div class="modal-box">
     <div class="modal-header">
-      <span id="modal-title" class="modal-title">—</span>
-      <button class="modal-close" id="modal-close-btn">✕</button>
+      <div class="modal-title">ПРОФИЛЬ // RAS4EK</div>
+      <button class="modal-close">✕</button>
     </div>
-    <div id="modal-body"></div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <a href="https://github.com/ras4ek" target="_blank" class="social-btn cs2-card">GitHub Profile</a>
+      <a href="https://github.com/ras4ek/Rastek-bay" target="_blank" class="social-btn cs2-card">Project Repository</a>
+      <a href="https://t.me/ras4ek" target="_blank" class="social-btn cs2-card">Telegram Direct</a>
+    </div>
   </div>
+</div>
+
+<!-- MODAL: CASE OPENER -->
+<div class="modal-overlay" id="modal-case">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">RASTEK WEAPON CASE</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="roulette-container">
+      <div class="roulette-pointer"></div>
+      <div class="roulette-strip" id="case-strip"></div>
+    </div>
+    <div id="case-result-text" style="text-align:center; font-weight:800; font-size:12px; min-height:20px; color:var(--cs2-orange); margin-bottom:12px;"></div>
+    <button class="open-case-btn" id="btn-spin-case">ОТКРЫТЬ КЕЙС</button>
+  </div>
+</div>
+
+<!-- MODAL: BENCHMARK -->
+<div class="modal-overlay" id="modal-bench">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">TECHSPECS MONITOR</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="bench-bar">
+      <div class="bench-label"><span>CPU LOAD</span><span id="cpu-val">0%</span></div>
+      <div class="bench-track"><div class="bench-fill" id="cpu-fill"></div></div>
+    </div>
+    <div class="bench-bar">
+      <div class="bench-label"><span>GPU BENCH</span><span id="gpu-val">0%</span></div>
+      <div class="bench-track"><div class="bench-fill" id="gpu-fill"></div></div>
+    </div>
+    <div class="bench-bar">
+      <div class="bench-label"><span>RAM ALLOCATION</span><span id="ram-val">0%</span></div>
+      <div class="bench-track"><div class="bench-fill" id="ram-fill"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: AI ASSISTANT -->
+<div class="modal-overlay" id="modal-ai">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">TACTICAL AI CHAT</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="chat-box" id="chat-box">
+      <div class="chat-msg chat-bot">Тактический ИИ Rastek готов к работе.</div>
+    </div>
+    <div class="chat-input-wrap">
+      <input type="text" class="chat-input" id="chat-in" placeholder="Введите команду...">
+      <button class="chat-send" id="chat-send-btn">►</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TETRIS -->
+<div class="modal-overlay" id="modal-tetris">
+  <div class="modal-box" style="text-align: center;">
+    <div class="modal-header">
+      <div class="modal-title">TETRIS GAME</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <canvas id="tetris-canvas" width="200" height="320"></canvas>
+    <div class="game-controls">
+      <button class="g-btn" id="t-left">◄</button>
+      <button class="g-btn" id="t-rot">↻</button>
+      <button class="g-btn" id="t-right">►</button>
+      <button class="g-btn" style="grid-column: span 3" id="t-down">▼ ДРОП</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SNAKE -->
+<div class="modal-overlay" id="modal-snake">
+  <div class="modal-box" style="text-align: center;">
+    <div class="modal-header">
+      <div class="modal-title">SNAKE GAME</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <canvas id="snake-canvas" width="220" height="220"></canvas>
+    <div class="game-controls">
+      <div></div><button class="g-btn" id="s-up">▲</button><div></div>
+      <button class="g-btn" id="s-left">◄</button><button class="g-btn" id="s-down">▼</button><button class="g-btn" id="s-right">►</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CALCULATOR -->
+<div class="modal-overlay" id="modal-calc">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">TACTICAL CALC</div>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="calc-disp" id="calc-display">0</div>
+    <div class="calc-grid">
+      <button class="calc-b" onclick="calcInput('C')">C</button>
+      <button class="calc-b" onclick="calcInput('/')">/</button>
+      <button class="calc-b" onclick="calcInput('*')">*</button>
+      <button class="calc-b" onclick="calcInput('-')">-</button>
+      <button class="calc-b" onclick="calcInput('7')">7</button>
+      <button class="calc-b" onclick="calcInput('8')">8</button>
+      <button class="calc-b" onclick="calcInput('9')">9</button>
+      <button class="calc-b" onclick="calcInput('+')">+</button>
+      <button class="calc-b" onclick="calcInput('4')">4</button>
+      <button class="calc-b" onclick="calcInput('5')">5</button>
+      <button class="calc-b" onclick="calcInput('6')">6</button>
+      <button class="calc-b" onclick="calcEval()" style="grid-row: span 2; background:var(--cs2-orange); color:#000;">=</button>
+      <button class="calc-b" onclick="calcInput('1')">1</button>
+      <button class="calc-b" onclick="calcInput('2')">2</button>
+      <button class="calc-b" onclick="calcInput('3')">3</button>
+      <button class="calc-b" onclick="calcInput('0')" style="grid-column: span 2;">0</button>
+      <button class="calc-b" onclick="calcInput('.')">.</button>
+    </div>
+  </div>
+</div>
+  <script>
+/* =========================================================
+   1. CS2 SOUND ENGINE (WEB AUDIO API)
+   ========================================================= */
+const AudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+  if (AudioCtx.state === 'suspended') AudioCtx.resume();
+  const osc = AudioCtx.createOscillator();
+  const gain = AudioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(AudioCtx.destination);
+
+  const now = AudioCtx.currentTime;
+
+  if (type === 'usp') {
+    // CS2 USP-S Suppressed Shot Sound Simulation
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(280, now);
+    osc.frequency.exponentialRampToValueAtTime(12, now + 0.14);
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+    osc.start(now);
+    osc.stop(now + 0.14);
+  } else if (type === 'click') {
+    // Modern CS2 UI Click
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(900, now);
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.03);
+    gain.gain.setValueAtTime(0.12, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+    osc.start(now);
+    osc.stop(now + 0.03);
+  } else if (type === 'case-tick') {
+    // Case Roulette Ticking Sound
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(450, now);
+    gain.gain.setValueAtTime(0.09, now);
+    gain.gain.linearRampToValueAtTime(0.01, now + 0.025);
+    osc.start(now);
+    osc.stop(now + 0.025);
+  } else if (type === 'gold') {
+    // Special Special Drop Fanfare
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(523.25, now);
+    osc.frequency.setValueAtTime(659.25, now + 0.08);
+    osc.frequency.setValueAtTime(783.99, now + 0.16);
+    gain.gain.setValueAtTime(0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+    osc.start(now);
+    osc.stop(now + 0.45);
+  }
+}
+
+/* =========================================================
+   2. THREE.JS 3D BACKGROUND & WEAPON WITH LASER
+   ========================================================= */
+// Background Particle Grid Scene
+const bgScene = new THREE.Scene();
+const bgCam = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const bgRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-bg'), alpha: true, antialias: true });
+bgRenderer.setSize(window.innerWidth, window.innerHeight);
+
+const particlesGeo = new THREE.BufferGeometry();
+const count = 350;
+const posArr = new Float32Array(count * 3);
+for(let i = 0; i < count * 3; i++) posArr[i] = (Math.random() - 0.5) * 22;
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArr, 3));
+const particlesMat = new THREE.PointsMaterial({ size: 0.035, color: 0xf5a623, transparent: true, opacity: 0.5 });
+const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+bgScene.add(particlesMesh);
+bgCam.position.z = 5;
+
+// Weapon Canvas 3D Rendering (USP-S)
+const weaponScene = new THREE.Scene();
+const weaponCam = new THREE.PerspectiveCamera(45, 340 / 400, 0.1, 100);
+const weaponRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('weapon-canvas'), alpha: true, antialias: true });
+weaponRenderer.setSize(340, 400);
+
+const gunGroup = new THREE.Group();
+
+// Slide Geometry
+const slideGeo = new THREE.BoxGeometry(0.45, 0.55, 2.4);
+const gunMat = new THREE.MeshBasicMaterial({ color: 0x222936, wireframe: true });
+const slide = new THREE.Mesh(slideGeo, gunMat);
+gunGroup.add(slide);
+
+// CS2 Suppressor
+const silencerGeo = new THREE.CylinderGeometry(0.18, 0.18, 1.8, 14);
+const silencerMat = new THREE.MeshBasicMaterial({ color: 0xf5a623, wireframe: true });
+const silencer = new THREE.Mesh(silencerGeo, silencerMat);
+silencer.rotation.x = Math.PI / 2;
+silencer.position.set(0, 0, 1.8);
+gunGroup.add(silencer);
+
+// Red Laser Indicator
+const laserGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 2.7), new THREE.Vector3(0, 0, 18)]);
+const laserMat = new THREE.LineBasicMaterial({ color: 0xef5350 });
+const laserLine = new THREE.Line(laserGeo, laserMat);
+gunGroup.add(laserLine);
+
+weaponScene.add(gunGroup);
+weaponCam.position.set(0, 0.8, 6);
+weaponCam.lookAt(0, 0, 0);
+
+let targetRotationY = 0;
+let targetRotationX = 0;
+
+// Aim Laser at Pointer Location
+document.addEventListener('pointermove', (e) => {
+  const x = (e.clientX / window.innerWidth) - 0.5;
+  const y = (e.clientY / window.innerHeight) - 0.5;
+  targetRotationY = x * 0.7;
+  targetRotationX = y * 0.7;
+});
+
+function animateThree() {
+  requestAnimationFrame(animateThree);
+  particlesMesh.rotation.y += 0.0008;
+  bgRenderer.render(bgScene, bgCam);
+
+  gunGroup.rotation.y += (targetRotationY - gunGroup.rotation.y) * 0.1;
+  gunGroup.rotation.x += (targetRotationX - gunGroup.rotation.x) * 0.1;
+  weaponRenderer.render(weaponScene, weaponCam);
+}
+animateThree();
+
+// Gun Recoil Physics Effect
+function triggerRecoil() {
+  playSound('usp');
+  gunGroup.position.z -= 0.35;
+  gunGroup.rotation.x -= 0.18;
+  setTimeout(() => {
+    gunGroup.position.z = 0;
+  }, 100);
+}
+
+document.addEventListener('click', (e) => {
+  if (e.target.closest('.cs2-card, .tab-btn, .open-case-btn, .social-btn')) {
+    triggerRecoil();
+  }
+});
+
+/* =========================================================
+   3. CS2 CASE OPENING ROULETTE ENGINE
+   ========================================================= */
+const caseSkins = [
+  { name: 'P250 | Sand Dune', rarity: 'rarity-mil-spec', img: '🔫' },
+  { name: 'AK-47 | Redline', rarity: 'rarity-classified', img: '💥' },
+  { name: 'AWP | Asiimov', rarity: 'rarity-covert', img: '🎯' },
+  { name: 'M4A4 | Howl', rarity: 'rarity-covert', img: '🔥' },
+  { name: 'USP-S | Printstream', rarity: 'rarity-classified', img: '💀' },
+  { name: '★ Butterfly | Fade', rarity: 'rarity-gold', img: '🗡️' }
+];
+
+const caseStrip = document.getElementById('case-strip');
+
+function initCaseStrip() {
+  caseStrip.innerHTML = '';
+  for(let i = 0; i < 65; i++) {
+    const skin = caseSkins[Math.floor(Math.random() * caseSkins.length)];
+    const card = document.createElement('div');
+    card.className = `item-card ${skin.rarity}`;
+    card.innerHTML = `<div class="item-card-icon">${skin.img}</div><div class="item-card-name">${skin.name}</div>`;
+    caseStrip.appendChild(card);
+  }
+}
+initCaseStrip();
+
+let isSpinning = false;
+document.getElementById('btn-spin-case').addEventListener('click', () => {
+  if (isSpinning) return;
+  isSpinning = true;
+  document.getElementById('btn-spin-case').disabled = true;
+  document.getElementById('case-result-text').innerText = 'ОТКРЫТИЕ КЕЙСА...';
+
+  caseStrip.style.transition = 'none';
+  caseStrip.style.transform = 'translateX(0px)';
+
+  setTimeout(() => {
+    const winningIndex = 48;
+    const itemWidth = 98; // 90px width + 8px margins
+    const randomOffset = Math.floor(Math.random() * 50) - 25;
+    const targetX = -(winningIndex * itemWidth - 150 + randomOffset);
+
+    caseStrip.style.transition = 'transform 5.2s cubic-bezier(0.08, 1, 0.12, 1)';
+    caseStrip.style.transform = `translateX(${targetX}px)`;
+
+    let ticks = 0;
+    const tickInterval = setInterval(() => {
+      playSound('case-tick');
+      ticks++;
+      if (ticks > 26) clearInterval(tickInterval);
+    }, 170);
+
+    setTimeout(() => {
+      isSpinning = false;
+      document.getElementById('btn-spin-case').disabled = false;
+      const wonSkin = caseSkins[Math.floor(Math.random() * caseSkins.length)];
+      document.getElementById('case-result-text').innerText = `ВЫПАЛО: ${wonSkin.name}!`;
+      if (wonSkin.rarity === 'rarity-gold') playSound('gold');
+      else playSound('click');
+    }, 5300);
+  }, 50);
+});
+
+/* =========================================================
+   4. NAVIGATION & MODALS
+   ========================================================= */
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    playSound('click');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(`pane-${btn.dataset.tab}`).classList.add('active');
+  });
+});
+
+function openModal(id) {
+  playSound('click');
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(modal) {
+  playSound('click');
+  modal.classList.remove('open');
+}
+
+document.querySelectorAll('.modal-close').forEach(b => {
+  b.addEventListener('click', (e) => closeModal(e.target.closest('.modal-overlay')));
+});
+
+document.getElementById('profile-trigger').onclick = () => openModal('modal-profile');
+document.getElementById('case-banner-trigger').onclick = () => openModal('modal-case');
+document.getElementById('card-bench').onclick = () => { openModal('modal-bench'); runBench(); };
+document.getElementById('card-ai').onclick = () => openModal('modal-ai');
+document.getElementById('card-tetris').onclick = () => { openModal('modal-tetris'); initTetris(); };
+document.getElementById('card-snake').onclick = () => { openModal('modal-snake'); initSnake(); };
+document.getElementById('card-calc').onclick = () => openModal('modal-calc');
+
+/* =========================================================
+   5. BENCHMARK MONITORING
+   ========================================================= */
+function runBench() {
+  let val = 0;
+  const interval = setInterval(() => {
+    val += 5;
+    document.getElementById('cpu-fill').style.width = `${Math.min(val * 1.1, 82)}%`;
+    document.getElementById('cpu-val').innerText = `${Math.min(Math.round(val * 1.1), 82)}%`;
+    document.getElementById('gpu-fill').style.width = `${Math.min(val * 1.4, 96)}%`;
+    document.getElementById('gpu-val').innerText = `${Math.min(Math.round(val * 1.4), 96)}%`;
+    document.getElementById('ram-fill').style.width = `${Math.min(val * 0.85, 64)}%`;
+    document.getElementById('ram-val').innerText = `${Math.min(Math.round(val * 0.85), 64)}%`;
+    if (val >= 70) clearInterval(interval);
+  }, 30);
+}
+
+/* =========================================================
+   6. AI CHAT
+   ========================================================= */
+document.getElementById('chat-send-btn').onclick = sendChat;
+function sendChat() {
+  const input = document.getElementById('chat-in');
+  if(!input.value.trim()) return;
+  playSound('click');
+  const box = document.getElementById('chat-box');
+  box.innerHTML += `<div class="chat-msg chat-user">${input.value}</div>`;
+  const userText = input.value;
+  input.value = '';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(() => {
+    box.innerHTML += `<div class="chat-msg chat-bot">Тактический ответ на "${userText}": Rastek CS2 Hub готов к исполнению.</div>`;
+    box.scrollTop = box.scrollHeight;
+    playSound('click');
+  }, 500);
+}
+
+/* =========================================================
+   7. TETRIS ENGINE
+   ========================================================= */
+const tCanvas = document.getElementById('tetris-canvas');
+const tCtx = tCanvas.getContext('2d');
+
+function initTetris() {
+  tCtx.fillStyle = '#050608';
+  tCtx.fillRect(0, 0, 200, 320);
+  tCtx.strokeStyle = 'rgba(245, 166, 35, 0.15)';
+  for(let x = 0; x < 200; x += 20) {
+    for(let y = 0; y < 320; y += 20) {
+      tCtx.strokeRect(x, y, 20, 20);
+    }
+  }
+}
+document.getElementById('t-left').onclick = () => playSound('click');
+document.getElementById('t-right').onclick = () => playSound('click');
+document.getElementById('t-rot').onclick = () => playSound('click');
+document.getElementById('t-down').onclick = () => playSound('click');
+
+/* =========================================================
+   8. SNAKE ENGINE
+   ========================================================= */
+const sCanvas = document.getElementById('snake-canvas');
+const sCtx = sCanvas.getContext('2d');
+function initSnake() {
+  sCtx.fillStyle = '#050608';
+  sCtx.fillRect(0, 0, 220, 220);
+  sCtx.fillStyle = '#f5a623';
+  sCtx.fillRect(40, 40, 20, 20);
+  sCtx.fillRect(60, 40, 20, 20);
+}
+
+/* =========================================================
+   9. CALCULATOR
+   ========================================================= */
+let calcExpr = '';
+function calcInput(val) {
+  playSound('click');
+  if(val === 'C') calcExpr = '';
+  else calcExpr += val;
+  document.getElementById('calc-display').innerText = calcExpr || '0';
+}
+function calcEval() {
+  playSound('click');
+  try {
+    calcExpr = eval(calcExpr).toString();
+    document.getElementById('calc-display').innerText = calcExpr;
+  } catch(e) {
+    document.getElementById('calc-display').innerText = 'ERROR';
+    calcExpr = '';
+  }
+}
+</script>
+</body>
+</html>
+
+        
