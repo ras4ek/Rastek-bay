@@ -1,630 +1,364 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rastek ® · Future Hub</title>
-    <style>
-        /* ============================================================
-                   ROOT VARIABLES & ADVANCED PROPERTIES
-                   ============================================================ */
-        @property --grad-angle {
-            syntax: '<angle>';
-            inherits: false;
-            initial-value: 0deg;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Rastek ® — Craft Systems</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#0b1622;
+    --sky-mid:#132b2a;
+    --sky-bottom:#1c3a2c;
+    --grass:#5b8731;
+    --grass-dark:#3e5f22;
+    --grass-edge:#79ab46;
+    --dirt:#7a4a26;
+    --dirt-dark:#5a3419;
+    --stone:#8a8a8a;
+    --stone-dark:#57575a;
+    --wood:#8b5a2b;
+    --panel:#1b1c17;
+    --panel-2:#242519;
+    --bevel-light:#5b5c4c;
+    --bevel-dark:#0d0e09;
+    --diamond:#4aedd9;
+    --redstone:#ff4d4d;
+    --gold:#ffd23c;
+    --emerald:#2ee06b;
+    --lapis:#4d78ff;
+    --amethyst:#b06bff;
+    --copper:#e08a4f;
+    --text-main:#f2efe1;
+    --text-sub:#a7a692;
+    --text-faint:#6d6c5d;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+    --perf-mult:1;
+    --contrast:1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;image-rendering:pixelated;}
+  html,body{background:var(--sky-top);overscroll-behavior:none;}
+  body{
+    color:var(--text-main);
+    font-family:'VT323',monospace;
+    min-height:100vh;
+    display:flex;justify-content:center;
+    position:relative;overflow-x:hidden;
+    filter:contrast(var(--contrast));
+    transition:filter .4s ease;
+  }
+  .font-display{font-family:'Press Start 2P',monospace;}
 
-        :root {
-            --bg: #040406;
-            --surface: rgba(255, 255, 255, 0.04);
-            --border: rgba(255, 255, 255, 0.06);
-            --text: #f5f5f7;
-            --accent: #007aff;
-            --accent-glow: rgba(0, 122, 255, 0.4);
-            --radius: 24px;
-            --transition: 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
+  #bg-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;image-rendering:pixelated;}
+  #secret-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none;opacity:0;transition:opacity .3s ease;}
+  #secret-canvas.on{opacity:1;}
 
-        /* ============================================================
-                   RESET & BASE
-                   ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+  .app{width:100%;max-width:480px;padding:calc(14px + var(--safe-top)) 12px calc(90px + var(--safe-bottom));position:relative;z-index:1;}
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 24px 16px;
-            margin: 0;
-            overflow-x: hidden;
-            position: relative;
-        }
+  /* pixel bevel panel mixin via classes */
+  .pixel-panel{
+    background:var(--panel);
+    border-style:solid;border-width:3px;
+    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+    border-radius:0;
+    box-shadow:0 4px 0 rgba(0,0,0,0.45);
+  }
+  .pixel-panel-in{
+    background:#111208;
+    border-style:solid;border-width:3px;
+    border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);
+  }
 
-        /* ============================================================
-                   ЖИДКИЕ ОРБЫ (передовые частицы с градиентным движением)
-                   ============================================================ */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(90px) saturate(1.8);
-            pointer-events: none;
-            z-index: 0;
-            will-change: transform, opacity;
-            animation: orbFloat 24s ease-in-out infinite alternate;
-        }
+  /* ---------- HEADER / PROFILE ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 2px 16px;gap:10px;}
+  .brand-wrap{display:flex;flex-direction:column;line-height:1.3;}
+  .brand{
+    font-family:'Press Start 2P',monospace;font-size:17px;letter-spacing:0px;color:var(--emerald);
+    text-shadow:3px 3px 0 #0d2b12, 0 0 14px rgba(46,224,107,0.35);
+  }
+  .brand-sub{margin-top:6px;font-size:14px;letter-spacing:3px;color:var(--text-sub);text-transform:uppercase;font-family:'VT323',monospace;}
 
-        .orb1 {
-            width: 380px;
-            height: 380px;
-            background: conic-gradient(from var(--grad-angle), #7b2ffc, #b06aff, #007aff, #7b2ffc);
-            top: -120px;
-            left: -100px;
-            animation-delay: 0s;
-            opacity: 0.5;
-        }
+  .profile-btn{display:flex;align-items:center;gap:9px;cursor:pointer;padding:4px 10px 4px 4px;background:rgba(0,0,0,0.28);border:2px solid var(--bevel-light);}
+  .profile-btn:active{border-color:var(--emerald);}
+  .avatar-head{
+    width:36px;height:36px;display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);
+    border:2px solid #000;flex-shrink:0;
+  }
+  .profile-meta{display:flex;flex-direction:column;}
+  .profile-name{font-size:14px;font-weight:700;color:#fff;letter-spacing:.5px;}
+  .profile-status{font-size:11px;letter-spacing:1px;color:var(--emerald);display:flex;align-items:center;gap:5px;text-transform:uppercase;}
+  .status-dot{width:7px;height:7px;background:var(--emerald);box-shadow:0 0 6px var(--emerald);animation:pulse 1.6s infinite steps(4);}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.25;}}
 
-        .orb2 {
-            width: 450px;
-            height: 450px;
-            background: conic-gradient(from var(--grad-angle), #ff3d7f, #ff8a5c, #ffd700, #ff3d7f);
-            bottom: -150px;
-            right: -120px;
-            animation-delay: -8s;
-            opacity: 0.35;
-        }
+  /* ---------- SOCIAL ROW ---------- */
+  .social-row{display:flex;gap:8px;margin-bottom:18px;}
+  .social-chip{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+    background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);
+    padding:10px 6px;font-size:13px;font-weight:600;letter-spacing:.5px;color:var(--text-sub);
+    text-decoration:none;
+  }
+  .social-chip svg{width:15px;height:15px;stroke:var(--gold);flex-shrink:0;}
+  .social-chip:active{transform:translateY(2px);border-color:var(--bevel-dark);color:#fff;}
 
-        .orb3 {
-            width: 300px;
-            height: 300px;
-            background: conic-gradient(from var(--grad-angle), #00d4ff, #0088cc, #00d4ff);
-            top: 40%;
-            left: 50%;
-            animation-delay: -16s;
-            opacity: 0.25;
-        }
+  /* ---------- TABS ---------- */
+  .tabs{display:flex;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);padding:3px;margin-bottom:20px;position:relative;}
+  .tab{flex:1;padding:11px 0;text-align:center;font-family:'Press Start 2P',monospace;font-size:10px;letter-spacing:1px;color:var(--text-sub);cursor:pointer;position:relative;z-index:1;transition:color .2s ease;}
+  .tab.active{color:#0a0d06;}
+  .tab-glider{position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:calc(50% - 3px);background:linear-gradient(180deg,var(--emerald),#1f9e4d);box-shadow:0 0 0 2px #0d2b12 inset;transition:transform .3s steps(6);z-index:0;}
+  .tabs[data-active="arcade"] .tab-glider{transform:translateX(100%);}
 
-        @keyframes orbFloat {
-            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-            25% { transform: translate(60px, -80px) scale(1.15) rotate(12deg); }
-            50% { transform: translate(-40px, 60px) scale(0.85) rotate(-8deg); }
-            75% { transform: translate(30px, -30px) scale(1.05) rotate(4deg); }
-            100% { transform: translate(-20px, 20px) scale(1.0) rotate(-2deg); }
-        }
+  /* ---------- PANES / CARDS ---------- */
+  .tab-pane{display:none;animation:fadeIn .3s ease forwards;}
+  .tab-pane.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
 
-        .orb1, .orb2, .orb3 {
-            animation: orbFloat 24s ease-in-out infinite alternate, orbGradient 12s linear infinite;
-        }
+  .section-label{font-size:13px;letter-spacing:2px;color:var(--text-faint);text-transform:uppercase;margin:2px 0 10px 2px;}
+  .card-list{display:flex;flex-direction:column;gap:12px;margin-bottom:22px;}
+  .card{
+    background:var(--panel);border-style:solid;border-width:3px;
+    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+    cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,0.4);
+    transition:transform .1s ease, box-shadow .1s ease;
+  }
+  .card:active{transform:translateY(4px);box-shadow:0 0 0 rgba(0,0,0,0.4);}
+  .card-left{display:flex;align-items:center;gap:13px;}
+  .card-icon{width:42px;height:42px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,0.05);border:2px solid var(--bevel-dark);}
+  .card-text{display:flex;flex-direction:column;gap:2px;}
+  .card-title{font-family:'Press Start 2P',monospace;font-size:11.5px;color:#fff;letter-spacing:.5px;line-height:1.4;}
+  .card-desc{font-size:14px;color:var(--text-sub);}
+  .card-arrow{font-size:16px;color:var(--text-faint);}
 
-        @keyframes orbGradient {
-            to { --grad-angle: 360deg; }
-        }
+  .footer{text-align:center;font-size:12px;color:var(--text-faint);margin-top:20px;letter-spacing:1.5px;}
 
-        /* ============================================================
-                   ОСНОВНОЙ КОНТЕЙНЕР
-                   ============================================================ */
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+  /* ---------- MODAL ---------- */
+  .modal-overlay{position:fixed;inset:0;background:rgba(4,6,3,0.75);z-index:100;display:flex;justify-content:center;align-items:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .modal-overlay.open{opacity:1;pointer-events:auto;}
+  .modal{
+    background:var(--panel);border-style:solid;border-width:4px;
+    border-color:var(--bevel-light) var(--bevel-dark) var(--bevel-dark) var(--bevel-light);
+    width:100%;max-width:380px;max-height:88vh;overflow-y:auto;padding:18px;
+    box-shadow:0 20px 0 rgba(0,0,0,0.5);
+    transform:scale(.9) translateY(10px);transition:transform .25s ease;
+  }
+  .modal-overlay.open .modal{transform:scale(1) translateY(0);}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .modal-title{font-family:'Press Start 2P',monospace;font-size:12.5px;color:var(--emerald);letter-spacing:.5px;}
+  .modal-close{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:#fff;width:30px;height:30px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .modal-close:active{transform:translateY(2px);}
 
-        /* ============================================================
-                   ПРЕМИУМ-ХЕДЕР
-                   ============================================================ */
-        .header {
-            text-align: center;
-            padding: 20px 0 10px;
-            animation: fadeUp 0.8s ease both;
-        }
+  /* ---------- PROFILE PANEL ---------- */
+  .profile-panel-list{display:flex;flex-direction:column;gap:10px;}
+  .profile-link{display:flex;align-items:center;gap:12px;padding:13px 14px;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);text-decoration:none;}
+  .profile-link:active{transform:translateY(2px);}
+  .profile-link svg{width:19px;height:19px;stroke:var(--gold);flex-shrink:0;}
+  .profile-link-text{display:flex;flex-direction:column;gap:2px;}
+  .profile-link-title{font-size:16px;font-weight:700;color:#fff;}
+  .profile-link-sub{font-size:13px;color:var(--text-sub);}
+  .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+  .stat-box{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);padding:12px;text-align:center;}
+  .stat-val{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--diamond);}
+  .stat-lab{font-size:12px;color:var(--text-sub);letter-spacing:1px;margin-top:5px;text-transform:uppercase;}
 
-        .logo {
-            font-size: 34px;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            background: linear-gradient(135deg, #fff 60%, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            display: inline-block;
-        }
+  /* ---------- BENCHMARK BARS ---------- */
+  .bench-row{margin-bottom:16px;}
+  .bench-top{display:flex;justify-content:space-between;font-size:15px;margin-bottom:6px;color:var(--text-sub);}
+  .bench-top b{color:#fff;font-weight:700;}
+  .bench-track{height:14px;background:#0e0f0a;border:2px solid var(--bevel-dark);overflow:hidden;position:relative;}
+  .bench-track::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(90deg, transparent 0 6px, rgba(0,0,0,0.25) 6px 7px);pointer-events:none;}
+  .bench-fill{height:100%;width:0%;transition:width .6s steps(12);}
+  .bench-val{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--diamond);}
 
-        .logo span {
-            font-size: 13px;
-            vertical-align: super;
-            opacity: 0.4;
-            -webkit-text-fill-color: #888;
-        }
+  /* ---------- SYSTEM TOOLS toggles ---------- */
+  .toggle-row{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:2px dashed rgba(255,255,255,0.08);}
+  .toggle-row:last-child{border-bottom:none;}
+  .toggle-name{font-size:16px;font-weight:700;color:#fff;}
+  .toggle-desc{font-size:12.5px;color:var(--text-sub);margin-top:2px;}
+  .switch{width:52px;height:28px;background:#0e0f0a;border:2px solid var(--bevel-dark);position:relative;cursor:pointer;flex-shrink:0;}
+  .switch.on{background:var(--emerald);}
+  .switch-knob{position:absolute;top:2px;left:2px;width:20px;height:20px;background:#c9c9c9;border:2px solid #000;transition:transform .15s steps(3);}
+  .switch.on .switch-knob{transform:translateX(22px);background:#fff;}
 
-        .subhead {
-            color: #666;
-            font-size: 13px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-            margin-top: 6px;
-            opacity: 0.7;
-        }
+  /* ---------- AI ASSISTANT CHAT ---------- */
+  .chat-window{height:280px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:4px 2px 10px;}
+  .chat-bubble{max-width:82%;padding:9px 13px;font-size:15px;line-height:1.3;border:2px solid;}
+  .chat-bot{align-self:flex-start;background:rgba(46,224,107,0.1);border-color:var(--emerald);color:#dfffe9;}
+  .chat-user{align-self:flex-end;background:rgba(77,120,255,0.15);border-color:var(--lapis);color:#e3eaff;}
+  .chat-typing{display:flex;gap:4px;align-self:flex-start;padding:10px 13px;border:2px solid var(--emerald);background:rgba(46,224,107,0.1);}
+  .chat-typing span{width:6px;height:6px;background:var(--emerald);animation:blink 1s infinite steps(1);}
+  .chat-typing span:nth-child(2){animation-delay:.15s;}
+  .chat-typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes blink{0%,60%,100%{opacity:.2;}30%{opacity:1;}}
+  .chat-input-row{display:flex;gap:8px;margin-top:6px;}
+  .chat-input{flex:1;background:#0e0f0a;border:2px solid var(--bevel-dark);padding:10px 12px;color:#fff;font-family:'VT323',monospace;font-size:16px;outline:none;}
+  .chat-input:focus{border-color:var(--emerald);}
+  .chat-send{width:44px;background:var(--emerald);border:2px solid var(--bevel-dark);color:#0a0d06;font-size:16px;cursor:pointer;font-weight:700;}
+  .chat-send:active{transform:translateY(2px);}
 
-        /* ============================================================
-                   ВКЛАДКИ
-                   ============================================================ */
-        .tabs {
-            display: flex;
-            gap: 8px;
-            padding: 4px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 60px;
-            border: 0.5px solid var(--border);
-            animation: fadeUp 0.8s ease 0.1s both;
-        }
+  /* ---------- GAMES ---------- */
+  .game-container{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .game-hud{display:flex;justify-content:space-between;width:100%;font-size:15px;color:var(--text-sub);}
+  .game-hud b{color:var(--diamond);font-size:16px;}
+  #snake-canvas, #tetris-canvas{background:#0a0b06;border:3px solid;border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);}
+  .dpad{display:grid;grid-template-columns:repeat(3,50px);grid-template-rows:repeat(3,50px);gap:6px;}
+  .dpad-btn{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:var(--emerald);font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .dpad-btn:active{transform:translateY(2px);background:rgba(46,224,107,0.15);}
 
-        .tab {
-            flex: 1;
-            padding: 12px 0;
-            border-radius: 40px;
-            background: transparent;
-            border: none;
-            color: #888;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: inherit;
-            letter-spacing: 0.3px;
-        }
+  .tetris-controls{display:flex;gap:8px;width:100%;justify-content:center;flex-wrap:wrap;}
+  .t-btn{flex:1;min-width:58px;padding:14px 0;text-align:center;background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:var(--diamond);font-size:17px;cursor:pointer;}
+  .t-btn:active{transform:translateY(2px);}
+  .t-btn.drop{color:var(--redstone);}
 
-        .tab.active {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-        }
+  .game-overlay{position:absolute;inset:0;background:rgba(5,6,3,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;z-index:5;}
+  .game-overlay h3{font-family:'Press Start 2P',monospace;color:var(--redstone);font-size:13px;letter-spacing:1px;text-align:center;}
+  .game-overlay .restart-btn{padding:10px 20px;background:var(--emerald);color:#0a0d06;font-weight:700;font-size:12px;letter-spacing:1px;border:2px solid #0a0d06;cursor:pointer;font-family:'Press Start 2P',monospace;}
+  .canvas-wrap{position:relative;}
 
-        .tab:active { transform: scale(0.94); }
+  /* ---------- CALCULATOR ---------- */
+  .calc-display{background:#0a0b06;border:2px solid;border-color:var(--bevel-dark) var(--bevel-light) var(--bevel-light) var(--bevel-dark);padding:14px;text-align:right;margin-bottom:10px;}
+  .calc-sub{font-size:14px;color:var(--text-sub);min-height:18px;}
+  .calc-main{font-size:30px;color:#fff;word-break:break-all;min-height:36px;}
+  .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+  .calc-btn{background:var(--panel-2);border:2px solid var(--bevel-light);border-bottom-color:var(--bevel-dark);border-right-color:var(--bevel-dark);color:#fff;padding:15px 0;font-size:16px;font-weight:600;cursor:pointer;font-family:'VT323',monospace;}
+  .calc-btn:active{transform:translateY(2px);}
+  .calc-btn.fn{color:var(--diamond);font-size:13px;}
+  .calc-btn.op{color:var(--redstone);}
+  .calc-btn.eq{background:var(--emerald);color:#0a0d06;}
 
-        /* ============================================================
-                   КАРТОЧКИ (GLASSMORPHISM 2.0)
-                   ============================================================ */
-        .card-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            animation: fadeUp 0.8s ease 0.2s both;
-        }
-
-        .card {
-            background: var(--surface);
-            backdrop-filter: blur(24px) saturate(1.6);
-            -webkit-backdrop-filter: blur(24px) saturate(1.6);
-            border: 0.5px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-            will-change: transform;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 0.5px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 60%);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-
-        .card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: var(--accent);
-            transform: translateY(-2px) scale(1.01);
-            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.15);
-        }
-
-        .card:hover::before { opacity: 1; }
-        .card:active { transform: scale(0.97); transition-duration: 0.1s; }
-
-        .card-left { display: flex; flex-direction: column; gap: 2px; }
-        .card-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
-        .card-desc { font-size: 13px; color: #888; font-weight: 400; }
-        .card-arrow { color: #555; font-size: 18px; transition: var(--transition); }
-        .card:hover .card-arrow { color: var(--accent); transform: translateX(4px); }
-
-        .card-accent { border-color: rgba(0, 122, 255, 0.3); background: rgba(0, 122, 255, 0.05); }
-        .card-accent .card-title { color: var(--accent); }
-
-        .tab-pane { display: none; }
-        .tab-pane.active { display: block; }
-
-        /* ============================================================
-                   МОДАЛЬНОЕ ОКНО
-                   ============================================================ */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(28px) saturate(1.2);
-            -webkit-backdrop-filter: blur(28px) saturate(1.2);
-            z-index: 999;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-overlay.open { display: flex; animation: fadeIn 0.35s ease; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.94); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .modal {
-            background: rgba(18, 18, 24, 0.92);
-            backdrop-filter: blur(48px);
-            -webkit-backdrop-filter: blur(48px);
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
-            border-radius: 40px;
-            max-width: 420px;
-            width: 100%;
-            max-height: 90vh;
-            padding: 24px 20px 20px;
-            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.8);
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .modal-title { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
-
-        .modal-close {
-            width: 40px; height: 40px;
-            border-radius: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 0.5px solid rgba(255, 255, 255, 0.06);
-            color: #fff; font-size: 20px;
-            cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .modal-close:active { transform: scale(0.88); background: rgba(255, 255, 255, 0.12); }
-
-        .game-container { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-        canvas {
-            background: #0a0a0f; border-radius: 20px;
-            border: 0.5px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 6px 32px rgba(0, 0, 0, 0.6);
-            width: 100%; max-width: 280px; height: auto;
-            aspect-ratio: 1 / 1; touch-action: none;
-        }
-
-        .dpad {
-            display: grid;
-            grid-template-columns: 50px 50px 50px;
-            grid-template-rows: 50px 50px 50px;
-            gap: 6px; justify-content: center;
-        }
-
-        .dpad-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 0.5px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px; color: #fff; font-size: 22px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; touch-action: none; user-select: none;
-        }
-
-        .dpad-btn:active { background: rgba(255, 255, 255, 0.12); transform: scale(0.90); }
-        .dpad-empty { visibility: hidden; }
-
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
-        .calc-display {
-            grid-column: span 4; background: rgba(255, 255, 255, 0.03);
-            border-radius: 16px; padding: 18px 22px; text-align: right;
-            font-size: 32px; font-weight: 300; border: 0.5px solid rgba(255, 255, 255, 0.04);
-            min-height: 64px; display: flex; align-items: center; justify-content: flex-end;
-            overflow: hidden; color: #fff;
-        }
-        .calc-btn {
-            background: rgba(255, 255, 255, 0.04); border: 0.5px solid rgba(255, 255, 255, 0.04);
-            border-radius: 16px; padding: 16px 0; font-size: 20px; color: #fff; cursor: pointer; text-align: center;
-        }
-        .calc-btn:active { transform: scale(0.92); background: rgba(255, 255, 255, 0.10); }
-        .calc-btn.operator { background: rgba(0, 122, 255, 0.12); color: var(--accent); }
-        .calc-btn.equal { background: var(--accent); color: #fff; }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(18px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+  ::-webkit-scrollbar{width:0;height:0;}
+</style>
 </head>
 <body>
 
-    <div class="orb orb1"></div>
-    <div class="orb orb2"></div>
-    <div class="orb orb3"></div>
+<canvas id="bg-canvas"></canvas>
+<canvas id="secret-canvas"></canvas>
 
-    <div class="wrapper">
-        <header class="header">
-            <div class="logo">Rastek <span>®</span></div>
-            <div class="subhead">Next‑Gen Systems</div>
-        </header>
+<div class="app">
 
-        <div class="tabs">
-            <button class="tab active" data-tab="pro">PRO</button>
-            <button class="tab" data-tab="arcade">ARCADE</button>
-        </div>
-
-        <div id="tab-pro" class="tab-pane active">
-            <div class="card-list">
-                <div class="card card-accent" onclick="window.location='techspecs.html'">
-                    <div class="card-left">
-                        <span class="card-title">TechSpecs Pro</span>
-                        <span class="card-desc">Аналитика & бенчмарки</span>
-                    </div>
-                    <span class="card-arrow">↗</span>
-                </div>
-                <div class="card" onclick="alert('Модуль в разработке')">
-                    <div class="card-left">
-                        <span class="card-title">System Tools</span>
-                        <span class="card-desc">Оптимизация и конфиг</span>
-                    </div>
-                    <span class="card-arrow">↗</span>
-                </div>
-                <div class="card" onclick="alert('Скоро')">
-                    <div class="card-left">
-                        <span class="card-title">AI Assistant</span>
-                        <span class="card-desc">Нейросетевой помощник</span>
-                    </div>
-                    <span class="card-arrow">↗</span>
-                </div>
-            </div>
-        </div>
-
-        <div id="tab-arcade" class="tab-pane">
-            <div class="card-list">
-                <div class="card" data-game="snake">
-                    <div class="card-left">
-                        <span class="card-title">🐍 Retro Snake</span>
-                        <span class="card-desc">Классика с D‑Pad</span>
-                    </div>
-                    <span class="card-arrow">▶</span>
-                </div>
-                <div class="card" data-game="tetris">
-                    <div class="card-left">
-                        <span class="card-title">🧱 Tetris</span>
-                        <span class="card-desc">Головоломка на время</span>
-                    </div>
-                    <span class="card-arrow">▶</span>
-                </div>
-                <div class="card" data-game="calc">
-                    <div class="card-left">
-                        <span class="card-title">🧮 Калькулятор</span>
-                        <span class="card-desc">iOS‑стиль</span>
-                    </div>
-                    <span class="card-arrow">▶</span>
-                </div>
-            </div>
-        </div>
+  <!-- TOP BAR / PROFILE -->
+  <div class="topbar">
+    <div class="brand-wrap">
+      <div class="brand font-display" id="brand-logo">RASTEK®</div>
+      <div class="brand-sub">CRAFT SYSTEMS</div>
     </div>
-
-    <!-- Модальное окно -->
-    <div id="modal" class="modal-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <span id="modal-title" class="modal-title">Игра</span>
-                <button class="modal-close" onclick="closeModal()">✕</button>
-            </div>
-            <div id="modal-body"></div>
-        </div>
+    <div class="profile-btn" id="profile-open">
+      <div class="profile-meta">
+        <span class="profile-name">ras4ek</span>
+        <span class="profile-status"><span class="status-dot"></span>ONLINE</span>
+      </div>
+      <div class="avatar-head" id="avatar-head"></div>
     </div>
-    <!-- ===== JS LOGIC ===== -->
-    <script>
-        // Вкладки
-        document.querySelectorAll('.tab').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-                btn.classList.add('active');
-                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-            });
-        });
+  </div>
 
-        // Модалка
-        const modal = document.getElementById('modal');
-        const modalTitle = document.getElementById('modal-title');
-        const modalBody = document.getElementById('modal-body');
-        let gameLoop = null;
+  <!-- SOCIAL ROW -->
+  <div class="social-row">
+    <a class="social-chip" href="https://github.com/ras4ek" target="_blank" rel="noopener noreferrer" data-sound="click">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
+      GitHub
+    </a>
+    <a class="social-chip" href="https://t.me/ras4ek" target="_blank" rel="noopener noreferrer" data-sound="click">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3 2 10.5l6.5 2.3M22 3 15.8 21l-7.3-8.2M22 3 8.5 12.8"/></svg>
+      Telegram
+    </a>
+    <a class="social-chip" href="https://github.com/ras4ek/Rastek-bay" target="_blank" rel="noopener noreferrer" data-sound="click">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Rastek-bay
+    </a>
+  </div>
 
-        function closeModal() {
-            modal.classList.remove('open');
-            if (gameLoop) clearInterval(gameLoop);
-        }
+  <!-- TABS -->
+  <div class="tabs" id="tabs" data-active="pro">
+    <div class="tab active" data-tab="pro">PRO</div>
+    <div class="tab" data-tab="arcade">ARCADE</div>
+    <div class="tab-glider"></div>
+  </div>
 
-        document.querySelectorAll('[data-game]').forEach(card => {
-            card.addEventListener('click', () => {
-                const game = card.dataset.game;
-                modal.classList.add('open');
-                if (game === 'snake') initSnake();
-                if (game === 'tetris') initTetris();
-                if (game === 'calc') initCalc();
-            });
-        });
+  <!-- PRO TAB -->
+  <div id="tab-pro" class="tab-pane active">
+    <div class="section-label">// core modules</div>
+    <div class="card-list">
+      <div class="card" data-modal="techspecs">
+        <div class="card-left">
+          <div class="card-icon">⛏️</div>
+          <div class="card-text">
+            <span class="card-title">TECHSPECS PRO</span>
+            <span class="card-desc">Живая аналитика и бенчмарки</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+      <div class="card" data-modal="systemtools">
+        <div class="card-left">
+          <div class="card-icon">🧰</div>
+          <div class="card-text">
+            <span class="card-title">SYSTEM TOOLS</span>
+            <span class="card-desc">Оптимизация и конфигурация</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+      <div class="card" data-modal="aiassistant">
+        <div class="card-left">
+          <div class="card-icon">🧙</div>
+          <div class="card-text">
+            <span class="card-title">AI ASSISTANT</span>
+            <span class="card-desc">Нейросетевой помощник Rastek</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+    </div>
+  </div>
 
-        // 1. ЗМЕЙКА
-        function initSnake() {
-            modalTitle.innerText = "Retro Snake";
-            modalBody.innerHTML = `
-                <div class="game-container">
-                    <canvas id="canvas" width="200" height="200"></canvas>
-                    <div class="dpad">
-                        <div class="dpad-empty"></div>
-                        <button class="dpad-btn" onclick="setSnakeDir('UP')">▲</button>
-                        <div class="dpad-empty"></div>
-                        <button class="dpad-btn" onclick="setSnakeDir('LEFT')">◄</button>
-                        <button class="dpad-btn" onclick="setSnakeDir('DOWN')">▼</button>
-                        <button class="dpad-btn" onclick="setSnakeDir('RIGHT')">►</button>
-                    </div>
-                </div>
-            `;
+  <!-- ARCADE TAB -->
+  <div id="tab-arcade" class="tab-pane">
+    <div class="section-label">// arcade cabinet</div>
+    <div class="card-list">
+      <div class="card" data-modal="snake">
+        <div class="card-left">
+          <div class="card-icon">🐍</div>
+          <div class="card-text">
+            <span class="card-title">RETRO SNAKE</span>
+            <span class="card-desc">Классическая змейка с D-Pad</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+      <div class="card" data-modal="tetris">
+        <div class="card-left">
+          <div class="card-icon">🧱</div>
+          <div class="card-text">
+            <span class="card-title">TETRIS</span>
+            <span class="card-desc">Падающие блоки на время</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+      <div class="card" data-modal="calc">
+        <div class="card-left">
+          <div class="card-icon">🧮</div>
+          <div class="card-text">
+            <span class="card-title">CALCULATOR</span>
+            <span class="card-desc">Инженерный калькулятор</span>
+          </div>
+        </div>
+        <span class="card-arrow">➔</span>
+      </div>
+    </div>
+  </div>
 
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            let snake = [{x: 5, y: 5}];
-            let dir = 'RIGHT';
-            let nextDir = 'RIGHT';
-            let food = {x: 8, y: 8};
-            const gridSize = 20;
-            const tileCount = 10;
+  <div class="footer">® RASTEK SYSTEMS · CRAFTED BY ras4ek</div>
+</div>
 
-            window.setSnakeDir = (d) => {
-                if (d === 'UP' && dir !== 'DOWN') nextDir = 'UP';
-                if (d === 'DOWN' && dir !== 'UP') nextDir = 'DOWN';
-                if (d === 'LEFT' && dir !== 'RIGHT') nextDir = 'LEFT';
-                if (d === 'RIGHT' && dir !== 'LEFT') nextDir = 'RIGHT';
-            };
-
-            function placeFood() {
-                food = {
-                    x: Math.floor(Math.random() * tileCount),
-                    y: Math.floor(Math.random() * tileCount)
-                };
-                snake.forEach(part => {
-                    if (part.x === food.x && part.y === food.y) placeFood();
-                });
-            }
-
-            if (gameLoop) clearInterval(gameLoop);
-
-            gameLoop = setInterval(() => {
-                dir = nextDir;
-                let head = { ...snake[0] };
-
-                if (dir === 'UP') head.y--;
-                if (dir === 'DOWN') head.y++;
-                if (dir === 'LEFT') head.x--;
-                if (dir === 'RIGHT') head.x++;
-
-                if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || snake.some(part => part.x === head.x && part.y === head.y)) {
-                    clearInterval(gameLoop);
-                    ctx.fillStyle = 'rgba(255, 59, 48, 0.3)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = '#fff';
-                    ctx.font = '20px sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText("Game Over", canvas.width / 2, canvas.height / 2);
-                    setTimeout(initSnake, 1800);
-                    return;
-                }
-
-                snake.unshift(head);
-
-                if (head.x === food.x && head.y === food.y) {
-                    placeFood();
-                } else {
-                    snake.pop();
-                }
-
-                ctx.fillStyle = '#0a0a0f';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#007aff';
-                snake.forEach(part => {
-                    ctx.fillRect(part.x * gridSize + 1, part.y * gridSize + 1, gridSize - 2, gridSize - 2);
-                });
-
-                ctx.fillStyle = '#ff3b30';
-                ctx.fillRect(food.x * gridSize + 1, food.y * gridSize + 1, gridSize - 2, gridSize - 2);
-
-            }, 170);
-        }
-
-        // 2. ТЕТРИС
-        function initTetris() {
-            modalTitle.innerText = "Tetris";
-            modalBody.innerHTML = `<div style="text-align:center; padding: 20px; color: #888; font-size: 14px;">Модуль Tetris в разработке...</div>`;
-        }
-
-        // 3. КАЛЬКУЛЯТОР
-        function initCalc() {
-            modalTitle.innerText = "Калькулятор";
-            modalBody.innerHTML = `
-                <div class="calc-grid">
-                    <div id="calc-display" class="calc-display">0</div>
-                    <button class="calc-btn" onclick="calcInput('C')">C</button>
-                    <button class="calc-btn" onclick="calcInput('(')">(</button>
-                    <button class="calc-btn" onclick="calcInput(')')">)</button>
-                    <button class="calc-btn operator" onclick="calcInput('/')">÷</button>
-                    <button class="calc-btn" onclick="calcInput('7')">7</button>
-                    <button class="calc-btn" onclick="calcInput('8')">8</button>
-                    <button class="calc-btn" onclick="calcInput('9')">9</button>
-                    <button class="calc-btn operator" onclick="calcInput('*')">×</button>
-                    <button class="calc-btn" onclick="calcInput('4')">4</button>
-                    <button class="calc-btn" onclick="calcInput('5')">5</button>
-                    <button class="calc-btn" onclick="calcInput('6')">6</button>
-                    <button class="calc-btn operator" onclick="calcInput('-')">-</button>
-                    <button class="calc-btn" onclick="calcInput('1')">1</button>
-                    <button class="calc-btn" onclick="calcInput('2')">2</button>
-                    <button class="calc-btn" onclick="calcInput('3')">3</button>
-                    <button class="calc-btn operator" onclick="calcInput('+')">+</button>
-                    <button class="calc-btn" style="grid-column: span 2" onclick="calcInput('0')">0</button>
-                    <button class="calc-btn" onclick="calcInput('.')">.</button>
-                    <button class="calc-btn equal" onclick="calcInput('=')">=</button>
-                </div>
-            `;
-            let currentExpression = '';
-            const disp = document.getElementById('calc-display');
-
-            window.calcInput = (value) => {
-                if (value === 'C') {
-                    currentExpression = '';
-                    disp.innerText = '0';
-                } else if (value === '=') {
-                    try {
-                        currentExpression = eval(currentExpression).toString();
-                        disp.innerText = currentExpression;
-                    } catch (e) {
-                        disp.innerText = 'Ошибка';
-                        currentExpression = '';
-                    }
-                } else {
-                    if (currentExpression === '0' || disp.innerText === 'Ошибка') {
-                        currentExpression = '';
-                    }
-                    currentExpression += value;
-                    disp.innerText = currentExpression;
-                }
-            };
-        }
-    </script>
-</body>
-</html>
+<!-- MODAL -->
+<div id="modal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span id="modal-title" class="modal-title">—</span>
+      <button class="modal-close" id="modal-close-btn">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
