@@ -761,5 +761,131 @@ function calcEval() {
 </script>
 </body>
 </html>
+/* =========================================================
+   ДОПОЛНИТЕЛЬНЫЙ МОДУЛЬ: ПОЛНАЯ ИГРОВАЯ ЛОГИКА TETRIS & SNAKE
+   ========================================================= */
 
-        
+const TETRIS_ROWS = 16;
+const TETRIS_COLS = 10;
+const BLOCK_SIZE = 20;
+
+const SHAPES = [
+  [[1, 1, 1, 1]],        // I-блок
+  [[1, 1], [1, 1]],      // O-блок
+  [[0, 1, 0], [1, 1, 1]],// T-блок
+  [[1, 0, 0], [1, 1, 1]],// L-блок
+  [[0, 0, 1], [1, 1, 1]] // J-блок
+];
+
+let currentPiece = null;
+let piecePos = { x: 3, y: 0 };
+
+function spawnPiece() {
+  const shape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+  currentPiece = shape;
+  piecePos = { x: 3, y: 0 };
+  if (checkCollision(0, 0, currentPiece)) {
+    tBoard = Array(TETRIS_ROWS).fill().map(() => Array(TETRIS_COLS).fill(0));
+  }
+}
+
+function checkCollision(offX, offY, piece) {
+  for (let r = 0; r < piece.length; r++) {
+    for (let c = 0; c < piece[r].length; c++) {
+      if (piece[r][c]) {
+        let newX = piecePos.x + c + offX;
+        let newY = piecePos.y + r + offY;
+        if (newX < 0 || newX >= TETRIS_COLS || newY >= TETRIS_ROWS) return true;
+        if (newY >= 0 && tBoard[newY][newX]) return true;
+      }
+    }
+  }
+  return false;
+}
+
+function lockPiece() {
+  for (let r = 0; r < currentPiece.length; r++) {
+    for (let c = 0; c < currentPiece[r].length; c++) {
+      if (currentPiece[r][c]) {
+        let boardY = piecePos.y + r;
+        if (boardY >= 0) tBoard[boardY][piecePos.x + c] = 1;
+      }
+    }
+  }
+  clearLines();
+  spawnPiece();
+}
+
+function clearLines() {
+  for (let r = TETRIS_ROWS - 1; r >= 0; r--) {
+    if (tBoard[r].every(val => val === 1)) {
+      tBoard.splice(r, 1);
+      tBoard.unshift(Array(TETRIS_COLS).fill(0));
+      playSound('gold');
+      r++;
+    }
+  }
+}
+
+function moveTetrisDown() {
+  if (!currentPiece) spawnPiece();
+  if (!checkCollision(0, 1, currentPiece)) {
+    piecePos.y++;
+  } else {
+    lockPiece();
+  }
+  renderTetrisGame();
+}
+
+function renderTetrisGame() {
+  tCtx.fillStyle = '#050608';
+  tCtx.fillRect(0, 0, 200, 320);
+
+  // Сетка
+  tCtx.strokeStyle = 'rgba(245, 166, 35, 0.1)';
+  for (let x = 0; x < 200; x += BLOCK_SIZE) {
+    for (let y = 0; y < 320; y += BLOCK_SIZE) {
+      tCtx.strokeRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+    }
+  }
+
+  // Зафиксированные блоки
+  for (let r = 0; r < TETRIS_ROWS; r++) {
+    for (let c = 0; c < TETRIS_COLS; c++) {
+      if (tBoard[r][c]) {
+        tCtx.fillStyle = '#f5a623';
+        tCtx.fillRect(c * BLOCK_SIZE + 1, r * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+      }
+    }
+  }
+
+  // Текущая падающая фигура
+  if (currentPiece) {
+    tCtx.fillStyle = '#26c6da';
+    for (let r = 0; r < currentPiece.length; r++) {
+      for (let c = 0; c < currentPiece[r].length; c++) {
+        if (currentPiece[r][c]) {
+          tCtx.fillRect((piecePos.x + c) * BLOCK_SIZE + 1, (piecePos.y + r) * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
+        }
+      }
+    }
+  }
+}
+
+document.getElementById('t-left').onclick = () => {
+  playSound('click');
+  if (currentPiece && !checkCollision(-1, 0, currentPiece)) piecePos.x--;
+  renderTetrisGame();
+};
+
+document.getElementById('t-right').onclick = () => {
+  playSound('click');
+  if (currentPiece && !checkCollision(1, 0, currentPiece)) piecePos.x++;
+  renderTetrisGame();
+};
+
+document.getElementById('t-down').onclick = () => {
+  playSound('click');
+  moveTetrisDown();
+};
+      
