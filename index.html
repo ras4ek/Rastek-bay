@@ -5,496 +5,672 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rastek ® | Dev Hub</title>
     <style>
+        /* ===== ROOT ===== */
+        :root {
+            --accent: #0071e3;
+            --bg: #050505;
+        }
+
+        /* ===== RESET & BASE ===== */
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+            box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #030308;
+            background: var(--bg);
             color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", Roboto, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
             min-height: 100vh;
-            padding: 20px 15px 60px 15px;
+            margin: 0;
+            padding: 40px 20px;
             overflow-x: hidden;
             position: relative;
         }
 
-        .liquid-orb {
+        /* ===== LIQUID ORBS (фон) ===== */
+        .orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(100px);
-            z-index: -1;
-            opacity: 0.5;
-            animation: float 10s ease-in-out infinite alternate;
+            filter: blur(80px);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatOrb 20s ease-in-out infinite alternate;
         }
 
-        .orb-1 { width: 320px; height: 320px; background: radial-gradient(circle, #0071e3, #00f2fe); top: -80px; left: -80px; }
-        .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #7d2ae8, #ff2a85); bottom: -100px; right: -80px; animation-delay: -5s; }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(40px, 50px) scale(1.15); }
+        .orb1 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle at 30% 30%, #7b2ffc, #b06aff);
+            top: -80px;
+            left: -80px;
+            animation-delay: 0s;
         }
 
+        .orb2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle at 70% 70%, #ff3d7f, #ff8a5c);
+            bottom: -120px;
+            right: -120px;
+            animation-delay: -6s;
+        }
+
+        .orb3 {
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle at 50% 50%, #00d4ff, #0088cc);
+            top: 40%;
+            left: 60%;
+            animation-delay: -12s;
+            opacity: 0.25;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(40px, -60px) scale(1.1) rotate(8deg); }
+            66% { transform: translate(-30px, 40px) scale(0.9) rotate(-5deg); }
+            100% { transform: translate(20px, -20px) scale(1.05) rotate(3deg); }
+        }
+
+        /* ===== CONTAINER ===== */
         .container {
+            position: relative;
+            z-index: 1;
             width: 100%;
-            max-width: 440px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            max-width: 420px;
         }
 
-        .liquid-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+        /* ===== BRAND ===== */
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            font-size: 14px;
+            vertical-align: super;
+            opacity: 0.5;
+        }
+
+        .brand-sub {
+            color: #86868b;
+            margin-top: 6px;
+            font-size: 14px;
+        }
+
+        /* ===== СТЕКЛЯННЫЕ КАРТОЧКИ ===== */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(24px) saturate(1.4);
+            -webkit-backdrop-filter: blur(24px) saturate(1.4);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
             border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: all 0.25s ease;
         }
 
-        .profile-header {
+        /* ===== ПРОФИЛЬ (добавлен) ===== */
+        .profile-card {
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             gap: 16px;
+            margin-bottom: 16px;
         }
 
         .avatar {
-            width: 68px;
-            height: 68px;
-            border-radius: 22px;
-            background: linear-gradient(135deg, #0071e3, #7d2ae8);
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #7b2ffc, #ff3d7f);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
-            font-weight: 800;
-            box-shadow: 0 8px 25px rgba(0, 113, 227, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 26px;
+            font-weight: 700;
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(123, 47, 252, 0.3);
             flex-shrink: 0;
         }
 
-        .bio h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
-        .bio h1 .reg-mark { font-size: 12px; font-weight: 600; opacity: 0.55; vertical-align: super; margin-left: 2px; }
-        .bio p { font-size: 13px; color: #a1a1a6; margin-top: 3px; line-height: 1.3; }
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-info h2 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
 
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 8px;
-            padding: 4px 12px;
-            background: rgba(48, 209, 88, 0.12);
-            border: 0.5px solid rgba(48, 209, 88, 0.3);
-            border-radius: 20px;
             font-size: 11px;
-            color: #30d158;
-            font-weight: 600;
+            font-weight: 500;
+            background: rgba(52, 199, 89, 0.2);
+            color: #34c759;
+            padding: 2px 12px;
+            border-radius: 30px;
+            border: 0.5px solid rgba(52, 199, 89, 0.3);
         }
 
-        .status-dot {
-            width: 6px; height: 6px; background: #30d158; border-radius: 50%; box-shadow: 0 0 8px #30d158;
+        .profile-info p {
+            font-size: 14px;
+            color: #a1a1a6;
+            margin-top: 4px;
         }
 
-        .social-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+        /* ===== СОЦ. КНОПКИ ===== */
+        .social-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
         }
 
         .social-btn {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 12px;
-            border-radius: 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 40px;
+            padding: 5px 14px 5px 10px;
+            font-size: 13px;
+            font-weight: 500;
             color: #fff;
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            transition: 0.2s;
+            backdrop-filter: blur(4px);
         }
 
-        .social-btn:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.1); }
+        .social-btn:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.14);
+        }
 
-        .tabs {
+        /* ===== ВКЛАДКИ ===== */
+        .tabs-wrapper {
+            padding: 8px 10px 14px;
+            margin-bottom: 16px;
+        }
+
+        .tabs-header {
             display: flex;
-            background: rgba(120, 120, 128, 0.16);
-            backdrop-filter: blur(20px);
+            gap: 6px;
             padding: 4px;
-            border-radius: 16px;
-            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 60px;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 12px;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 10px 0;
-            text-align: center;
-            font-size: 13px;
-            font-weight: 600;
-            color: #a1a1a6;
-            background: none;
+            background: transparent;
             border: none;
-            border-radius: 12px;
+            color: #8e8e93;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 0;
+            border-radius: 40px;
             cursor: pointer;
             transition: all 0.25s ease;
+            font-family: inherit;
         }
 
         .tab-btn.active {
-            background: rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.10);
             color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        .tab-content { display: none; flex-direction: column; gap: 12px; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: flex; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .tab-btn:active {
+            transform: scale(0.94);
         }
 
-        .item-card {
+        .tab-content {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* ===== КАРТОЧКИ МЕНЮ ===== */
+        .menu-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 14px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s;
+            cursor: pointer;
             text-decoration: none;
             color: #fff;
-            padding: 16px;
+        }
+
+        .menu-card:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .menu-card-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .menu-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .menu-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .menu-desc {
+            font-size: 12px;
+            color: #8e8e93;
+            margin-top: 2px;
+        }
+
+        .menu-arrow {
+            color: #8e8e93;
+            font-size: 18px;
+        }
+
+        .accent-card {
+            border-color: rgba(0, 113, 227, 0.4);
+            background: rgba(0, 113, 227, 0.06);
+        }
+
+        .accent-card .menu-icon {
+            background: rgba(0, 113, 227, 0.15);
+            color: #0071e3;
+        }
+
+        /* ===== СПИСОК ИГР ===== */
+        .game-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: 0.2s;
             cursor: pointer;
-            transition: transform 0.2s ease;
-            border: none;
+            color: #fff;
+            font-family: inherit;
+            font-size: 15px;
             width: 100%;
             text-align: left;
         }
 
-        .item-card:active { transform: scale(0.98); }
-
-        .item-left { display: flex; align-items: center; gap: 14px; }
-
-        .item-icon {
-            width: 46px; height: 46px; border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px;
+        .game-btn:active {
+            transform: scale(0.97);
             background: rgba(255, 255, 255, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.12);
-            flex-shrink: 0;
         }
 
-        .item-title { font-size: 15px; font-weight: 700; }
-        .item-desc { font-size: 12px; color: #86868b; margin-top: 2px; }
+        .game-btn .emoji {
+            font-size: 28px;
+        }
 
-        .badge {
-            font-size: 11px; padding: 5px 12px; border-radius: 14px; font-weight: 600;
-            white-space: nowrap;
+        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px);
-            z-index: 100; justify-content: center; align-items: center; padding: 20px;
+            background: rgba(20, 20, 28, 0.92);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 0.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 36px;
+            max-width: 400px;
+            width: 100%;
+            max-height: 90vh;
+            padding: 20px 16px 16px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8);
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.06);
+            border: none;
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 30px;
+            font-size: 22px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:active {
+            transform: scale(0.90);
+            background: rgba(255, 255, 255, 0.14);
         }
 
         .modal-body {
-            background: rgba(28, 28, 30, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 28px; padding: 20px; width: 100%; max-width: 360px;
-            display: flex; flex-direction: column; align-items: center; position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .close-btn {
-            position: absolute; top: 16px; right: 18px;
-            background: rgba(255,255,255,0.1); border: none; color: #fff;
-            width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer;
+        /* ===== ИГРОВЫЕ КОНТЕЙНЕРЫ ===== */
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 0;
         }
 
         canvas {
-            background: #000; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.15); margin-top: 10px;
-            display: block;
+            background: #0f0f14;
+            border-radius: 16px;
+            border: 0.5px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            aspect-ratio: 1 / 1;
+            touch-action: none;
         }
 
-        .score-board { font-size: 14px; color: #a1a1a6; font-weight: 600; margin-top: 6px; }
-
-        .game-over-msg {
-            position: absolute;
-            font-size: 13px;
-            color: #ff453a;
-            font-weight: 700;
-            margin-top: 8px;
-            display: none;
-        }
-
+        /* ===== D-PAD для змейки ===== */
         .dpad {
-            display: grid; grid-template-columns: repeat(3, 50px); gap: 8px; margin-top: 14px;
+            display: grid;
+            grid-template-columns: 56px 56px 56px;
+            grid-template-rows: 56px 56px 56px;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 4px;
         }
 
-        .dbtn {
-            background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255,255,255,0.1);
-            color: #fff; padding: 12px; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer;
+        .dpad-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            color: #fff;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.1s;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .dbtn:active { background: rgba(255, 255, 255, 0.25); }
+        .dpad-btn:active {
+            background: rgba(255, 255, 255, 0.16);
+            transform: scale(0.92);
+        }
+
+        .dpad-empty {
+            visibility: hidden;
+        }
+
+        /* ===== КАЛЬКУЛЯТОР ===== */
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 320px;
+            width: 100%;
+            margin: 0 auto;
+        }
 
         .calc-display {
-            width: 100%; height: 55px; background: #000; border-radius: 16px;
-            color: #fff; font-size: 26px; text-align: right; padding: 12px 16px; margin: 12px 0;
-            border: 0.5px solid rgba(255, 255, 255, 0.15); outline: none;
+            grid-column: span 4;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: right;
+            font-size: 32px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; }
-
-        .cbtn {
-            padding: 14px; background: rgba(255,255,255,0.1); border: none;
-            color: #fff; font-size: 18px; border-radius: 14px; font-weight: 600; cursor: pointer;
+        .calc-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px 0;
+            font-size: 22px;
+            font-weight: 500;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.15s;
+            text-align: center;
+            font-family: inherit;
         }
 
-        .cbtn:active { background: rgba(255,255,255,0.2); }
-        .cbtn.op { background: #ff9f0a; color: #fff; }
-        .cbtn.fn { background: rgba(255,255,255,0.2); color: #fff; }
+        .calc-btn:active {
+            transform: scale(0.94);
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .calc-btn.operator {
+            background: rgba(0, 113, 227, 0.15);
+            color: #0071e3;
+        }
+
+        .calc-btn.equal {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .calc-btn.zero {
+            grid-column: span 2;
+        }
+
+        /* ===== АДАПТИВ ===== */
+        @media (max-width: 420px) {
+            body { padding: 20px 12px; }
+            .profile-card { padding: 14px 16px; }
+            .avatar { width: 52px; height: 52px; font-size: 22px; }
+            .logo { font-size: 32px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="liquid-orb orb-1"></div>
-    <div class="liquid-orb orb-2"></div>
+    <!-- ===== ЖИДКИЕ СФЕРЫ ===== -->
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
 
     <div class="container">
-        <div class="liquid-card profile-header">
+
+        <!-- Бренд -->
+        <div class="brand">
+            <div class="logo">Rastek <span>®</span></div>
+            <div class="brand-sub">Pro Systems & Web Hub</div>
+        </div>
+
+        <!-- Профиль -->
+        <div class="profile-card glass">
             <div class="avatar">R</div>
-            <div class="bio">
-                <h1>Rastek<span class="reg-mark">®</span></h1>
-                <p>Android Customization, System Optimization & Web Dev</p>
-                <div class="status-badge">
-                    <span class="status-dot"></span>
-                    <span>Открыт к новым проектам</span>
+            <div class="profile-info">
+                <h2>
+                    Rastek
+                    <span class="status-badge">● Онлайн</span>
+                </h2>
+                <p>Mobile Dev · System Optimizations</p>
+                <div class="social-row">
+                    <a href="#" class="social-btn" id="tgLink">📱 Telegram</a>
+                    <a href="#" class="social-btn" id="ghLink">🐙 GitHub</a>
                 </div>
             </div>
         </div>
 
-        <div class="social-grid">
-            <a href="https://t.me/" target="_blank" class="social-btn">
-                <span>✈️ Telegram</span>
-            </a>
-            <a href="https://github.com/ras4ek" target="_blank" class="social-btn">
-                <span>🐙 GitHub</span>
-            </a>
-        </div>
+        <!-- Вкладки -->
+        <div class="glass tabs-wrapper">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="tab-projects">📁 Проекты</button>
+                <button class="tab-btn" data-tab="tab-services">⚙️ Услуги</button>
+                <button class="tab-btn" data-tab="tab-games">🎮 Аркада</button>
+            </div>
 
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="projects">🚀 Проекты</button>
-            <button class="tab-btn" data-tab="services">💼 Услуги</button>
-            <button class="tab-btn" data-tab="arcade">🎮 Аркада</button>
-        </div>
-
-        <div id="projects" class="tab-content active">
-            <a href="techspecs.html" class="liquid-card item-card" style="border-color: rgba(0, 113, 227, 0.4);">
-                <div class="item-left">
-                    <div class="item-icon" style="background: rgba(0, 113, 227, 0.2);">⚡</div>
-                    <div>
-                        <div class="item-title">TechSpecs Pro</div>
-                        <div class="item-desc">Сравнение смартфонов, AnTuTu v10 & FPS</div>
+            <!-- Проекты -->
+            <div id="tab-projects" class="tab-content active">
+                <a href="techspecs.html" class="menu-card accent-card">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">⚡</div>
+                        <div>
+                            <div class="menu-title">TechSpecs Pro</div>
+                            <div class="menu-desc">AnTuTu v10 · FPS Benchmark</div>
+                        </div>
                     </div>
-                </div>
-                <span class="badge" style="background: rgba(0, 113, 227, 0.2); color: #2997ff;">Pro ↗</span>
-            </a>
-
-            <a href="todo.html" class="liquid-card item-card">
-                <div class="item-left">
-                    <div class="item-icon">✅</div>
-                    <div>
-                        <div class="item-title">iOS Task Manager</div>
-                        <div class="item-desc">Планер задач в стиле Glassmorphism</div>
+                    <span class="menu-arrow">↗</span>
+                </a>
+                <a href="todo.html" class="menu-card">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">✅</div>
+                        <div>
+                            <div class="menu-title">iOS Task Manager</div>
+                            <div class="menu-desc">Минималистичный планировщик</div>
+                        </div>
                     </div>
-                </div>
-                <span class="badge" style="background: rgba(255, 255, 255, 0.1); color: #aaa;">App ↗</span>
-            </a>
-        </div>
-
-        <div id="services" class="tab-content">
-            <div class="liquid-card item-card">
-                <div class="item-left">
-                    <div class="item-icon">📱</div>
-                    <div>
-                        <div class="item-title">Android Оптимизация</div>
-                        <div class="item-desc">Настройка Shizuku, Brevent, LSPatch</div>
+                    <span class="menu-arrow">↗</span>
+                </a>
+                <div class="menu-card" style="opacity:0.6; cursor:default;">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">📊</div>
+                        <div>
+                            <div class="menu-title">System Monitor</div>
+                            <div class="menu-desc">В разработке</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="liquid-card item-card">
-                <div class="item-left">
-                    <div class="item-icon">💻</div>
-                    <div>
-                        <div class="item-title">Веб-Разработка</div>
-                        <div class="item-desc">Создание адаптивных Glassmorphism сайтов</div>
+            <!-- Услуги -->
+            <div id="tab-services" class="tab-content">
+                <div class="menu-card" style="cursor:default;">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">📱</div>
+                        <div>
+                            <div class="menu-title">Android Custom ROM</div>
+                            <div class="menu-desc">Оптимизация, деблоатинг, tweaks</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card" style="cursor:default;">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">🌐</div>
+                        <div>
+                            <div class="menu-title">Web-разработка</div>
+                            <div class="menu-desc">PWA, интерактивные интерфейсы</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-card" style="cursor:default;">
+                    <div class="menu-card-left">
+                        <div class="menu-icon">🧠</div>
+                        <div>
+                            <div class="menu-title">AI-интеграции</div>
+                            <div class="menu-desc">Чат-боты, генерация контента</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="arcade" class="tab-content">
-            <div class="liquid-card item-card" data-game="snake">
-                <div class="item-left">
-                    <div class="item-icon">🐍</div>
-                    <div>
-                        <div class="item-title">Retro Snake Pro</div>
-                        <div class="item-desc">Классика с точной механикой и D-Pad</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(48, 209, 88, 0.2); color: #30d158;">Играть</span>
-            </div>
-
-            <div class="liquid-card item-card" data-game="tetris">
-                <div class="item-left">
-                    <div class="item-icon">🧩</div>
-                    <div>
-                        <div class="item-title">Liquid Tetris</div>
-                        <div class="item-desc">Полноценный Тетрис с вращением фигур</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(191, 90, 242, 0.2); color: #bf5af2;">Играть</span>
-            </div>
-
-            <div class="liquid-card item-card" data-game="calc">
-                <div class="item-left">
-                    <div class="item-icon">🧮</div>
-                    <div>
-                        <div class="item-title">iOS Calculator</div>
-                        <div class="item-desc">Удобный и быстрый калькулятор</div>
-                    </div>
-                </div>
-                <span class="badge" style="background: rgba(255, 159, 10, 0.2); color: #ff9f0a;">Открыть</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="gameModal" class="modal">
-        <div class="modal-body">
-            <button class="close-btn" id="closeModalBtn">✕</button>
-            <h3 id="modalTitle" style="font-size: 18px; font-weight: 700;">Игра</h3>
-            <div id="scoreText" class="score-board">Счёт: 0</div>
-
-            <div id="canvasContainer" style="position: relative;">
-                <canvas id="gameCanvas" width="240" height="240"></canvas>
-                <div id="gameOverMsg" class="game-over-msg">Игра окончена — нажмите ▲ чтобы начать заново</div>
-            </div>
-
-            <div id="gameControls" class="dpad" style="display: none;">
-                <button class="dbtn" data-action="ROTATE">🔄</button>
-                <button class="dbtn" data-action="UP">▲</button>
-                <div></div>
-                <button class="dbtn" data-action="LEFT">◄</button>
-                <button class="dbtn" data-action="DOWN">▼</button>
-                <button class="dbtn" data-action="RIGHT">►</button>
-            </div>
-
-            <div id="calcUI" style="display: none; width: 100%;">
-                <input type="text" id="calcDisplay" class="calc-display" readonly value="0">
-                <div class="calc-grid">
-                    <button class="cbtn fn" data-calc-clear="1">C</button>
-                    <button class="cbtn fn" data-calc-del="1">⌫</button>
-                    <button class="cbtn fn" data-calc-val="%">%</button>
-                    <button class="cbtn op" data-calc-val="/">÷</button>
-                    <button class="cbtn" data-calc-val="7">7</button>
-                    <button class="cbtn" data-calc-val="8">8</button>
-                    <button class="cbtn" data-calc-val="9">9</button>
-                    <button class="cbtn op" data-calc-val="*">×</button>
-                    <button class="cbtn" data-calc-val="4">4</button>
-                    <button class="cbtn" data-calc-val="5">5</button>
-                    <button class="cbtn" data-calc-val="6">6</button>
-                    <button class="cbtn op" data-calc-val="-">-</button>
-                    <button class="cbtn" data-calc-val="1">1</button>
-                    <button class="cbtn" data-calc-val="2">2</button>
-                    <button class="cbtn" data-calc-val="3">3</button>
-                    <button class="cbtn op" data-calc-val="+">+</button>
-                    <button class="cbtn" data-calc-val="0" style="grid-column: span 2;">0</button>
-                    <button class="cbtn" data-calc-val=".">.</button>
-                    <button class="cbtn op" data-calc-eq="1">=</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
-        }
-
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => switchTab(btn.dataset.tab, btn));
-        });
-
-        let currentGame = null;
-        let gameLoopTimer = null;
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-
-        function closeModal() {
-            document.getElementById('gameModal').style.display = 'none';
-            if (gameLoopTimer) clearInterval(gameLoopTimer);
-            currentGame = null;
-        }
-        document.getElementById('closeModalBtn').addEventListener('click', closeModal);
-
-        function openGame(type) {
-            document.getElementById('gameModal').style.display = 'flex';
-            document.getElementById('canvasContainer').style.display = 'none';
-            document.getElementById('gameControls').style.display = 'none';
-            document.getElementById('calcUI').style.display = 'none';
-            document.getElementById('scoreText').style.display = 'none';
-            document.getElementById('gameOverMsg').style.display = 'none';
-
-            if (type === 'snake') {
-                document.getElementById('modalTitle').innerText = "Retro Snake Pro";
-                canvas.width = 240; canvas.height = 240;
-                document.getElementById('canvasContainer').style.display = 'block';
-                document.getElementById('gameControls').style.display = 'grid';
-                document.getElementById('scoreText').style.display = 'block';
-                initSnake();
-            } else if (type === 'tetris') {
-                document.getElementById('modalTitle').innerText = "Liquid Tetris";
-                canvas.width = 200; canvas.height = 320;
-                document.getElementById('canvasContainer').style.display = 'block';
-                document.getElementById('gameControls').style.display = 'grid';
-                document.getElementById('scoreText').style.display = 'block';
-                initTetris();
-            } else if (type === 'calc') {
-                document.getElementById('modalTitle').innerText = "Calculator";
-                document.getElementById('calcUI').style.display = 'block';
-            }
-        }
-
-        document.querySelectorAll('[data-game]').forEach(el => {
-            el.addEventListener('click', () => openGame(el.dataset.game));
-        });
-
-        function triggerControl(action) {
-            if (currentGame === 'snake') handleSnakeInput(action);
-            if (currentGame === 'tetris') handleTetrisInput(action);
-        }
-
-        document.querySelectorAll('[data-action]').forEach(btn => {
-            btn.addEventListener('click', () => triggerControl(btn.dataset.action));
-        });
-
-        document.addEventListener('keydown', (e) => {
-            const map = {
-                'ArrowUp': 'UP', 'ArrowDown': 'DOWN', 'ArrowLeft': 'LEFT',
-                'ArrowRight': 'RIGHT', ' ': 'ROTATE'
-            };
-            if (map[e.key] && currentGame) {
-                e.preventDefault()
+            <!-- Аркада -->
+            <div id="tab-games" class="tab-content">
+                <div class="game-grid">
+                    <button class="game-btn" data-game="snake">
+                        <span class="emoji">🐍</span>
+                        <span>Retro Snake</span>
+                        <span style="margin-left:auto;color:#8e8e93;">▶</span>
+                    </button>
+                    <button class="game-btn" data-game="tetris">
+                        <span class="emoji">🧱</span>
+                        <span>Tetris</span>
+                        <span style="margin-left:auto;color:#8e8e93;">▶</span>
+                 
