@@ -3,368 +3,867 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RASTEK HUB // SYSTEM V2</title>
+  <title>CYBER / HUB</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: #050608; color: #e1e6ed; overflow-x: hidden; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-    
-    #three-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
-    
-    .container { width: 100%; max-width: 480px; padding: 16px; z-index: 1; }
+    :root {
+      --bg: #030508;
+      --card-bg: rgba(13, 17, 23, 0.75);
+      --border: rgba(0, 243, 255, 0.2);
+      --cyan: #00f3ff;
+      --pink: #ff0055;
+      --purple: #9d00ff;
+      --text: #c3e88d;
+      --glow-cyan: 0 0 15px rgba(0, 243, 255, 0.4);
+      --glow-pink: 0 0 15px rgba(ff, 0, 85, 0.4);
+    }
 
-    /* HEADER */
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: rgba(15, 18, 25, 0.7); backdrop-filter: blur(12px); padding: 12px 16px; border-radius: 16px; border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: 0 8px 32px rgba(0, 243, 255, 0.05); }
-    .brand-title { font-size: 22px; font-weight: 900; tracking: 1px; color: #fff; }
-    .brand-title span { color: #00f3ff; text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
-    .brand-sub { font-size: 10px; color: #00f3ff; letter-spacing: 2px; font-weight: 600; display: block; margin-top: 2px; }
-    
-    .profile-badge { background: linear-gradient(135deg, rgba(0,243,255,0.1), rgba(255,0,85,0.1)); border: 1px solid rgba(0, 243, 255, 0.3); padding: 6px 12px; border-radius: 12px; text-align: right; cursor: pointer; transition: 0.3s; }
-    .profile-badge:hover { border-color: #00f3ff; transform: scale(1.02); }
-    .profile-rank { font-size: 12px; font-weight: 800; color: #00f3ff; }
-    .profile-name { font-size: 11px; color: #a0aab8; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
 
-    /* NAV BUTTONS */
-    .nav-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
-    .nav-btn { background: rgba(18, 22, 31, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); color: #c4d0e0; padding: 10px; border-radius: 12px; font-weight: 700; font-size: 12px; text-align: center; text-decoration: none; transition: 0.2s; backdrop-filter: blur(6px); }
-    .nav-btn:hover, .nav-btn:active { background: #00f3ff; color: #000; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); border-color: #00f3ff; }
+    body {
+      background-color: var(--bg);
+      color: #fff;
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-    /* BANNER */
-    .banner { background: linear-gradient(135deg, rgba(20, 25, 38, 0.9), rgba(10, 12, 18, 0.9)); border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 16px; padding: 16px; margin-bottom: 20px; position: relative; overflow: hidden; cursor: pointer; backdrop-filter: blur(8px); }
-    .banner::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(0,243,255,0.1) 0%, transparent 70%); pointer-events: none; }
-    .banner-title { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .banner-desc { font-size: 11px; color: #00f3ff; font-weight: 600; }
+    /* ФОН THREE.JS */
+    #three-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
 
-    /* TABS */
-    .tabs-nav { display: flex; gap: 8px; margin-bottom: 16px; }
-    .tab-btn { flex: 1; padding: 10px; background: rgba(15, 18, 25, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; color: #7e8b9b; font-weight: 700; font-size: 12px; text-align: center; cursor: pointer; transition: 0.3s; }
-    .tab-btn.active { background: rgba(0, 243, 255, 0.15); border-color: #00f3ff; color: #00f3ff; box-shadow: 0 0 12px rgba(0, 243, 255, 0.2); }
+    /* ОСНОВНОЙ КОНТЕЙНЕР */
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: rgba(3, 5, 8, 0.6);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      border-left: 1px solid rgba(0, 243, 255, 0.1);
+      border-right: 1px solid rgba(0, 243, 255, 0.1);
+    }
 
-    .tab-pane { display: none; }
-    .tab-pane.active { display: flex; flex-direction: column; gap: 12px; }
+    /* ШАПКА */
+    header {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 17, 23, 0.8);
+    }
 
-    /* CARDS */
-    .card { background: rgba(15, 18, 25, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.25s; backdrop-filter: blur(10px); }
-    .card:hover { border-color: #00f3ff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 243, 255, 0.15); }
-    .card-left { display: flex; align-items: center; gap: 14px; }
-    .card-icon { width: 42px; height: 42px; background: rgba(0, 243, 255, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid rgba(0, 243, 255, 0.2); }
-    .card-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .card-sub { font-size: 11px; color: #7e8b9b; }
-    .card-arrow { color: #00f3ff; font-weight: 900; font-size: 16px; }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    /* 3D WEAPON SECTION */
-    .weapon-container { position: relative; width: 100%; height: 280px; background: rgba(10, 12, 18, 0.8); border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 20px; margin-top: 16px; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-    #weapon-canvas { width: 100%; height: 100%; cursor: grab; }
-    #weapon-canvas:active { cursor: grabbing; }
-    .weapon-hint { position: absolute; bottom: 12px; font-size: 11px; color: #00f3ff; font-weight: 600; letter-spacing: 1px; background: rgba(0,0,0,0.6); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(0,243,255,0.3); pointer-events: none; }
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--cyan);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      box-shadow: var(--glow-cyan);
+    }
 
-    /* MODALS */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: 0.3s; }
-    .modal-overlay.open { opacity: 1; pointer-events: auto; }
-    .modal-box { background: #0d1017; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 20px; padding: 20px; width: 90%; max-width: 380px; box-shadow: 0 0 30px rgba(0, 243, 255, 0.2); position: relative; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .modal-title { font-size: 16px; font-weight: 800; color: #fff; }
-    .modal-close { background: none; border: none; color: #ff0055; font-weight: 900; font-size: 18px; cursor: pointer; }
+    .brand-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
 
-    /* GAME CANVASES */
-    canvas.game-canvas { background: #050608; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.2); display: block; margin: 0 auto 12px auto; }
-    .game-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .g-btn { background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; text-align: center; cursor: pointer; }
-    .g-btn:active { background: #00f3ff; color: #000; }
+    .profile-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      background: #000;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--glow-cyan);
+      transition: transform 0.2s;
+    }
 
-    /* CALC GRID */
-    .calc-disp { background: #050608; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px; padding: 12px; text-align: right; font-size: 20px; font-weight: 800; color: #00f3ff; margin-bottom: 12px; font-family: monospace; }
-    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .calc-b { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; padding: 12px; border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer; text-align: center; }
-    .calc-b:active { background: #00f3ff; color: #000; }
+    .profile-btn:active {
+      transform: scale(0.9);
+    }
 
-    /* CHAT BOX */
-    .chat-box { height: 180px; overflow-y: auto; background: #050608; border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 10px; font-size: 12px; }
-    .chat-user { background: rgba(0, 243, 255, 0.2); border: 1px solid rgba(0, 243, 255, 0.4); color: #fff; align-self: flex-end; }
-    .chat-bot { background: rgba(255, 255, 255, 0.08); color: #a0aab8; align-self: flex-start; }
-    .chat-input-wrap { display: flex; gap: 8px; }
-    .chat-input-wrap input { flex: 1; background: #050608; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px; padding: 10px; color: #fff; font-size: 12px; outline: none; }
-    .chat-input-wrap button { background: #00f3ff; border: none; border-radius: 10px; padding: 0 16px; font-weight: bold; cursor: pointer; color: #000; }
+    /* ВИДЖЕТ ИНТЕРАКТИВНОГО USP */
+    .weapon-widget {
+      position: relative;
+      width: 100%;
+      height: 240px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+      background: radial-gradient(circle at center, rgba(0, 243, 255, 0.08) 0%, rgba(0,0,0,0) 70%);
+    }
 
-    /* ROULETTE STRIP */
-    .roulette-window { width: 100%; height: 80px; background: #050608; border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 12px; overflow: hidden; position: relative; margin-bottom: 12px; }
-    .roulette-window::after { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: #ff0055; box-shadow: 0 0 10px #ff0055; z-index: 2; }
-    .roulette-strip { display: flex; position: absolute; left: 0; top: 0; height: 100%; transition: left 4.5s cubic-bezier(0.15, 0.9, 0.2, 1); }
-    .item-card { width: 90px; height: 70px; margin: 5px 4px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid transparent; }
-    .item-card-icon { font-size: 20px; }
-    .item-card-name { font-size: 8px; font-weight: bold; margin-top: 4px; text-align: center; color: #fff; }
-    .rarity-covert { border-color: #ff0055; background: rgba(ff, 0, 85, 0.1); }
-    .rarity-classified { border-color: #aa00ff; background: rgba(170, 0, 255, 0.1); }
-    .rarity-restricted { border-color: #00f3ff; background: rgba(0, 243, 255, 0.1); }
-    .rarity-gold { border-color: #ffd700; background: rgba(255, 215, 0, 0.1); }
+    #weapon-canvas {
+      width: 280px;
+      height: 180px;
+      cursor: grab;
+    }
 
-    .footer { text-align: center; font-size: 10px; color: #4a5568; margin: 20px 0; letter-spacing: 1px; font-weight: 600; }
+    #weapon-canvas:active {
+      cursor: grabbing;
+    }
+
+    .weapon-info {
+      position: absolute;
+      bottom: 10px;
+      left: 20px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .weapon-info span {
+      color: var(--cyan);
+      font-weight: bold;
+    }
+
+    .weapon-hint {
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* ТАБЫ */
+    .tabs-nav {
+      display: flex;
+      background: rgba(13, 17, 23, 0.9);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 0;
+      background: none;
+      border: none;
+      color: #8b949e;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: 0.3s;
+      border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+      color: var(--cyan);
+      border-bottom-color: var(--cyan);
+      background: rgba(0, 243, 255, 0.05);
+      text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
+    }
+
+    /* ОСНОВНОЙ КОНТЕНТ */
+    .content-area {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* КАРТОЧКИ И СЕТКА */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .cyber-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 15px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.15), transparent);
+      transition: 0.5s;
+    }
+
+    .cyber-card:hover::before {
+      left: 100%;
+    }
+
+    .cyber-card:active {
+      transform: scale(0.97);
+      border-color: var(--cyan);
+    }
+
+    .card-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      color: #fff;
+    }
+
+    .card-icon {
+      font-size: 1.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.75rem;
+      color: #8b949e;
+    }
+
+    /* РЕКЛАМНЫЙ БАННЕР КЕЙСА */
+    .case-banner {
+      width: 100%;
+      margin-top: 15px;
+      background: linear-gradient(135deg, rgba(157, 0, 255, 0.2), rgba(255, 0, 85, 0.2));
+      border: 1px solid var(--pink);
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: var(--glow-pink);
+    }
+
+    .case-banner-info h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .case-banner-info p {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .btn-action {
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      box-shadow: var(--glow-pink);
+    }
+
+    /* МОДАЛЬНЫЕ ОКНА */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-window {
+      width: 90%;
+      max-width: 420px;
+      background: rgba(13, 17, 23, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--glow-cyan);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open .modal-window {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      color: var(--cyan);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* РУЛЕТКА КЕЙСА */
+    .roulette-container {
+      width: 100%;
+      height: 100px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .roulette-marker {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: var(--pink);
+      box-shadow: var(--glow-pink);
+      z-index: 10;
+    }
+
+    .roulette-strip {
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 10px;
+      gap: 8px;
+      transition: left 4.5s cubic-bezier(0.15, 0.9, 0.2, 1);
+    }
+
+    .item-card {
+      width: 90px;
+      height: 80px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      border-bottom: 3px solid #fff;
+      flex-shrink: 0;
+    }
+
+    .rarity-mil-spec { border-color: #4b69ff; }
+    .rarity-restricted { border-color: #8847ff; }
+    .rarity-classified { border-color: #d32ce6; }
+    .rarity-covert { border-color: #eb4b4b; }
+    .rarity-gold { border-color: #ffd700; }
+
+    .item-card-icon { font-size: 1.8rem; }
+    .item-card-name { margin-top: 4px; text-align: center; }
+
+    /* МИНИ-ИГРЫ ТЕТРИС И ЗМЕЙКА */
+    .game-canvas-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    canvas.game-canvas {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .dpad-controls {
+      display: grid;
+      grid-template-columns: repeat(3, 45px);
+      gap: 5px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .dpad-btn {
+      width: 45px;
+      height: 45px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dpad-btn:active {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* ЧАТ С ИИ */
+    .chat-box {
+      height: 200px;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .chat-msg {
+      max-width: 80%;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+    }
+
+    .chat-user {
+      align-self: flex-end;
+      background: rgba(0, 243, 255, 0.2);
+      border: 1px solid var(--cyan);
+    }
+
+    .chat-bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .chat-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-input-group input {
+      flex: 1;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 8px;
+      color: #fff;
+      font-family: inherit;
+    }
+
+    /* КАЛЬКУЛЯТОР */
+    .calc-display {
+      width: 100%;
+      height: 40px;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--cyan);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 10px;
+      margin-bottom: 10px;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+
+    .calc-btn {
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .calc-btn:active {
+      background: var(--cyan);
+      color: #000;
+    }
+
+    /* БЕНЧМАРК И СИСТЕМА */
+    .progress-bar-container {
+      margin-bottom: 10px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      margin-bottom: 4px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--cyan);
+      box-shadow: var(--glow-cyan);
+      transition: width 0.3s ease;
+    }
+
+    /* CSS СТИЛИ ДЛЯ ВЕРСТКИ ТАБОВ И ПРОФИЛЯ */
+    .profile-avatar-large {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      box-shadow: var(--glow-cyan);
+      margin: 0 auto 10px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      background: rgba(0,243,255,0.1);
+    }
+
+    .profile-info-text {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .profile-info-text h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .profile-info-text p {
+      font-size: 0.8rem;
+      color: var(--cyan);
+    }
+
+    .stat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+
+    .stat-item span:last-child {
+      color: var(--cyan);
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
 
   <canvas id="three-bg"></canvas>
 
-  <div class="container">
-    <!-- HEADER -->
-    <div class="header">
-      <div>
-        <div class="brand-title">RASTEK <span>HUB</span></div>
-        <span class="brand-sub">CYBER SYSTEM V2</span>
+  <div class="app-container">
+    <header>
+      <div class="brand">
+        <div class="logo-icon"></div>
+        <div class="brand-title">RASTEK-BAY</div>
       </div>
-      <div class="profile-badge" id="profile-trigger">
-        <div class="profile-rank">LVL 99</div>
-        <div class="profile-name">ras4ek</div>
+      <div class="profile-btn" id="profile-trigger">
+        ⚡
       </div>
-    </div>
+    </header>
 
-    <!-- QUICK NAV -->
-    <div class="nav-grid">
-      <a href="https://github.com/ras4ek" target="_blank" class="nav-btn">GITHUB</a>
-      <a href="https://github.com/ras4ek/Rastek-bay" target="_blank" class="nav-btn">REPO</a>
-      <a href="https://t.me" target="_blank" class="nav-btn">TELEGRAM</a>
-    </div>
-
-    <!-- BANNER -->
-    <div class="banner" id="case-banner-trigger">
-      <div class="banner-title">QUANTUM DROP SYSTEM</div>
-      <div class="banner-desc">▶ НАЖМИ ДЛЯ ГЕНЕРАЦИИ МОДУЛЯ</div>
-    </div>
-
-    <!-- TABS NAV -->
-    <div class="tabs-nav">
-      <div class="tab-btn active" data-tab="lab">LABORATORY</div>
-      <div class="tab-btn" data-tab="system">SYSTEM</div>
-    </div>
-
-    <!-- TAB 1: LAB -->
-    <div class="tab-pane active" id="pane-lab">
-      <div class="card" id="card-tetris">
-        <div class="card-left">
-          <div class="card-icon">🕹️</div>
-          <div>
-            <div class="card-title">Tetris Cyber</div>
-            <div class="card-sub">Аркадный модуль Тетрис</div>
-          </div>
-        </div>
-        <div class="card-arrow">▶</div>
-      </div>
-
-      <div class="card" id="card-snake">
-        <div class="card-left">
-          <div class="card-icon">🐍</div>
-          <div>
-            <div class="card-title">Retro Snake</div>
-            <div class="card-sub">Классическая Змейка</div>
-          </div>
-        </div>
-        <div class="card-arrow">▶</div>
-      </div>
-
-      <div class="card" id="card-calc">
-        <div class="card-left">
-          <div class="card-icon">🧮</div>
-          <div>
-            <div class="card-title">Matrix Calc</div>
-            <div class="card-sub">Интерфейс вычислений</div>
-          </div>
-        </div>
-        <div class="card-arrow">▶</div>
-      </div>
-    </div>
-
-    <!-- TAB 2: SYSTEM -->
-    <div class="tab-pane" id="pane-system">
-      <div class="card" id="card-bench">
-        <div class="card-left">
-          <div class="card-icon">⚡</div>
-          <div>
-            <div class="card-title">System Monitor</div>
-            <div class="card-sub">Анализ производительности</div>
-          </div>
-        </div>
-        <div class="card-arrow">▶</div>
-      </div>
-
-      <div class="card" id="card-ai">
-        <div class="card-left">
-          <div class="card-icon">🤖</div>
-          <div>
-            <div class="card-title">AI Terminal</div>
-            <div class="card-sub">Запрос к ИИ ассистенту</div>
-          </div>
-        </div>
-        <div class="card-arrow">▶</div>
-      </div>
-    </div>
-
-    <!-- 3D INTERACTIVE WEAPON -->
-    <div class="weapon-container">
+    <div class="weapon-widget">
       <canvas id="weapon-canvas"></canvas>
-      <div class="weapon-hint">КЛИК — ВЫСТРЕЛ | КУРСОР/ПАЛЕЦ — ВРАЩЕНИЕ 3D</div>
+      <div class="weapon-info">МОДЕЛЬ: <span>USP-S // CYBER</span></div>
+      <div class="weapon-hint">‹ ВРАЩАЙТЕ 3D ›</div>
     </div>
 
-    <div class="footer">@ RASTEK SYSTEMS // ALL RIGHTS RESERVED</div>
+    <nav class="tabs-nav">
+      <button class="tab-btn active" data-tab="apps">ПРИЛОЖЕНИЯ</button>
+      <button class="tab-btn" data-tab="games">ИГРЫ</button>
+      <button class="tab-btn" data-tab="tools">УТИЛИТЫ</button>
+    </nav>
+
+    <main class="content-area">
+      <!-- ТАБ 1: ПРИЛОЖЕНИЯ -->
+      <div class="tab-pane active" id="pane-apps">
+        <div class="grid-2">
+          <div class="cyber-card" id="card-ai">
+            <div class="card-icon">🤖</div>
+            <div class="card-title">ИИ ЧАТ-БОТ</div>
+            <div class="card-desc">Нейросетевой ассистент терминала</div>
+          </div>
+          <div class="cyber-card" id="card-bench">
+            <div class="card-icon">📊</div>
+            <div class="card-title">BENCHMARK</div>
+            <div class="card-desc">Тест производительности системы</div>
+          </div>
+        </div>
+
+        <div class="case-banner" id="case-banner-trigger">
+          <div class="case-banner-info">
+            <h3>ЛУТБОКС V1.0</h3>
+            <p>Испытайте удачу и выбейте предмет</p>
+          </div>
+          <button class="btn-action">ОТКРЫТЬ</button>
+        </div>
+      </div>
+
+      <!-- ТАБ 2: ИГРЫ -->
+      <div class="tab-pane" id="pane-games">
+        <div class="grid-2">
+          <div class="cyber-card" id="card-tetris">
+            <div class="card-icon">🧱</div>
+            <div class="card-title">ТЕТРИС</div>
+            <div class="card-desc">Классический кибер-тетрис</div>
+          </div>
+          <div class="cyber-card" id="card-snake">
+            <div class="card-icon">🐍</div>
+            <div class="card-title">ЗМЕЙКА</div>
+            <div class="card-desc">Ретро аркадный симулятор</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ТАБ 3: УТИЛИТЫ -->
+      <div class="tab-pane" id="pane-tools">
+        <div class="grid-2">
+          <div class="cyber-card" id="card-calc">
+            <div class="card-icon">🧮</div>
+            <div class="card-title">КАЛЬКУЛЯТОР</div>
+            <div class="card-desc">Быстрые математические расчеты</div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- MODAL: PROFILE -->
+  <!-- МОДАЛЬНОЕ ОКНО: ПРОФИЛЬ -->
   <div class="modal-overlay" id="modal-profile">
-    <div class="modal-box">
+    <div class="modal-window">
       <div class="modal-header">
         <div class="modal-title">ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ</div>
-        <button class="modal-close">✕</button>
+        <button class="modal-close">&times;</button>
       </div>
-      <p style="font-size: 13px; color: #a0aab8; line-height: 1.6;">
-        <b>Разработчик:</b> ras4ek<br>
-        <b>Статус:</b> Developer / Creator<br>
-        <b>Проект:</b> Rastek Hub Core V2<br>
-        <b>Стек:</b> JavaScript, Three.js, HTML5 Canvas
-      </p>
+      <div class="profile-avatar-large">👤</div>
+      <div class="profile-info-text">
+        <h2>RAS4EK</h2>
+        <p>STATUS: ONLINE // ACCESS: LEVEL 4</p>
+      </div>
+      <div class="stat-list">
+        <div class="stat-item"><span>Система:</span> <span>CyberOS v4.2</span></div>
+        <div class="stat-item"><span>Пинг:</span> <span>12 ms</span></div>
+        <div class="stat-item"><span>Безопасность:</span> <span>Защищено</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- MODAL: CASE -->
+  <!-- МОДАЛЬНОЕ ОКНО: КЕЙС -->
   <div class="modal-overlay" id="modal-case">
-    <div class="modal-box">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">QUANTUM GENERATOR</div>
-        <button class="modal-close">✕</button>
+        <div class="modal-title">КИБЕР ЛУТБОКС</div>
+        <button class="modal-close">&times;</button>
       </div>
-      <div class="roulette-window">
+      <div class="roulette-container">
+        <div class="roulette-marker"></div>
         <div class="roulette-strip" id="case-strip"></div>
       </div>
-      <div id="case-result-text" style="text-align: center; font-size: 12px; font-weight: bold; color: #00f3ff; min-height: 20px; margin-bottom: 12px;">ГОТОВ К ЗАПУСКУ</div>
-      <button class="g-btn" id="btn-spin-case" style="width: 100%;">ЗАПУСТИТЬ ГЕНЕРАЦИЮ</button>
+      <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: var(--cyan);" id="case-result-text"> Нажмите КРУТИТЬ </div>
+      <button class="btn-action" style="width: 100%; padding: 12px;" id="btn-spin-case">КРУТИТЬ КЕЙС</button>
     </div>
   </div>
 
-  <!-- MODAL: BENCHMARK -->
-  <div class="modal-overlay" id="modal-bench">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div class="modal-title">МОНИТОР СИСТЕМЫ</div>
-        <button class="modal-close">✕</button>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>ЦП</span><span id="cpu-val">0%</span></div>
-          <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;"><div id="cpu-fill" style="width: 0%; height: 100%; background: #00f3ff; transition: 0.2s;"></div></div>
-        </div>
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>ГП</span><span id="gpu-val">0%</span></div>
-          <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;"><div id="gpu-fill" style="width: 0%; height: 100%; background: #ff0055; transition: 0.2s;"></div></div>
-        </div>
-        <div>
-          <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px;"><span>ОЗУ</span><span id="ram-val">0%</span></div>
-          <div style="background: rgba(255,255,255,0.1); height: 8px; border-radius: 4px; overflow: hidden;"><div id="ram-fill" style="width: 0%; height: 100%; background: #ffd700; transition: 0.2s;"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: AI CHAT -->
+  <!-- МОДАЛЬНОЕ ОКНО: ИИ ЧАТ -->
   <div class="modal-overlay" id="modal-ai">
-    <div class="modal-box">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">AI TERMINAL</div>
-        <button class="modal-close">✕</button>
+        <div class="modal-title">ИИ АССИСТЕНТ</div>
+        <button class="modal-close">&times;</button>
       </div>
       <div class="chat-box" id="chat-box">
-        <div class="chat-msg chat-bot">Терминал готов к работе. Введите запрос...</div>
+        <div class="chat-msg chat-bot">Терминал готов к работе. Введите запрос.</div>
       </div>
-      <div class="chat-input-wrap">
+      <div class="chat-input-group">
         <input type="text" id="chat-in" placeholder="Сообщение...">
-        <button id="chat-send-btn">▶</button>
+        <button class="btn-action" id="chat-send-btn">></button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: TETRIS -->
+  <!-- МОДАЛЬНОЕ ОКНО: БЕНЧМАРК -->
+  <div class="modal-overlay" id="modal-bench">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div class="modal-title">МОНИТОР СИСТЕМЫ</div>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-label"><span>ЦП (CPU):</span><span id="cpu-val">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="cpu-fill"></div></div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-label"><span>ГПУ (GPU):</span><span id="gpu-val">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="gpu-fill"></div></div>
+      </div>
+      <div class="progress-bar-container">
+        <div class="progress-label"><span>ОЗУ (RAM):</span><span id="ram-val">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="ram-fill"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- МОДАЛЬНОЕ ОКНО: ТЕТРИС -->
   <div class="modal-overlay" id="modal-tetris">
-    <div class="modal-box" style="text-align: center;">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">TETRIS CYBER</div>
-        <button class="modal-close">✕</button>
+        <div class="modal-title">ТЕТРИС</div>
+        <button class="modal-close">&times;</button>
       </div>
-      <canvas id="tetris-canvas" class="game-canvas" width="200" height="320"></canvas>
-      <div class="game-controls">
-        <div class="g-btn" id="t-left">◄</div>
-        <div class="g-btn" id="t-rot">↻</div>
-        <div class="g-btn" id="t-right">►</div>
-        <div class="g-btn" id="t-down" style="grid-column: span 3;">УСКОРИТЬ ПАДЕНИЕ</div>
+      <div class="game-canvas-container">
+        <canvas id="tetris-canvas" class="game-canvas" width="200" height="320"></canvas>
+      </div>
+      <div class="dpad-controls">
+        <div></div><button class="dpad-btn" id="t-left">◄</button>
+        <button class="dpad-btn" id="t-down">▼</button>
+        <button class="dpad-btn" id="t-right">►</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: SNAKE -->
+  <!-- МОДАЛЬНОЕ ОКНО: ЗМЕЙКА -->
   <div class="modal-overlay" id="modal-snake">
-    <div class="modal-box" style="text-align: center;">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">RETRO SNAKE</div>
-        <button class="modal-close">✕</button>
+        <div class="modal-title">ЗМЕЙКА</div>
+        <button class="modal-close">&times;</button>
       </div>
-      <canvas id="snake-canvas" class="game-canvas" width="220" height="220"></canvas>
-      <div class="game-controls">
-        <div></div><div class="g-btn" id="s-up">▲</div><div></div>
-        <div class="g-btn" id="s-left">◄</div><div class="g-btn" id="s-down">▼</div><div class="g-btn" id="s-right">►</div>
+      <div class="game-canvas-container">
+        <canvas id="snake-canvas" class="game-canvas" width="220" height="220"></canvas>
+      </div>
+      <div class="dpad-controls">
+        <div></div><button class="dpad-btn" id="s-up">▲</button><div></div>
+        <button class="dpad-btn" id="s-left">◄</button>
+        <button class="dpad-btn" id="s-down">▼</button>
+        <button class="dpad-btn" id="s-right">►</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: CALCULATOR -->
+  <!-- МОДАЛЬНОЕ ОКНО: КАЛЬКУЛЯТОР -->
   <div class="modal-overlay" id="modal-calc">
-    <div class="modal-box">
+    <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">MATRIX CALC</div>
-        <button class="modal-close">✕</button>
+        <div class="modal-title">КАЛЬКУЛЯТОР</div>
+        <button class="modal-close">&times;</button>
       </div>
-      <div class="calc-disp" id="calc-display">0</div>
+      <div class="calc-display" id="calc-display">0</div>
       <div class="calc-grid">
-        <button class="calc-b" onclick="calcInput('7')">7</button>
-        <button class="calc-b" onclick="calcInput('8')">8</button>
-        <button class="calc-b" onclick="calcInput('9')">9</button>
-        <button class="calc-b" onclick="calcInput('/')" style="color: #00f3ff;">/</button>
-        <button class="calc-b" onclick="calcInput('4')">4</button>
-        <button class="calc-b" onclick="calcInput('5')">5</button>
-        <button class="calc-b" onclick="calcInput('6')">6</button>
-        <button class="calc-b" onclick="calcInput('*')" style="color: #00f3ff;">*</button>
-        <button class="calc-b" onclick="calcInput('1')">1</button>
-        <button class="calc-b" onclick="calcInput('2')">2</button>
-        <button class="calc-b" onclick="calcInput('3')">3</button>
-        <button class="calc-b" onclick="calcInput('-')" style="color: #00f3ff;">-</button>
-        <button class="calc-b" onclick="calcInput('C')" style="color: #ff0055;">C</button>
-        <button class="calc-b" onclick="calcInput('0')">0</button>
-        <button class="calc-b" onclick="calcEval()" style="background: #00f3ff; color: #000;">=</button>
-        <button class="calc-b" onclick="calcInput('+')" style="color: #00f3ff;">+</button>
+        <button class="calc-btn" onclick="calcInput('C')">C</button>
+        <button class="calc-btn" onclick="calcInput('/')">/</button>
+        <button class="calc-btn" onclick="calcInput('*')">*</button>
+        <button class="calc-btn" onclick="calcInput('-')">-</button>
+        <button class="calc-btn" onclick="calcInput('7')">7</button>
+        <button class="calc-btn" onclick="calcInput('8')">8</button>
+        <button class="calc-btn" onclick="calcInput('9')">9</button>
+        <button class="calc-btn" onclick="calcInput('+')">+</button>
+        <button class="calc-btn" onclick="calcInput('4')">4</button>
+        <button class="calc-btn" onclick="calcInput('5')">5</button>
+        <button class="calc-btn" onclick="calcInput('6')">6</button>
+        <button class="calc-btn" onclick="calcEval()" style="grid-row: span 2; height: 100%; background: var(--cyan); color: #000;">=</button>
+        <button class="calc-btn" onclick="calcInput('1')">1</button>
+        <button class="calc-btn" onclick="calcInput('2')">2</button>
+        <button class="calc-btn" onclick="calcInput('3')">3</button>
+        <button class="calc-btn" onclick="calcInput('0')" style="grid-column: span 2;">0</button>
+        <button class="calc-btn" onclick="calcInput('.')">.</button>
       </div>
     </div>
   </div>
 
   <script>
-    // === AUDIO SYNTHESIZER ===
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function playSound(freq = 440, type = 'sine', duration = 0.1) {
-      if (!audioCtx) audioCtx = new AudioCtx();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      
+    // WEB AUDIO API SOUND GENERATOR
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(freq, type = 'sine', duration = 0.1) {
+      if(audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      
       osc.type = type;
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + duration);
-      
-      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-      
+      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
       osc.connect(gain);
       gain.connect(audioCtx.destination);
-      
       osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+      osc.stop(audioCtx.currentTime + duration);
     }
 
     // === 1. CYBER BACKGROUND (THREE.JS) ===
@@ -810,4 +1309,5 @@
     document.getElementById('s-left').onclick = () => { if(snakeDir.x === 0) snakeDir = {x: -10, y: 0}; };
     document.getElementById('s-right').onclick = () => { if(snakeDir.x === 0) snakeDir = {x: 10, y: 0}; };
   </script>
-  
+</body>
+</html>
