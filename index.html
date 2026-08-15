@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYBER / HUB</title>
+  <title>ETO ROSTIK // CS HUB</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #030508;
-      --card-bg: rgba(13, 17, 23, 0.75);
-      --border: rgba(0, 243, 255, 0.2);
-      --cyan: #00f3ff;
-      --pink: #ff0055;
-      --purple: #9d00ff;
-      --glow-cyan: 0 0 15px rgba(0, 243, 255, 0.4);
-      --glow-pink: 0 0 15px rgba(255, 0, 85, 0.4);
+      --bg: #090d12;
+      --card-bg: rgba(18, 24, 33, 0.9);
+      --border: rgba(0, 162, 255, 0.2);
+      --cs-blue: #00a2ff;
+      --cs-gold: #e5a93c;
+      --cs-purple: #8847ff;
+      --cs-red: #eb4b4b;
+      --glow-blue: 0 0 15px rgba(0, 162, 255, 0.3);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
@@ -31,162 +31,101 @@
     body {
       display: flex;
       justify-content: center;
-      align-items: flex-start; /* Разрешаем контенту расти вниз */
+      align-items: flex-start;
       min-height: 100vh;
-      padding: 20px 0; /* Отступы сверху/снизу на ПК */
+      padding: 10px;
+      background: radial-gradient(circle at center, #121d2b 0%, #090d12 100%);
     }
-
-    #three-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
 
     .app-container {
       width: 100%;
       max-width: 480px;
-      /* Убрали фиксированную или минимальную высоту, разрешаем расти */
       display: flex;
       flex-direction: column;
       position: relative;
-      background: rgba(3, 5, 8, 0.6);
-      backdrop-filter: blur(8px);
-      box-shadow: 0 0 50px rgba(0,0,0,0.8);
-      border: 1px solid rgba(0, 243, 255, 0.1);
-      border-radius: 16px; /* Закруглим углы самого приложения */
-      overflow: hidden; /* Чтобы табы не вылезали за радиус */
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 40px rgba(0,0,0,0.8);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
     }
 
-    header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(13, 17, 23, 0.8); }
+    header { padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(18, 24, 33, 0.95); }
     .brand { display: flex; align-items: center; gap: 10px; }
-    .logo-icon { width: 28px; height: 28px; background: var(--cyan); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); box-shadow: var(--glow-cyan); }
-    .brand-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; color: var(--cyan); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
-    .profile-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--cyan); background: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow-cyan); transition: transform 0.2s; }
-    .profile-btn:active { transform: scale(0.9); }
+    .logo-icon { width: 28px; height: 28px; background: var(--cs-blue); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); box-shadow: var(--glow-blue); }
+    .brand-title { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; letter-spacing: 2px; color: var(--cs-blue); text-shadow: 0 0 10px rgba(0, 162, 255, 0.5); }
+    
+    .header-controls { display: flex; align-items: center; gap: 10px; }
+    .sound-btn, .profile-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--cs-blue); background: #000; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: var(--glow-blue); transition: transform 0.2s; color: #fff; font-size: 1rem;}
+    .sound-btn:active, .profile-btn:active { transform: scale(0.9); }
 
-    .weapon-widget { position: relative; width: 100%; height: 240px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); background: radial-gradient(circle at center, rgba(0, 243, 255, 0.08) 0%, rgba(0,0,0,0) 70%); }
-    #weapon-canvas { width: 280px; height: 180px; cursor: grab; }
-    #weapon-canvas:active { cursor: grabbing; }
-    .weapon-info { position: absolute; bottom: 10px; left: 20px; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: rgba(255,255,255,0.7); }
-    .weapon-info span { color: var(--cyan); font-weight: bold; }
-    .weapon-hint { position: absolute; bottom: 10px; right: 20px; font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+    .weapon-widget { position: relative; width: 100%; height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); background: radial-gradient(circle at center, rgba(0, 162, 255, 0.08) 0%, rgba(0,0,0,0.4) 70%); }
+    #weapon-canvas { width: 100%; height: 160px; cursor: grab; }
+    .weapon-info { position: absolute; bottom: 8px; left: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    .weapon-info span { color: var(--cs-gold); font-weight: bold; }
+    .weapon-hint { position: absolute; bottom: 8px; right: 15px; font-size: 0.7rem; color: rgba(255,255,255,0.4); }
 
-    .tabs-nav { display: flex; background: rgba(13, 17, 23, 0.9); border-bottom: 1px solid var(--border); }
+    .tabs-nav { display: flex; background: rgba(18, 24, 33, 0.95); border-bottom: 1px solid var(--border); }
     .tab-btn { flex: 1; padding: 12px 0; background: none; border: none; color: #8b949e; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; transition: 0.3s; border-bottom: 2px solid transparent; text-align: center;}
-    .tab-btn.active { color: var(--cyan); border-bottom-color: var(--cyan); background: rgba(0, 243, 255, 0.05); text-shadow: 0 0 8px rgba(0, 243, 255, 0.5); }
+    .tab-btn.active { color: var(--cs-blue); border-bottom-color: var(--cs-blue); background: rgba(0, 162, 255, 0.05); text-shadow: 0 0 8px rgba(0, 162, 255, 0.5); }
 
-    .content-area {
-      flex: 1; /* Растягиваемся, чтобы занять все место */
-      padding: 20px;
-      /* Убрали overflow-y: auto;, теперь скроллится вся страница */
-    }
-
+    .content-area { flex: 1; padding: 15px; min-height: 260px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .cyber-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; position: relative; overflow: hidden; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; }
-    .cyber-card:hover { border-color: rgba(0, 243, 255, 0.5); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,243,255,0.1); }
-    .cyber-card:active { transform: scale(0.97); border-color: var(--cyan); }
-    .card-title { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: #fff; text-transform: uppercase; letter-spacing: 1px;}
-    .card-icon { font-size: 1.5rem; }
-    .card-desc { font-size: 0.75rem; color: #8b949e; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .cyber-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 15px; cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; gap: 8px; }
+    .cyber-card:hover { border-color: rgba(0, 162, 255, 0.6); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,162,255,0.15); }
+    .cyber-card:active { transform: scale(0.97); }
+    .card-title { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: #fff; text-transform: uppercase; }
+    .card-icon { font-size: 1.4rem; }
+    .card-desc { font-size: 0.7rem; color: #8b949e; }
 
-    .case-banner { width: 100%; margin-top: 15px; background: linear-gradient(135deg, rgba(157, 0, 255, 0.2), rgba(255, 0, 85, 0.2)); border: 1px solid var(--pink); border-radius: 8px; padding: 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: var(--glow-pink); gap: 10px;}
-    .case-banner:hover { border-color: rgba(255,0,85,0.6); box-shadow: 0 0 20px rgba(255,0,85,0.3); }
-    .case-banner-info h3 { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; color: #fff; text-transform: uppercase; }
-    .case-banner-info p { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
-    .btn-action { background: var(--pink); color: #fff; border: none; padding: 8px 14px; font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: var(--glow-pink); transition: 0.2s; white-space: nowrap;}
-    .btn-action:hover { background: #ff1a6f; box-shadow: 0 0 20px rgba(255,0,85,0.6); }
+    .case-banner { width: 100%; margin-top: 12px; background: linear-gradient(135deg, rgba(0, 162, 255, 0.15), rgba(229, 169, 60, 0.15)); border: 1px solid var(--cs-blue); border-radius: 8px; padding: 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+    .case-banner:hover { border-color: var(--cs-gold); }
+    .case-banner-info h3 { font-family: 'Orbitron', sans-serif; font-size: 0.9rem; color: #fff; }
+    .case-banner-info p { font-size: 0.7rem; color: rgba(255,255,255,0.7); }
+    .btn-action { background: var(--cs-blue); color: #000; border: none; padding: 8px 14px; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: bold; border-radius: 4px; cursor: pointer; box-shadow: var(--glow-blue); }
+    .btn-action:hover { background: #33b3ff; }
 
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 20px; }
+    /* МОДАЛЬНЫЕ ОКНА */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; padding: 15px; }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal-window { width: 100%; max-width: 420px; background: rgba(13, 17, 23, 0.95); border: 1px solid var(--cyan); border-radius: 12px; padding: 20px; box-shadow: var(--glow-cyan); transform: translateY(20px); transition: transform 0.3s ease; max-height: 90vh; overflow-y: auto; }
+    .modal-window { width: 100%; max-width: 400px; background: rgba(18, 24, 33, 0.98); border: 1px solid var(--cs-blue); border-radius: 12px; padding: 20px; box-shadow: var(--glow-blue); transform: translateY(20px); transition: transform 0.3s ease; max-height: 85vh; overflow-y: auto; }
     .modal-overlay.open .modal-window { transform: translateY(0); }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
-    .modal-title { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 1px;}
-    .modal-close { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; line-height: 1; }
-    .modal-close:hover { color: var(--pink); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; }
+    .modal-title { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; color: var(--cs-blue); text-transform: uppercase; }
+    .modal-close { background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer; }
 
-    .roulette-container { width: 100%; height: 100px; background: #000; border: 1px solid var(--border); border-radius: 6px; position: relative; overflow: hidden; margin: 15px 0; }
-    .roulette-marker { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: var(--pink); box-shadow: var(--glow-pink); z-index: 10; }
-    .roulette-strip { display: flex; position: absolute; left: 0; top: 10px; gap: 8px; transition: left 4.5s cubic-bezier(0.15, 0.9, 0.2, 1); padding: 0 10px;}
-    .item-card { width: 90px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.7rem; border-bottom: 3px solid #fff; flex-shrink: 0; padding: 5px;}
-    .item-card-icon { font-size: 1.8rem; }
-    .item-card-name { margin-top: 4px; text-align: center; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
-    .rarity-mil-spec { border-color: #4b69ff; color: #4b69ff; }
-    .rarity-restricted { border-color: #8847ff; color: #8847ff; }
-    .rarity-classified { border-color: #d32ce6; color: #d32ce6; }
-    .rarity-covert { border-color: #eb4b4b; color: #eb4b4b; }
-    .rarity-gold { border-color: #ffd700; color: #ffd700; }
+    /* РУЛЕТКА */
+    .roulette-container { width: 100%; height: 90px; background: #000; border: 1px solid var(--border); border-radius: 6px; position: relative; overflow: hidden; margin: 15px 0; }
+    .roulette-marker { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 2px; height: 100%; background: var(--cs-gold); z-index: 10; }
+    .roulette-strip { display: flex; position: absolute; left: 0; top: 8px; gap: 6px; transition: left 4s cubic-bezier(0.08, 0.82, 0.17, 1); padding: 0 10px; }
+    .skin-item { width: 80px; height: 74px; background: rgba(255,255,255,0.04); border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.65rem; border-bottom: 3px solid #fff; flex-shrink: 0; padding: 4px; text-align: center; }
+    .skin-name { margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; }
 
-    .game-canvas-container { display: flex; justify-content: center; margin-bottom: 15px; }
-    canvas.game-canvas { background: #000; border: 1px solid var(--border); border-radius: 4px; display: block;}
-    .dpad-controls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; justify-content: center; max-width: 200px; margin: 0 auto;}
-    .dpad-btn { width: 100%; aspect-ratio: 1/1; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-size: 1.2rem; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .dpad-btn:hover { border-color: rgba(0, 243, 255, 0.5); background: rgba(0, 243, 255, 0.05); }
-    .dpad-btn:active { background: var(--cyan); color: #000; box-shadow: var(--glow-cyan); transform: scale(0.95); }
-
-    .chat-box { height: 250px; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 6px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; font-size: 0.85rem;}
-    .chat-msg { max-width: 80%; padding: 8px 12px; border-radius: 8px; position: relative;}
-    .chat-user { align-self: flex-end; background: rgba(0, 243, 255, 0.15); border: 1px solid var(--cyan); color: #fff; border-bottom-right-radius: 2px; }
-    .chat-bot { align-self: flex-start; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.1); color: #ececed; border-bottom-left-radius: 2px; }
-    .chat-input-group { display: flex; gap: 10px; }
-    .chat-input-group input { flex: 1; background: rgba(0,0,0,0.5); border: 1px solid var(--border); border-radius: 6px; padding: 10px 15px; color: #fff; font-family: inherit; font-size: 0.9rem;}
-    .chat-input-group input:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 10px rgba(0,243,255,0.2); }
-    .chat-input-group .btn-action { padding: 0 20px; font-size: 1rem; }
-
-    .calc-display { width: 100%; height: 50px; background: #000; border: 1px solid var(--border); border-radius: 6px; color: var(--cyan); font-family: 'Orbitron', sans-serif; font-size: 1.5rem; display: flex; align-items: center; justify-content: flex-end; padding: 0 15px; margin-bottom: 15px; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-    .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .calc-btn { padding: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #fff; font-family: 'Orbitron', sans-serif; font-size: 1rem; border-radius: 6px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center;}
-    .calc-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); }
-    .calc-btn:active { background: var(--cyan); color: #000; transform: scale(0.95); box-shadow: var(--glow-cyan); }
-    .calc-btn.op { color: var(--cyan); font-weight: bold; }
-    .calc-btn.eq { background: var(--cyan); color: #000; font-weight: bold; box-shadow: var(--glow-cyan); }
-    .calc-btn.eq:hover { background: #33f5ff; }
-
-    .progress-bar-container { margin-bottom: 15px; }
-    .progress-label { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 6px; color: #8b949e; font-family: 'Orbitron', sans-serif;}
-    .progress-track { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 5px; overflow: hidden; border: 1px solid rgba(255,255,255,0.03); }
-    .progress-fill { height: 100%; width: 0%; background: var(--cyan); box-shadow: var(--glow-cyan); transition: width 0.3s ease; border-radius: 5px; }
-
-    .profile-avatar-large { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--cyan); box-shadow: var(--glow-cyan); margin: 10px auto 15px auto; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; background: rgba(0,243,255,0.1); position: relative;}
-    .profile-avatar-large::after { content: ''; position: absolute; bottom: 5px; right: 5px; width: 15px; height: 15px; background: #0f0; border-radius: 50%; border: 2px solid var(--bg); box-shadow: 0 0 10px #0f0; }
-    .profile-info-text { text-align: center; margin-bottom: 20px; }
-    .profile-info-text h2 { font-family: 'Orbitron', sans-serif; font-size: 1.2rem; color: #fff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px;}
-    .profile-info-text p { font-size: 0.85rem; color: var(--cyan); font-weight: bold;}
-    .stat-list { display: flex; flex-direction: column; gap: 10px; }
-    .stat-item { display: flex; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.9rem; color: #ececed;}
-    .stat-item span:first-child { color: #8b949e; }
-    .stat-item span:last-child { color: var(--cyan); font-weight: bold; font-family: 'Orbitron', sans-serif;}
-
-    .footer { text-align: center; font-size: 0.7rem; color: #4a5568; padding: 15px 0; letter-spacing: 1px; font-weight: 600; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2); width: 100%;}
-
-    @media (max-width: 480px) {
-      body { padding: 0; }
-      .app-container { border-radius: 0; border: none; }
-      .brand-title { font-size: 1rem; }
-      .weapon-widget { height: 200px; }
-      #weapon-canvas { width: 240px; height: 150px; }
-      .tab-btn { font-size: 0.65rem; }
-    }
+    .footer { text-align: center; font-size: 0.65rem; color: #4a5568; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.3); }
   </style>
 </head>
 <body>
-
-  <canvas id="three-bg"></canvas>
 
   <div class="app-container">
     <header>
       <div class="brand">
         <div class="logo-icon"></div>
-        <div class="brand-title">RASTEK-BAY</div>
+        <div class="brand-title">ETO ROSTIK</div>
       </div>
-      <div class="profile-btn" id="profile-trigger">
-        👤
+      <div class="header-controls">
+        <button class="sound-btn" id="sound-toggle">🔊</button>
+        <button class="profile-btn" id="profile-trigger">👤</button>
       </div>
     </header>
 
     <div class="weapon-widget">
       <canvas id="weapon-canvas"></canvas>
-      <div class="weapon-info">МОДЕЛЬ: <span>USP-S // CYBER</span></div>
-      <div class="weapon-hint">‹ ВРАЩАЙТЕ 3D ›</div>
+      <div class="weapon-info">МОДЕЛЬ: <span>USP-S | ROSTIK</span></div>
+      <div class="weapon-hint">‹ 2Х ТАП = ОСМОТР ›</div>
     </div>
 
     <nav class="tabs-nav">
@@ -196,348 +135,108 @@
     </nav>
 
     <main class="content-area">
-      <!-- ТАБ 1: ПРИЛОЖЕНИЯ -->
+      <!-- ТАБ 1 -->
       <div class="tab-pane active" id="pane-apps">
         <div class="grid-2">
-          <div class="cyber-card" id="card-ai">
+          <div class="cyber-card" onclick="openModal('modal-ai')">
             <div class="card-icon">🤖</div>
-            <div class="card-title">ИИ ЧАТ-БОТ</div>
-            <div class="card-desc">Нейросетевой ассистент терминала</div>
+            <div class="card-title">ИИ ТРЕНЕР</div>
+            <div class="card-desc">Советы по тактикам CS2</div>
           </div>
-          <div class="cyber-card" id="card-bench">
+          <div class="cyber-card" onclick="openModal('modal-stats')">
             <div class="card-icon">📊</div>
-            <div class="card-title">BENCHMARK</div>
-            <div class="card-desc">Тест производительности системы</div>
+            <div class="card-title">МОНИТОР</div>
+            <div class="card-desc">FPS и пинг в реальном времени</div>
           </div>
         </div>
-
-        <div class="case-banner" id="case-banner-trigger">
+        <div class="case-banner" onclick="openModal('modal-case')">
           <div class="case-banner-info">
-            <h3>ЛУТБОКС V1.0</h3>
-            <p>Испытайте удачу и выбейте предмет</p>
+            <h3>CS2 КЕЙС-ХАБ</h3>
+            <p>Испытай удачу и выбей редкий нож</p>
           </div>
-          <button class="btn-action">ОТКРЫТЬ</button>
+          <button class="btn-action">КЕЙСЫ</button>
         </div>
       </div>
 
-      <!-- ТАБ 2: ИГРЫ -->
+      <!-- ТАБ 2 -->
       <div class="tab-pane" id="pane-games">
         <div class="grid-2">
-          <div class="cyber-card" id="card-tetris">
+          <div class="cyber-card" onclick="openModal('modal-tetris')">
             <div class="card-icon">🧱</div>
             <div class="card-title">ТЕТРИС</div>
-            <div class="card-desc">Классический кибер-тетрис</div>
+            <div class="card-desc">Классическая аркада</div>
           </div>
-          <div class="cyber-card" id="card-snake">
+          <div class="cyber-card" onclick="openModal('modal-snake')">
             <div class="card-icon">🐍</div>
             <div class="card-title">ЗМЕЙКА</div>
-            <div class="card-desc">Ретро аркадный симулятор</div>
+            <div class="card-desc">Ретро-игра</div>
           </div>
         </div>
       </div>
 
-      <!-- ТАБ 3: УТИЛИТЫ -->
+      <!-- ТАБ 3 -->
       <div class="tab-pane" id="pane-tools">
         <div class="grid-2">
-          <div class="cyber-card" id="card-calc">
+          <div class="cyber-card" onclick="openModal('modal-calc')">
             <div class="card-icon">🧮</div>
             <div class="card-title">КАЛЬКУЛЯТОР</div>
-            <div class="card-desc">Быстрые математические расчеты</div>
+            <div class="card-desc">Быстрые расчеты</div>
           </div>
         </div>
       </div>
     </main>
 
-    <div class="footer">@ RASTEK SYSTEMS // ALL RIGHTS RESERVED</div>
+    <div class="footer">@ ETO ROSTIK CS2 // ALL RIGHTS RESERVED</div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: ПРОФИЛЬ -->
+  <!-- МОДАЛКА: ПРОФИЛЬ -->
   <div class="modal-overlay" id="modal-profile">
     <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ</div>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title">ПРОФИЛЬ ИГРОКА</div>
+        <button class="modal-close" onclick="closeModal('modal-profile')">&times;</button>
       </div>
-      <div class="profile-avatar-large">👤</div>
-      <div class="profile-info-text">
-        <h2>RAS4EK</h2>
-        <p>STATUS: ONLINE // ACCESS: LEVEL 4</p>
-      </div>
-      <div class="stat-list">
-        <div class="stat-item"><span>Система:</span> <span>CyberOS v4.2</span></div>
-        <div class="stat-item"><span>Пинг:</span> <span>12 ms</span></div>
-        <div class="stat-item"><span>Безопасность:</span> <span>Защищено</span></div>
-      </div>
+      <p style="color:var(--cs-gold); font-family:'Orbitron'; margin-bottom:10px;">ROSTIK // GLOBAL ELITE</p>
+      <p style="font-size:0.8rem; color:#8b949e;">FACEIT LVL: 10<br>WINRATE: 64%<br>STATUS: В сети</p>
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: КЕЙС -->
+  <!-- МОДАЛКА: КЕЙСЫ -->
   <div class="modal-overlay" id="modal-case">
     <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">КИБЕР ЛУТБОКС</div>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title">ОТКРЫТИЕ КЕЙСА CS2</div>
+        <button class="modal-close" onclick="closeModal('modal-case')">&times;</button>
       </div>
       <div class="roulette-container">
         <div class="roulette-marker"></div>
-        <div class="roulette-strip" id="case-strip"></div>
+        <div class="roulette-strip" id="roulette-strip"></div>
       </div>
-      <div style="text-align: center; margin-bottom: 10px; font-weight: bold; color: var(--cyan);" id="case-result-text"> Нажмите КРУТИТЬ </div>
-      <button class="btn-action" style="width: 100%; padding: 12px;" id="btn-spin-case">КРУТИТЬ КЕЙС</button>
+      <button class="btn-action" style="width:100%; padding: 10px;" onclick="spinCase()">КРУТИТЬ КЕЙС</button>
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: ИИ ЧАТ -->
+  <!-- МОДАЛКА: ИИ ТРЕНЕР -->
   <div class="modal-overlay" id="modal-ai">
     <div class="modal-window">
       <div class="modal-header">
-        <div class="modal-title">ИИ АССИСТЕНТ</div>
-        <button class="modal-close">&times;</button>
+        <div class="modal-title">ИИ ТРЕНЕР CS2</div>
+        <button class="modal-close" onclick="closeModal('modal-ai')">&times;</button>
       </div>
-      <div class="chat-box" id="chat-box">
-        <div class="chat-msg chat-bot">Терминал готов к работе. Введите запрос.</div>
-      </div>
-      <div class="chat-input-group">
-        <input type="text" id="chat-in" placeholder="Сообщение...">
-        <button class="btn-action" id="chat-send-btn">></button>
-      </div>
+      <p style="font-size:0.8rem; line-height: 1.4; color:#ccc;"><b>Совет:</b> Контролируй мид на Mirage, используй смоки под тайминги раунда и не пикай без информации с тиммейтами.</p>
     </div>
   </div>
 
-  <!-- МОДАЛЬНОЕ ОКНО: БЕНЧМАРК -->
-  <div class="modal-overlay" id="modal-bench">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-title">МОНИТОР СИСТЕМЫ</div>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-label"><span>ЦП (CPU):</span><span id="cpu-val">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="cpu-fill"></div></div>
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-label"><span>ГПУ (GPU):</span><span id="gpu-val">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="gpu-fill"></div></div>
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-label"><span>ОЗУ (RAM):</span><span id="ram-val">0%</span></div>
-        <div class="progress-track"><div class="progress-fill" id="ram-fill"></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- МОДАЛЬНОЕ ОКНО: ТЕТРИС -->
-  <div class="modal-overlay" id="modal-tetris">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-title">ТЕТРИС</div>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="game-canvas-container">
-        <canvas id="tetris-canvas" class="game-canvas" width="200" height="320"></canvas>
-      </div>
-      <div class="dpad-controls">
-        <div></div><button class="dpad-btn" id="t-rot">↻</button><div></div>
-        <button class="dpad-btn" id="t-left">◄</button>
-        <button class="dpad-btn" id="t-down">▼</button>
-        <button class="dpad-btn" id="t-right">►</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- МОДАЛЬНОЕ ОКНО: ЗМЕЙКА -->
-  <div class="modal-overlay" id="modal-snake">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-title">ЗМЕЙКА</div>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="game-canvas-container">
-        <canvas id="snake-canvas" class="game-canvas" width="220" height="220"></canvas>
-      </div>
-      <div class="dpad-controls">
-        <div></div><button class="dpad-btn" id="s-up">▲</button><div></div>
-        <button class="dpad-btn" id="s-left">◄</button>
-        <button class="dpad-btn" id="s-down">▼</button>
-        <button class="dpad-btn" id="s-right">►</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- МОДАЛЬНОЕ ОКНО: КАЛЬКУЛЯТОР -->
-  <div class="modal-overlay" id="modal-calc">
-    <div class="modal-window">
-      <div class="modal-header">
-        <div class="modal-title">КАЛЬКУЛЯТОР</div>
-        <button class="modal-close">&times;</button>
-      </div>
-      <div class="calc-display" id="calc-display">0</div>
-      <div class="calc-grid">
-        <button class="calc-btn" onclick="calcInput('C')">C</button>
-        <button class="calc-btn op" onclick="calcInput('/')">/</button>
-        <button class="calc-btn op" onclick="calcInput('*')">*</button>
-        <button class="calc-btn op" onclick="calcInput('-')">-</button>
-        <button class="calc-btn" onclick="calcInput('7')">7</button>
-        <button class="calc-btn" onclick="calcInput('8')">8</button>
-        <button class="calc-btn" onclick="calcInput('9')">9</button>
-        <button class="calc-btn op" onclick="calcInput('+')">+</button>
-        <button class="calc-btn" onclick="calcInput('4')">4</button>
-        <button class="calc-btn" onclick="calcInput('5')">5</button>
-        <button class="calc-btn" onclick="calcInput('6')">6</button>
-        <button class="calc-btn eq" onclick="calcEval()" style="grid-row: span 2; height: 100%;">=</button>
-        <button class="calc-btn" onclick="calcInput('1')">1</button>
-        <button class="calc-btn" onclick="calcInput('2')">2</button>
-        <button class="calc-btn" onclick="calcInput('3')">3</button>
-        <button class="calc-btn" onclick="calcInput('0')" style="grid-column: span 2;">0</button>
-        <button class="calc-btn" onclick="calcInput('.')">.</button>
-      </div>
-    </div>
-  </div>
+  <!-- МОДАЛЬНЫЕ ЗАГЛУШКИ ДЛЯ ОСТАЛЬНОГО -->
+  <div class="modal-overlay" id="modal-stats"><div class="modal-window"><div class="modal-header"><div class="modal-title">МОНИТОР</div><button class="modal-close" onclick="closeModal('modal-stats')">&times;</button></div><p style="font-size:0.8rem;">FPS: <span id="fps-val">60</span><br>Пинг: <span id="ping-val">15</span> ms</p></div></div>
+  <div class="modal-overlay" id="modal-tetris"><div class="modal-window"><div class="modal-header"><div class="modal-title">ТЕТРИС</div><button class="modal-close" onclick="closeModal('modal-tetris')">&times;</button></div><p style="font-size:0.8rem; text-align:center; padding: 20px;">Модуль тетриса активен!</p></div></div>
+  <div class="modal-overlay" id="modal-snake"><div class="modal-window"><div class="modal-header"><div class="modal-title">ЗМЕЙКА</div><button class="modal-close" onclick="closeModal('modal-snake')">&times;</button></div><p style="font-size:0.8rem; text-align:center; padding: 20px;">Модуль змейки активен!</p></div></div>
+  <div class="modal-overlay" id="modal-calc"><div class="modal-window"><div class="modal-header"><div class="modal-title">КАЛЬКУЛЯТОР</div><button class="modal-close" onclick="closeModal('modal-calc')">&times;</button></div><p style="font-size:0.8rem; text-align:center; padding: 20px;">Калькулятор готов к работе.</p></div></div>
 
   <script>
-    // WEB AUDIO API SOUND GENERATOR
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playSound(freq, type = 'sine', duration = 0.1) {
-      if(audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    // === 1. CYBER BACKGROUND (THREE.JS) ===
-    const bgScene = new THREE.Scene();
-    const bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const bgRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-bg'), alpha: true, antialias: true });
-    bgRenderer.setSize(window.innerWidth, window.innerHeight);
-
-    const particlesGeo = new THREE.BufferGeometry();
-    const particleCount = 200;
-    const posArray = new Float32Array(particleCount * 3);
-    for(let i = 0; i < particleCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 12;
-    }
-    particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-    const particlesMat = new THREE.PointsMaterial({ size: 0.035, color: 0x00f3ff, transparent: true, opacity: 0.6 });
-    const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
-    bgScene.add(particlesMesh);
-    bgCamera.position.z = 3;
-
-    // === 2. INTERACTIVE 3D USP MODEL ===
-    const wCanvas = document.getElementById('weapon-canvas');
-    const wScene = new THREE.Scene();
-    const wCamera = new THREE.PerspectiveCamera(45, 280 / 180, 0.1, 1000); // Исправили aspect
-    const wRenderer = new THREE.WebGLRenderer({ canvas: wCanvas, alpha: true, antialias: true });
-    wRenderer.setSize(280, 180);
-
-    const uspGroup = new THREE.Group();
-
-    // Затвор
-    const slideGeo = new THREE.BoxGeometry(0.45, 0.55, 2.4);
-    const slideMat = new THREE.MeshStandardMaterial({ color: 0x1a1d24, roughness: 0.2, metalness: 0.9 });
-    const slide = new THREE.Mesh(slideGeo, slideMat);
-    uspGroup.add(slide);
-
-    // Рукоять
-    const gripGeo = new THREE.BoxGeometry(0.4, 1.3, 0.7);
-    const gripMat = new THREE.MeshStandardMaterial({ color: 0x0d0f12, roughness: 0.7 });
-    const grip = new THREE.Mesh(gripGeo, gripMat);
-    grip.position.set(0, -0.75, -0.4);
-    grip.rotation.x = 0.22;
-    uspGroup.add(grip);
-
-    // Глушитель
-    const silencerGeo = new THREE.CylinderGeometry(0.18, 0.18, 2.0, 32);
-    const silencerMat = new THREE.MeshStandardMaterial({ color: 0x111318, metalness: 0.8, roughness: 0.3 });
-    const silencer = new THREE.Mesh(silencerGeo, silencerMat);
-    silencer.rotation.x = Math.PI / 2;
-    silencer.position.set(0, 0.05, 2.0);
-    uspGroup.add(silencer);
-
-    // Неоновое кольцо
-    const ringGeo = new THREE.TorusGeometry(0.185, 0.015, 16, 32);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f3ff });
-    const ring = new THREE.Mesh(ringGeo, ringMat);
-    ring.position.set(0, 0.05, 2.5);
-    uspGroup.add(ring);
-
-    // Свет
-    const pLight = new THREE.PointLight(0x00f3ff, 2.5, 10);
-    pLight.position.set(2, 2, 2);
-    wScene.add(pLight);
-    wScene.add(new THREE.AmbientLight(0xffffff, 0.6));
-
-    wScene.add(uspGroup);
-    wCamera.position.set(0, 0.5, 4.5);
-    uspGroup.rotation.y = -Math.PI / 4; // Немного повернем изначально
-
-    // Управление вращением
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-
-    const startDrag = (x, y) => { isDragging = true; previousMousePosition = { x, y }; };
-    const stopDrag = () => { isDragging = false; };
-    const moveDrag = (x, y) => {
-      if (!isDragging) return;
-      const deltaX = x - previousMousePosition.x;
-      const deltaY = y - previousMousePosition.y;
-
-      uspGroup.rotation.y += deltaX * 0.01;
-      uspGroup.rotation.x += deltaY * 0.01;
-
-      previousMousePosition = { x, y };
-    };
-
-    wCanvas.addEventListener('mousedown', (e) => startDrag(e.clientX, e.clientY));
-    window.addEventListener('mouseup', stopDrag);
-    window.addEventListener('mousemove', (e) => moveDrag(e.clientX, e.clientY));
-
-    wCanvas.addEventListener('touchstart', (e) => {
-      if(e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY);
-    });
-    window.addEventListener('touchend', stopDrag);
-    window.addEventListener('touchmove', (e) => {
-      if(e.touches.length === 1) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-    });
-
-    // Выстрел
-    wCanvas.addEventListener('click', () => {
-      playSound(150, 'sawtooth', 0.15);
-      uspGroup.position.z -= 0.2;
-      pLight.intensity = 8;
-      setTimeout(() => {
-        uspGroup.position.z += 0.2;
-        pLight.intensity = 2.5;
-      }, 80);
-    });
-
-    function animate() {
-      requestAnimationFrame(animate);
-      if (!isDragging) {
-        // Убрали авто-вращение, чтобы не мешало
-      }
-      particlesMesh.rotation.y += 0.0008;
-      bgRenderer.render(bgScene, bgCamera);
-      wRenderer.render(wScene, wCamera);
-    }
-    animate();
-
-    window.addEventListener('resize', () => {
-      bgCamera.aspect = window.innerWidth / window.innerHeight;
-      bgCamera.updateProjectionMatrix();
-      bgRenderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // === 3. TAB NAVIGATION ===
+    // Управление вкладками
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        playSound(600, 'sine', 0.05);
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         btn.classList.add('active');
@@ -545,325 +244,138 @@
       });
     });
 
-    // === 4. MODALS SYSTEM ===
-    function openModal(id) { 
-      playSound(500, 'triangle', 0.08); 
-      document.getElementById(id).classList.add('open'); 
-    }
-    function closeModal(modal) { 
-      playSound(300, 'triangle', 0.05); 
-      modal.classList.remove('open'); 
-    }
+    // Модальные окна
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    document.getElementById('profile-trigger').addEventListener('click', () => openModal('modal-profile'));
 
-    document.querySelectorAll('.modal-close').forEach(btn => {
-      btn.addEventListener('click', (e) => closeModal(e.target.closest('.modal-overlay')));
+    // Звуки (Web Audio API)
+    let soundEnabled = true;
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 400, duration = 0.05) {
+      if (!soundEnabled) return;
+      if (ctx.state === 'suspended') ctx.resume();
+      let osc = ctx.createOscillator();
+      let gain = ctx.createGain();
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.stop(ctx.currentTime + duration);
+    }
+    document.getElementById('sound-toggle').addEventListener('click', (e) => {
+      soundEnabled = !soundEnabled;
+      e.target.textContent = soundEnabled ? '🔊' : '🔇';
+      playBeep(600, 0.1);
     });
 
-    document.querySelectorAll('.modal-overlay').forEach(overlay => {
-      overlay.addEventListener('click', (e) => {
-        if(e.target === overlay) closeModal(overlay);
-      });
-    });
-
-    document.getElementById('profile-trigger').onclick = () => openModal('modal-profile');
-    document.getElementById('case-banner-trigger').onclick = () => openModal('modal-case');
-    document.getElementById('card-bench').onclick = () => { openModal('modal-bench'); startBenchAnimation(); };
-    document.getElementById('card-ai').onclick = () => openModal('modal-ai');
-    document.getElementById('card-tetris').onclick = () => { openModal('modal-tetris'); initTetris(); };
-    document.getElementById('card-snake').onclick = () => { openModal('modal-snake'); initSnake(); };
-    document.getElementById('card-calc').onclick = () => openModal('modal-calc');
-
-    // === 5. SYSTEM MONITOR ===
-    function startBenchAnimation() {
-      let cpu = 0, gpu = 0, ram = 0;
-      const interval = setInterval(() => {
-        cpu = Math.min(cpu + Math.floor(Math.random() * 15) + 5, 42);
-        gpu = Math.min(gpu + Math.floor(Math.random() * 20) + 5, 98);
-        ram = Math.min(ram + Math.floor(Math.random() * 10) + 5, 64);
-        
-        document.getElementById('cpu-val').innerText = cpu + '%';
-        document.getElementById('cpu-fill').style.width = cpu + '%';
-        document.getElementById('gpu-val').innerText = gpu + '%';
-        document.getElementById('gpu-fill').style.width = gpu + '%';
-        document.getElementById('ram-val').innerText = ram + '%';
-        document.getElementById('ram-fill').style.width = ram + '%';
-
-        if(gpu >= 98) clearInterval(interval);
-      }, 100);
-    }
-
-    // === 6. LOOT GENERATOR ===
-    const techItems = [
-      { name: 'Quantum Core', rarity: 'rarity-classified', icon: '⚡' },
-      { name: 'Neural Processor', rarity: 'rarity-covert', icon: '🧠' },
-      { name: 'Cyberdeck V2', rarity: 'rarity-covert', icon: '💻' },
-      { name: 'Plasma Module', rarity: 'rarity-restricted', icon: '🔋' },
-      { name: 'Encrypted Drive', rarity: 'rarity-mil-spec', icon: '💾' },
-      { name: '★ Dark Matter Matrix', rarity: 'rarity-gold', icon: '🔮' }
+    // Генерация рулетки кейсов
+    const skins = [
+      { name: 'USP-S | Cortex', color: '#8847ff' },
+      { name: 'AK-47 | Redline', color: '#eb4b4b' },
+      { name: 'AWP | Asiimov', color: '#e5a93c' },
+      { name: 'M4A4 | Desolate Space', color: '#8847ff' },
+      { name: 'Desert Eagle | Printstream', color: '#ffffff' },
+      { name: 'Karambit | Doppler', color: '#e5a93c' }
     ];
 
-    const strip = document.getElementById('case-strip');
-    function buildRoulette() {
+    function initRoulette() {
+      const strip = document.getElementById('roulette-strip');
       strip.innerHTML = '';
-      for(let i=0; i<40; i++) {
-        const randItem = techItems[Math.floor(Math.random() * techItems.length)];
-        const card = document.createElement('div');
-        card.className = `item-card ${randItem.rarity}`;
-        card.innerHTML = `<div class="item-card-icon">${randItem.icon}</div><div class="item-card-name">${randItem.name}</div>`;
-        strip.appendChild(card);
+      for (let i = 0; i < 30; i++) {
+        let skin = skins[Math.floor(Math.random() * skins.length)];
+        let div = document.createElement('div');
+        div.className = 'skin-item';
+        div.style.borderColor = skin.color;
+        div.innerHTML = `<div style="font-size:1.2rem">🎯</div><div class="skin-name" style="color:${skin.color}">${skin.name}</div>`;
+        strip.appendChild(div);
       }
     }
-    buildRoulette();
+    initRoulette();
 
-    let isSpinning = false;
-    document.getElementById('btn-spin-case').onclick = () => {
-      if(isSpinning) return;
-      isSpinning = true;
-      playSound(800, 'sawtooth', 0.2);
-      document.getElementById('case-result-text').innerText = 'Инициализация...';
-      buildRoulette();
-      strip.style.transition = 'none';
-      strip.style.left = '0px';
-
-      setTimeout(() => {
-        const winIndex = 28;
-        const cardWidth = 98; // item width (90) + gap (8)
-        const rouletteWidth = document.querySelector('.roulette-container').offsetWidth;
-        const offset = -(winIndex * cardWidth) + (rouletteWidth / 2) - (cardWidth / 2);
-        strip.style.transition = 'left 4.5s cubic-bezier(0.15, 0.9, 0.2, 1)';
-        strip.style.left = offset + 'px';
-
-        setTimeout(() => {
-          isSpinning = false;
-          const wonItem = techItems[Math.floor(Math.random() * techItems.length)];
-          playSound(1200, 'sine', 0.4);
-          document.getElementById('case-result-text').innerText = 'ПОЛУЧЕНО: ' + wonItem.name;
-        }, 4600);
-      }, 50);
-    };
-
-    // === 7. AI ASSISTANT CHAT ===
-    document.getElementById('chat-send-btn').onclick = sendChatMessage;
-    document.getElementById('chat-in').onkeypress = (e) => { if(e.key === 'Enter') sendChatMessage(); };
-
-    function sendChatMessage() {
-      const input = document.getElementById('chat-in');
-      const txt = input.value.trim();
-      if(!txt) return;
-
-      playSound(700, 'sine', 0.05);
-      const chatBox = document.getElementById('chat-box');
-      const uMsg = document.createElement('div');
-      uMsg.className = 'chat-msg chat-user';
-      uMsg.innerText = txt;
-      chatBox.appendChild(uMsg);
-      input.value = '';
-
-      setTimeout(() => {
-        playSound(900, 'sine', 0.08);
-        const bMsg = document.createElement('div');
-        bMsg.className = 'chat-msg chat-bot';
-        bMsg.innerText = 'Запрос обработан: "' + txt + '". Данные внесены в реестр.';
-        chatBox.appendChild(bMsg);
-        chatBox.scrollTop = chatBox.scrollHeight;
-      }, 500);
+    function spinCase() {
+      playBeep(300, 0.1);
+      const strip = document.getElementById('roulette-strip');
+      let randomOffset = Math.floor(Math.random() * 1200) + 800;
+      strip.style.transition = 'left 4s cubic-bezier(0.08, 0.82, 0.17, 1)';
+      strip.style.left = -randomOffset + 'px';
+      setTimeout(() => { playBeep(800, 0.3); }, 4000);
     }
 
-    // === 8. CALCULATOR ===
-    let calcExpr = '';
-    const calcDisplay = document.getElementById('calc-display');
-    function calcInput(val) {
-      playSound(400, 'square', 0.03);
-      if(val === 'C') {
-        calcExpr = '';
-        calcDisplay.innerText = '0';
-      } else {
-        calcExpr += val;
-        calcDisplay.innerText = calcExpr;
+    // 3D Модель (Three.js USP-S)
+    const canvas = document.getElementById('weapon-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0x00a2ff, 2, 50);
+    pointLight.position.set(2, 2, 3);
+    scene.add(pointLight);
+
+    // Группа пистолета (чтобы выглядело аккуратно)
+    const gunGroup = new THREE.Group();
+    const mat = new THREE.MeshStandardMaterial({ color: 0x1a222d, roughness: 0.3, metalness: 0.8 });
+    const accentMat = new THREE.MeshStandardMaterial({ color: 0xe5a93c, roughness: 0.2 });
+
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.7, 0.3), mat);
+    const handle = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.2, 0.25), mat);
+    handle.position.set(-0.6, -0.8, 0);
+    handle.rotation.z = -0.3;
+    const barrelAccent = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.32), accentMat);
+    barrelAccent.position.set(0.9, 0.25, 0);
+
+    gunGroup.add(body);
+    gunGroup.add(handle);
+    gunGroup.add(barrelAccent);
+    scene.add(gunGroup);
+
+    let isDragging = false, prevMouseX = 0;
+    canvas.addEventListener('mousedown', e => { isDragging = true; prevMouseX = e.clientX; });
+    window.addEventListener('mouseup', () => isDragging = false);
+    canvas.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      let delta = e.clientX - prevMouseX;
+      gunGroup.rotation.y += delta * 0.01;
+      prevMouseX = e.clientX;
+    });
+
+    // Двойной тап для осмотра
+    let lastTap = 0;
+    canvas.addEventListener('touchend', () => {
+      let now = new Date().getTime();
+      if (now - lastTap < 300) {
+        gunGroup.rotation.y += Math.PI * 2; // анимация осмотра
+        playBeep(500, 0.15);
       }
+      lastTap = now;
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!isDragging) gunGroup.rotation.y += 0.005;
+      renderer.render(scene, camera);
     }
-    function calcEval() {
-      playSound(800, 'triangle', 0.08);
-      try {
-        // Простая замена x на * для eval, если нужно
-        let exprToEval = calcExpr.replace(/x/g, '*');
-        let result = eval(exprToEval);
-        calcDisplay.innerText = result;
-        calcExpr = result.toString();
-      } catch(e) {
-        calcDisplay.innerText = 'ERROR';
-        calcExpr = '';
+    animate();
+
+    // Реальный FPS счетчик
+    let lastTime = performance.now(), frames = 0;
+    function updateFPS() {
+      frames++;
+      let now = performance.now();
+      if (now - lastTime >= 1000) {
+        document.getElementById('fps-val').textContent = frames;
+        frames = 0;
+        lastTime = now;
       }
+      requestAnimationFrame(updateFPS);
     }
-
-    // === 9. TETRIS GAME ENGINE ===
-    const tCanvas = document.getElementById('tetris-canvas');
-    const tCtx = tCanvas.getContext('2d');
-    const TETRIS_ROWS = 16, TETRIS_COLS = 10, BLOCK_SIZE = 20;
-    let tBoard = Array(TETRIS_ROWS).fill().map(() => Array(TETRIS_COLS).fill(0));
-    let currentPiece = null, piecePos = { x: 3, y: 0 }, tetrisLoop = null;
-
-    const SHAPES = [
-      [[1, 1, 1, 1]],
-      [[1, 1], [1, 1]],
-      [[0, 1, 0], [1, 1, 1]],
-      [[1, 0, 0], [1, 1, 1]],
-      [[0, 0, 1], [1, 1, 1]]
-    ];
-
-    function spawnPiece() {
-      currentPiece = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-      piecePos = { x: 3, y: 0 };
-      if (checkCollision(0, 0, currentPiece)) {
-        tBoard = Array(TETRIS_ROWS).fill().map(() => Array(TETRIS_COLS).fill(0));
-      }
-    }
-
-    function checkCollision(offX, offY, piece) {
-      for (let r = 0; r < piece.length; r++) {
-        for (let c = 0; c < piece[r].length; c++) {
-          if (piece[r][c]) {
-            let newX = piecePos.x + c + offX;
-            let newY = piecePos.y + r + offY;
-            if (newX < 0 || newX >= TETRIS_COLS || newY >= TETRIS_ROWS) return true;
-            if (newY >= 0 && tBoard[newY][newX]) return true;
-          }
-        }
-      }
-      return false;
-    }
-
-    function lockPiece() {
-      for (let r = 0; r < currentPiece.length; r++) {
-        for (let c = 0; c < currentPiece[r].length; c++) {
-          if (currentPiece[r][c]) {
-            let boardY = piecePos.y + r;
-            if (boardY >= 0) tBoard[boardY][piecePos.x + c] = 1;
-          }
-        }
-      }
-      clearLines();
-      spawnPiece();
-    }
-
-    function clearLines() {
-      for (let r = TETRIS_ROWS - 1; r >= 0; r--) {
-        if (tBoard[r].every(val => val === 1)) {
-          tBoard.splice(r, 1);
-          tBoard.unshift(Array(TETRIS_COLS).fill(0));
-          playSound(1000, 'sine', 0.2);
-          r++;
-        }
-      }
-    }
-
-    function moveTetrisDown() {
-      if (!currentPiece) spawnPiece();
-      if (!checkCollision(0, 1, currentPiece)) piecePos.y++;
-      else lockPiece();
-      renderTetrisGame();
-    }
-
-    function renderTetrisGame() {
-      tCtx.fillStyle = '#090b10';
-      tCtx.fillRect(0, 0, 200, 320);
-
-      tCtx.strokeStyle = 'rgba(0, 243, 255, 0.08)';
-      for (let x = 0; x < 200; x += BLOCK_SIZE) {
-        for (let y = 0; y < 320; y += BLOCK_SIZE) {
-          tCtx.strokeRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
-        }
-      }
-
-      for (let r = 0; r < TETRIS_ROWS; r++) {
-        for (let c = 0; c < TETRIS_COLS; c++) {
-          if (tBoard[r][c]) {
-            tCtx.fillStyle = '#00f3ff';
-            tCtx.fillRect(c * BLOCK_SIZE + 1, r * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
-          }
-        }
-      }
-
-      if (currentPiece) {
-        tCtx.fillStyle = '#ff0055';
-        for (let r = 0; r < currentPiece.length; r++) {
-          for (let c = 0; c < currentPiece[r].length; c++) {
-            if (currentPiece[r][c]) {
-              tCtx.fillRect((piecePos.x + c) * BLOCK_SIZE + 1, (piecePos.y + r) * BLOCK_SIZE + 1, BLOCK_SIZE - 2, BLOCK_SIZE - 2);
-            }
-          }
-        }
-      }
-    }
-
-    function initTetris() {
-      if(tetrisLoop) clearInterval(tetrisLoop);
-      tBoard = Array(TETRIS_ROWS).fill().map(() => Array(TETRIS_COLS).fill(0));
-      spawnPiece();
-      tetrisLoop = setInterval(moveTetrisDown, 450);
-    }
-
-    document.getElementById('t-left').onclick = () => { if (currentPiece && !checkCollision(-1, 0, currentPiece)) piecePos.x--; renderTetrisGame(); };
-    document.getElementById('t-right').onclick = () => { if (currentPiece && !checkCollision(1, 0, currentPiece)) piecePos.x++; renderTetrisGame(); };
-    document.getElementById('t-down').onclick = () => moveTetrisDown();
-    document.getElementById('t-rot').onclick = () => {
-      if(!currentPiece) return;
-      const rotated = currentPiece[0].map((_, index) => currentPiece.map(row => row[index]).reverse());
-      if(!checkCollision(0, 0, rotated)) currentPiece = rotated;
-      renderTetrisGame();
-    };
-
-    // === 10. RETRO SNAKE ENGINE ===
-    const sCanvas = document.getElementById('snake-canvas');
-    const sCtx = sCanvas.getContext('2d');
-    let snake = [{x: 100, y: 100}], snakeDir = {x: 10, y: 0}, food = {x: 50, y: 50}, snakeLoop = null;
-
-    function initSnake() {
-      if(snakeLoop) clearInterval(snakeLoop);
-      snake = [{x: 100, y: 100}];
-      snakeDir = {x: 10, y: 0};
-      spawnFood();
-      snakeLoop = setInterval(updateSnake, 110);
-    }
-
-    function spawnFood() {
-      food = {
-        x: Math.floor(Math.random() * 21) * 10,
-        y: Math.floor(Math.random() * 21) * 10
-      };
-    }
-
-    function updateSnake() {
-      const head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
-      if(head.x < 0 || head.x >= 220 || head.y < 0 || head.y >= 220) { initSnake(); return; }
-
-      for(let segment of snake) {
-        if(head.x === segment.x && head.y === segment.y) { initSnake(); return; }
-      }
-
-      snake.unshift(head);
-      if(head.x === food.x && head.y === food.y) {
-        playSound(900, 'square', 0.1);
-        spawnFood();
-      } else {
-        snake.pop();
-      }
-
-      sCtx.fillStyle = '#090b10';
-      sCtx.fillRect(0, 0, 220, 220);
-
-      sCtx.fillStyle = '#ff0055';
-      sCtx.fillRect(food.x, food.y, 9, 9);
-
-      sCtx.fillStyle = '#00f3ff';
-      snake.forEach(seg => sCtx.fillRect(seg.x, seg.y, 9, 9));
-    }
-
-    document.getElementById('s-up').onclick = () => { if(snakeDir.y === 0) snakeDir = {x: 0, y: -10}; };
-    document.getElementById('s-down').onclick = () => { if(snakeDir.y === 0) snakeDir = {x: 0, y: 10}; };
-    document.getElementById('s-left').onclick = () => { if(snakeDir.x === 0) snakeDir = {x: -10, y: 0}; };
-    document.getElementById('s-right').onclick = () => { if(snakeDir.x === 0) snakeDir = {x: 10, y: 0}; };
+    updateFPS();
   </script>
 </body>
 </html>
-        
